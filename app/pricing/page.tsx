@@ -13,14 +13,14 @@ import Link from "next/link";
 
 export const plans = [
    {
-      priceId: "price_1SMdYFCVAZUVXTsBQzqrWSGF",
-      billingLink: "https://buy.stripe.com/test_28E5kCcKcc0J6IA9DccQU00",
+      priceId: "price_1SMtpME7sK0TWDbZUA2dkaaF",
+      billingLink: "https://buy.stripe.com/8x29ATe3317h9QJ19GaR201",
       price: 2.99,
       duration: '/month'
    },
    {
-      priceId: "price_1SMdhOCVAZUVXTsBwOYgk8LE",
-      billingLink: "https://buy.stripe.com/test_8x200i11uc0J1og2aKcQU01",
+      priceId: "price_1SMtpJE7sK0TWDbZLuWJfhhn",
+      billingLink: "https://buy.stripe.com/aFa7sL5wx17hfb34lSaR200",
       price: 55,
       duration: 'lifetime'
    }

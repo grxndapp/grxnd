@@ -65,6 +65,7 @@ export default function RootLayout({
             <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
             <link rel="manifest" href="/manifest.json" />
             <link rel="apple-touch-icon" href="/favicon.ico" />
+            <script defer data-web-identifier="ayom" data-party="visora" data-website-id="a1367ce6-4581-4686-a061-eae57659d191" src="https://visora.vercel.app/cdn/track.js"></script>
           </head>
           <body className={InterFont.className}>
             <Toaster richColors position="top-center" />

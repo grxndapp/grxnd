@@ -1,0 +1,96 @@
+.container {
+   width: 100%;
+   height: 70%;
+   background: white;
+   color: black;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   padding: 1rem;
+   overflow: hidden;
+}
+
+.titleContainer {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   margin-bottom: 1.5rem;
+}
+
+.icon {
+   color: #1131ff;
+   animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+   0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+   }
+   50% {
+      opacity: 0.7;
+      transform: scale(1.1);
+   }
+}
+
+.title {
+   font-weight: 700;
+   letter-spacing: -0.02em;
+}
+
+.spinner {
+   width: 56px;
+   height: 56px;
+   color: #1131ff;
+   margin-bottom: 2rem;
+}
+
+.message {
+   font-size: 1.1rem;
+   font-weight: 500;
+   color: #979797;
+   margin-bottom: 1.5rem;
+   min-height: 1.4em;
+}
+
+/* Infinite Progress Bar */
+.progressBarContainer {
+   width: 260px;
+   height: 10px;
+   background: #e4eeff;
+   border-radius: 9999px;
+   overflow: hidden;
+   position: relative;
+}
+
+.progressBar {
+   width: 100%;
+   height: 100%;
+   position: relative;
+   overflow: hidden;
+}
+
+.progressBarInner {
+   position: absolute;
+   top: 0;
+   left: -40%;
+   height: 100%;
+   width: 40%;
+   background: linear-gradient(to right, #1131ff, #4860ff);
+   border-radius: 9999px;
+   animation: slide 1.2s infinite ease-in-out;
+}
+
+@keyframes slide {
+   0% {
+      left: -40%;
+   }
+   50% {
+      left: 60%;
+   }
+   100% {
+      left: 100%;
+   }
+}

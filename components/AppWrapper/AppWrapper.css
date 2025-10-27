@@ -1,0 +1,73 @@
+.account-bar-wrapper {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 5px 10px;
+}
+
+.account-bar-wrapper .account-bar {
+   width: 100%;
+   max-width: 600px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.account-bar-wrapper .account-bar .app-icon {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+}
+
+.account-bar-wrapper .account-bar .account-image {
+   width: fit-content;
+   height: 100%;
+   cursor: pointer;
+}
+
+.navbar {
+   width: 100%;
+   height: 9vh;
+   padding: 6px 0;
+   border-top: 1px solid #e0e0e0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.navbar .navbar-wrapper {
+   width: 100%;
+   height: 100%;
+   max-width: 500px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+}
+
+.navbar .navbar-wrapper .navbar-item {
+   width: 100%;
+   height: 100%;
+   border-radius: 20px;
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+   align-items: center;
+   justify-content: center;
+   color: #3d3d3d;
+   cursor: pointer;
+   background-color: white;
+}
+
+.navbar .navbar-wrapper .navbar-item:hover {
+   background-color: #eeeeee;
+}
+
+.navbar .navbar-wrapper .navbar-item.selected {
+   background: #d8ddff;
+   color: #1131ff;
+}
+.navbar .navbar-wrapper .navbar-item .tiny-label { font-size: 0.95rem; }
+.navbar .navbar-wrapper .navbar-item.selected .tiny-label { font-weight: 700; }

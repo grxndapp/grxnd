@@ -1,0 +1,46 @@
+.tool-heading .human-writer {
+   background: linear-gradient(to bottom, #4b0058, #800396);
+}
+
+.tool-heading .quiz-maker {
+   background: linear-gradient(to bottom, #186101, #48c416);
+}
+
+.tool-heading .note-maker {
+   background: linear-gradient(to bottom, #a84300, #ce5108);
+}
+
+.tool-headline {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+   padding: 5px 0;
+   font-size: 1.6rem;
+   font-weight: 700;
+}
+
+.tool-headline .icon {
+   height: 100%;
+   aspect-ratio: 1;
+   border-radius: 100%;
+   color: white;
+   padding: 6px;
+}
+
+.tool-headline.human-writer .icon { background: linear-gradient(to bottom, #4b0058, #800396); }
+.tool-headline.essay-grader .icon { background: linear-gradient(to bottom, #c4004b, #ff1b72); }
+.tool-headline.quiz-maker .icon { background: linear-gradient(to bottom, #186101, #48c416); }
+.tool-headline.note-maker .icon { background: linear-gradient(to bottom, #c75001, #f17126); }
+
+
+.tool-headline.human-writer .title { background: linear-gradient(to bottom, #4b0058, #800396); }
+.tool-headline.essay-grader .title { background: linear-gradient(to bottom, #c4004b, #ff1b72); }
+.tool-headline.quiz-maker .title { background: linear-gradient(to bottom, #186101, #48c416); }
+.tool-headline.note-maker .title { background: linear-gradient(to bottom, #c75001, #f17126); }
+
+.tool-headline .title {
+   color: transparent !important;
+   background-clip: text !important;
+}

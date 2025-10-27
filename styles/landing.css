@@ -1,0 +1,38 @@
+.landing-page {
+   width: 100vw;
+   height: 100vh;
+   overflow-y: scroll;
+   overflow-x: hidden;
+}
+
+.hero-section-headline {
+   width: 100%;
+   padding: 10px;
+   font-weight: 900;
+   text-align: center;
+   background: linear-gradient(to bottom, #6279ff, #1a09ff);
+   color: transparent;
+   background-clip: text;
+}
+
+textarea.feedback-input {
+   width: 100%;
+   scale: 0.97;
+   background-color: #ffffff;
+   border: 1px solid #c7c7c7;
+   border-radius: 20px;
+   padding: 20px;
+   opacity: 0.8;
+   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.021);
+}
+
+textarea.feedback-input:hover { scale: 0.98; }
+
+textarea.feedback-input:focus {
+   scale: 1;
+   opacity: 1;
+   background-color: #ffffff;
+   border: 1px solid #c9cdff;
+   /* box-shadow: 0 3px 7px rgba(0, 0, 0, 0.096); */
+   box-shadow: 0 3px 10px rgba(3, 0, 153, 0.219);
+}

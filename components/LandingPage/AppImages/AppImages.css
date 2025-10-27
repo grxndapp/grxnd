@@ -1,0 +1,38 @@
+.app-images {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: white;
+}
+
+.app-images .app-images-wrapper {
+   width: 100%;
+   max-width: 1200px;
+   padding: 20px;
+}
+
+.app-images .app-images-wrapper .list-images {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-wrap: wrap;
+   gap: 20px;
+}
+
+.app-images .app-images-wrapper .list-images .app-image {
+   width: 550px;
+   overflow: hidden;
+   border-radius: 15px;
+   border: 1px solid #ebebeb;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.097);
+}
+
+.app-images .app-images-wrapper .list-images .app-image img {
+   width: 100%;
+   object-fit: contain;
+   object-position: center;
+   border-radius: 15px;
+   -webkit-user-drag: none;
+}

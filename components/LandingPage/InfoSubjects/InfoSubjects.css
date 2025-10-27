@@ -1,0 +1,16 @@
+.info-subjects {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 20px 0;
+   user-select: none;
+   background: linear-gradient(to bottom, #dbd9ff 40%, #ffffff);
+}
+
+.info-subjects .is-wrapper {
+   width: 100%;
+   max-width: 700px;
+   font-weight: 500;
+   text-align: center;
+}

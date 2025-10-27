@@ -1,0 +1,36 @@
+.essay-input-box {
+   width: 100%;
+}
+
+.essay-input-box textarea {
+   border-radius: 18px;
+}
+
+.essay-input-attach {
+   background-color: white;
+   padding: 10px;
+   border: 1px solid #ebebeb;
+   border-radius: 20px;
+}
+
+.essay-input-attach .mimic-btn {
+   width: fit-content;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 12px;
+   cursor: pointer;
+   user-select: none;
+   background: #dbdbdb;
+   color: black;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.096);
+}
+
+.essay-input-attach textarea {
+   border: none;
+   padding: 20px 5px;
+   border-radius: 0;
+}

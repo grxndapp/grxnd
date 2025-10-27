@@ -1,0 +1,43 @@
+.progress-ring {
+   position: relative;
+   width: 120px;
+   height: 120px;
+ }
+ 
+ .progress-ring__svg {
+   transform: rotate(-90deg);
+   width: 100%;
+   height: 100%;
+ }
+ 
+ .progress-ring__bg,
+ .progress-ring__progress {
+   fill: none;
+   stroke-width: 12;
+   cx: 60;
+   cy: 60;
+   r: 54;
+ }
+ 
+ .progress-ring__bg {
+   stroke: #e6e6e6;
+ }
+ 
+ .progress-ring__progress {
+   /* stroke: #3b82f6; Tailwind's blue-500, adjust as needed */
+   stroke-dasharray: 339.292; /* 2πr where r = 54 */
+   /* stroke-dashoffset: calc(339.292 - (339.292 * 75 / 100)); 75% progress */
+   stroke-linecap: round;
+   transition: stroke-dashoffset 0.5s ease;
+ }
+ 
+ .progress-ring__text {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   font-size: 1.25rem;
+   font-weight: bold;
+   color: #111;
+ }
+ 

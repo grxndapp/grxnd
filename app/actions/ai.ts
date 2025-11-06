@@ -33,7 +33,7 @@ export async function callChatGPT (prompt: string): Promise<any | false> {
          .replace(/```/g, '')
          .trim();
 
-      console.log(JSON.parse(cleanedJsonResult!));
+      // console.log(JSON.parse(cleanedJsonResult!));
       return JSON.parse(cleanedJsonResult!);
    } catch (err) {
       try {
@@ -44,7 +44,7 @@ export async function callChatGPT (prompt: string): Promise<any | false> {
             body: JSON.stringify({ prompt })
          });
          const data = await response.json();
-         console.log(data.data);
+         // console.log(data.data);
          return data.data;
       } catch (err) {
          return false;

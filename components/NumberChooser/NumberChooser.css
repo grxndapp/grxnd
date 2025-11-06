@@ -1,0 +1,19 @@
+.number-chooser {
+   width: 100%;
+   min-width: 60px;
+   border-radius: 8px;
+   border: 1px solid #ededed;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 5px;
+}
+
+.number-chooser button.num-chooser-btn {
+   background-color: white !important;
+   color: black !important;
+   box-shadow: none !important;
+}
+
+.number-chooser button.num-chooser-btn:hover { scale: 1 !important; }
+.number-chooser button.num-chooser-btn:active { scale: 1 !important; }

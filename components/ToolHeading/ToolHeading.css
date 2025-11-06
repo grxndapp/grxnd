@@ -10,6 +10,10 @@
    background: linear-gradient(to bottom, #a84300, #ce5108);
 }
 
+.tool-heading .imposter {
+   background: linear-gradient(to bottom, #f38200, #ffa41b);
+}
+
 .tool-headline {
    width: 100%;
    display: flex;
@@ -33,12 +37,13 @@
 .tool-headline.essay-grader .icon { background: linear-gradient(to bottom, #c4004b, #ff1b72); }
 .tool-headline.quiz-maker .icon { background: linear-gradient(to bottom, #186101, #48c416); }
 .tool-headline.note-maker .icon { background: linear-gradient(to bottom, #c75001, #f17126); }
-
+.tool-headline.imposter .icon { background: linear-gradient(to bottom, #f38200, #ffa41b); }
 
 .tool-headline.human-writer .title { background: linear-gradient(to bottom, #4b0058, #800396); }
 .tool-headline.essay-grader .title { background: linear-gradient(to bottom, #c4004b, #ff1b72); }
 .tool-headline.quiz-maker .title { background: linear-gradient(to bottom, #186101, #48c416); }
 .tool-headline.note-maker .title { background: linear-gradient(to bottom, #c75001, #f17126); }
+.tool-headline.imposter .title { background: linear-gradient(to bottom, #f38200, #ffa41b); }
 
 .tool-headline .title {
    color: transparent !important;

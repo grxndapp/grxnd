@@ -1,7 +1,7 @@
 'use client'
 import './ToolHeading.css'
 import { ReactNode } from 'react';
-import { BookCheck, ClipboardCheck, NotebookPen, UserRoundPen } from 'lucide-react';
+import { BookCheck, ClipboardCheck, Drama, NotebookPen, UserRoundPen } from 'lucide-react';
 
 type ToolHeadingProps = {
    title: string;
@@ -16,6 +16,7 @@ export default function ToolHeading ({ title, description, idClassName }: ToolHe
       "human-writer": <UserRoundPen size={headingIconsSize} />,
       "note-maker": <NotebookPen size={headingIconsSize} />,
       "quiz-maker": <BookCheck size={headingIconsSize} />,
+      "imposter": <Drama size={headingIconsSize} />,
    }
 
    return (

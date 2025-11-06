@@ -20,7 +20,7 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
    const router = useRouter();
    const { data: session, status } = useSession();
    const { showModal, close } = useModal();
-   const manageBillingLink = "https://billing.stripe.com/p/login/test_28E5kCcKcc0J6IA9DccQU00"
+   const manageBillingLink = "https://billing.stripe.com/p/login/aFa7sL5wx17hfb34lSaR200"
 
    const sendVerificationEmail = async () => {
       const sentEmail = await sendVerificationEmailFromGrxnd(user.email);

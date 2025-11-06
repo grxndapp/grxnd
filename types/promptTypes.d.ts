@@ -26,3 +26,9 @@ type QuizQuestion = {
    questionType: string;
 }
 type Quiz = QuizQuestion[];
+
+type ImposterGame = {
+   imposterIndex: number;
+   word: string;
+   hint: string;
+}

@@ -1,5 +1,5 @@
 'use client'
-import { ChevronRight, Download } from "lucide-react";
+import { ChevronRight, Download, Drama } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { subjectColors } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
@@ -70,6 +70,25 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
                      </div>
                   </div>
                   <div className="text-xl bold-700 fit dfb align-center justify-end">{score}</div>
+               </div>
+            </Card>
+            <Spacing size={1} />
+
+            <Card styles={{ width: "100%", padding: "25px", border: `1px solid #db8f00ff`, cursor: "pointer" }} onClick={() => router.push("/imposter")}>
+               <div className="box full dfb align-center gap-20">
+                  <div className="box full dfb column">
+                     <div className="text-sm bold-500 mb-05 full dfb align-center gap-8">Play Imposter <Drama size={22} /></div>
+                     <div className="box full">
+                        <div className="box fit pd-05 pdx-1" style={{
+                           background:"#1121ff", color:"white", borderRadius:"15px"
+                        }}>
+                           <span className="text-xxt">NEW</span>
+                        </div>
+                     </div>
+                  </div>
+                  <div className="text-xl bold-700 fit dfb align-center justify-end">
+                     <ChevronRight size={40} strokeWidth={2} />
+                  </div>
                </div>
             </Card>
             <Spacing size={1} />

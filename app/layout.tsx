@@ -23,15 +23,16 @@ export const metadata: Metadata = {
     "exam preparation Scotland",
     "Scottish education",
   ],
+  icons: "https://grxnd.app/logo.png",
   openGraph: {
     title: "Grxnd | AI Study Helper for Scottish Students | SQA Past Papers & Revision",
     description:
       "AI homework help, personalized revision plans, past paper solutions, and essay feedback. Tailored for Scottish students in National 5, Higher, and Advanced Higher.",
-    url: "https://yourdomain.com",
+    url: "https://grxnd.app",
     siteName: "Grxnd | AI Study Helper",
     images: [
       {
-        url: "https://yourdomain.com/og-image.png",
+        url: "https://grxnd.app/logo.png",
         width: 1200,
         height: 630,
         alt: "AI Study Helper for Scottish Students",
@@ -45,10 +46,10 @@ export const metadata: Metadata = {
     title: "Grxnd | AI Study Helper for Scottish Students | SQA Past Papers & Revision",
     description:
       "AI-powered revision help for National 5, Higher, and Advanced Higher exams. Get study plans, past paper solutions, and essay feedback.",
-    images: ["https://yourdomain.com/og-image.png"],
+    images: ["https://grxnd.app/logo.png"],
   },
   alternates: {
-    canonical: "https://yourdomain.com",
+    canonical: "https://grxnd.app",
   },
 };
 

@@ -88,16 +88,8 @@ export default function PlayerCard ({ index, imposter, word }: PlayerCardProps) 
             style={wrapperStyles}
          >
             <div style={cardStyles}>
-               <div className="text-xxl full bold-600 text-center mb-2" style={{textTransform:"uppercase"}}>Player {index+1}</div>
-
-               {imposter ? (<>
-                  <div style={identityImposterStyles}>YOU ARE THE IMPOSTER</div>
-               </>) : (<>
-                  <div style={identitySafeStyles}>YOU ARE SAFE</div>
-               </>)}
-                  
                <motion.div 
-                  className="text-sm mt-2 full pd-1 dfb align-center justify-center gap-10 bold-700"
+                  className="text-sm mb-2 full pd-1 dfb align-center justify-center gap-10 bold-700"
                   onPointerDown={(e) => {
                      e.preventDefault();
                      setShowWord(true);
@@ -110,7 +102,14 @@ export default function PlayerCard ({ index, imposter, word }: PlayerCardProps) 
                   <span>HOLD TO REVEAL</span>
                   <ArrowLeftFromLine size={24} />
                </motion.div>
-            
+
+               <div className="text-xxl full bold-600 text-center mb-2" style={{textTransform:"uppercase"}}>Player {index+1}</div>
+
+               {imposter ? (<>
+                  <div style={identityImposterStyles}>YOU ARE THE IMPOSTER</div>
+               </>) : (<>
+                  <div style={identitySafeStyles}>YOU ARE SAFE</div>
+               </>)}
             </div>
          </motion.div>
          

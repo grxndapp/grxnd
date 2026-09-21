@@ -75,17 +75,18 @@ export async function callChatGPT (prompt: string) {
             }
          ],
          model: "openai/gpt-oss-120b",
-         temperature: 0.4,
-         top_p: 0.9,
+         temperature: 1,
+         top_p: 1,
+         max_completion_tokens: 9000,
          stream: false,
-         reasoning_effort: "high"
+         reasoning_effort: "medium"
       });
-      if (chatCompletion.choices[0].message.content == "") {
-         return await callChatGPT(prompt);
-      }
+      // if (chatCompletion.choices[0].message.content == "") {
+      //    return await callChatGPT(prompt);
+      // }
 
       const response = chatCompletion.choices[0].message.content;
-      console.log(response)
+      console.log(chatCompletion.choices)
       // const cleanedJsonResult = response?.replace(/```json\s*/g, '').replace(/```/g, '').trim();
 
       // console.log(cleanedJsonResult);

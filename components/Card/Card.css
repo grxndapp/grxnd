@@ -40,10 +40,10 @@
 .tool-card.quiz-maker .icon { background: linear-gradient(to bottom, #186101, #48c416); }
 .tool-card.note-maker .icon { background: linear-gradient(to bottom, #c75001, #f17126); }
 
-.tool-card.human-writer button { background: linear-gradient(to bottom, #740188, #a60ac2); }
-.tool-card.essay-grader button { background: linear-gradient(to bottom, #d3105a, #ff1b72); }
-.tool-card.quiz-maker button { background: linear-gradient(to bottom, #1a6e01, #399e12); }
-.tool-card.note-maker button { background: linear-gradient(to bottom, #c75001, #f17126); }
+.tool-card.human-writer button { background: #740188 }
+.tool-card.essay-grader button { background: #d3105a }
+.tool-card.quiz-maker button { background: #1a6e01 }
+.tool-card.note-maker button { background: #c75001 }
 
 @keyframes pulse {
    0% {

@@ -53,7 +53,7 @@ export async function callChatGPT2 (prompt: string): Promise<any | false> {
    }
 }
 
-export async function callChatGPT (prompt: string) {
+export async function callChatGPT3 (prompt: string) {
    try {
       const groq = new Groq();
       const chatCompletion = await groq.chat.completions.create({
@@ -92,6 +92,41 @@ export async function callChatGPT (prompt: string) {
       // console.log(cleanedJsonResult);
       // console.log(JSON.parse(cleanedJsonResult!));
       return JSON.parse(response!);
+   } catch (err) {
+      console.error(err)
+      return false;
+   }
+}
+
+export async function callChatGPT (prompt: string) {
+   try {
+      const response = await fetch("https://api.atria-asi.ai/v1/chat/completions", {
+         method: "POST",
+         headers: {
+            "Authorization": `Bearer ${process.env.AI_API_KEY!}`,
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+            messages: [
+               {
+                  role: "system",
+                  content: "You are a professional scottish teacher that knows every subject in every level of secondary school study: National 5, Higher and Advanced Higher. You can also teach very well and provide amazing responses for answers"
+               },
+               {
+                  role: "user",
+                  content: prompt
+               }
+            ],
+            model: "Atria-Dawn-Preview",
+            temperature: 1.1,
+            top_p: 0.95,
+            stream: false,
+            reasoning_effort: "medium"
+         })
+      })
+      const result = await response.json();
+      console.log(result);
+      return JSON.parse(result.choices[0].message.content);
    } catch (err) {
       console.error(err)
       return false;

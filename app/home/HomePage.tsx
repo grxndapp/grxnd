@@ -1,7 +1,7 @@
 'use client'
 import { ChevronRight, Download, Drama } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { subjectColors } from "@/utils/subjects";
+import { subjectColors, subjectPastelBgColors } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
@@ -53,45 +53,19 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
    return (
       <AppWrapper>
          <div className="box full h-full">
-            <div className="text-xxl bold-700 full dfb align-center justify-center gap-7">
-               Hello <div className="span box accent-color">{session?.user?.name}</div>
+            <div className="box full pd-3">
+               <div className="text-s full dfb align-center gap-5 bold-600">
+                  Welcome <div className="span box accent-color">{session?.user?.name}</div>
+               </div>
+               <div className="text-xxs full pd-05">{welcomeString}</div>
+               <div className="box full dfb align-end pd-05" style={{ gap: "5px" }}>
+                  <div className="text-xxb fit bold-600">{score}</div>
+                  <div className="text-xxs grey-5 pdx-05 full pd-1" style={{ padding: "10px 0" }}>points</div>
+               </div>
+               <Link className="text-xxs fit visible-link accent-color dfb align-center" href="/leaderboard">
+                  Global Leaderboard <ChevronRight size={17} />
+               </Link>
             </div>
-            <div className="text-xs full text-center pd-1">{welcomeString}</div>
-            <Spacing size={1} />
-
-            <Card styles={{ width: "100%", padding: "25px", border: `1px solid #1121ff` }}>
-               <div className="box full dfb align-center gap-20">
-                  <div className="box full dfb column">
-                     <div className="text-sm bold-500 full">Your Score</div>
-                     <div className="box full pd-05">
-                        <Link className="text-xxs fit visible-link accent-color dfb align-center" href="/leaderboard">
-                           Global Leaderboard <ChevronRight size={17} />
-                        </Link>
-                     </div>
-                  </div>
-                  <div className="text-xl bold-700 fit dfb align-center justify-end">{score}</div>
-               </div>
-            </Card>
-            <Spacing size={1} />
-
-            <Card styles={{ width: "100%", padding: "25px", border: `1px solid #db8f00ff`, cursor: "pointer" }} onClick={() => router.push("/imposter")}>
-               <div className="box full dfb align-center gap-20">
-                  <div className="box full dfb column">
-                     <div className="text-sm bold-500 mb-05 full dfb align-center gap-8">Play Imposter <Drama size={22} /></div>
-                     <div className="box full">
-                        <div className="box fit pd-05 pdx-1" style={{
-                           background:"#1121ff", color:"white", borderRadius:"15px"
-                        }}>
-                           <span className="text-xxt">NEW</span>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="text-xl bold-700 fit dfb align-center justify-end">
-                     <ChevronRight size={40} strokeWidth={2} />
-                  </div>
-               </div>
-            </Card>
-            <Spacing size={1} />
 
             {(quizzes.length < 1) && (<div className="box full">
                <Card styles={{ width: "100%", padding: "25px" }}>
@@ -101,23 +75,36 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
                </Card>
                <Spacing size={1} />
             </div>)}
-            {existingQuizSubjects.map((subject, index) => {
-               return (<div className="box full" key={index}>
-                  <Card styles={{ width: "100%", padding: "25px", border: `1px solid ${subjectColors[subject]}` }}>
-                     <div className="text-sm bold-600 full mb-05">{subject} Quizzes</div>
-                     <div className="text-xxs full mb-05">Average Score</div>
-                     <div className="text-xxl bold-700 full" style={{color:subjectColors[subject]}}>
-                        {((newQuizArray[subject]
-                        .reduce((agg: any, quiz: any) => (agg + quiz.score), 0)/newQuizArray[subject].length).toFixed(1))}%</div>
-                     <div className="box full pd-05">
-                        <Link className="text-xxs fit visible-link accent-color dfb align-center" href={`/quiz-stat/${subject.toLowerCase().replaceAll(" ","-")}`}>
-                           View Stats <ChevronRight size={17} />
-                        </Link>
-                     </div>
-                  </Card>
-                  <Spacing size={1} />
-               </div>)
-            })}
+
+            
+            {(existingQuizSubjects.length > 0) && (<>
+               <div className="text-xxl full pd-15 bold-600">Quizzes</div>
+               <div className="box full dfb column" style={{ gap: "10px" }}>
+                  {existingQuizSubjects.map((subject, index) => {
+                     return (<Card
+                        key={index} 
+                        styles={{
+                           width: "100%",
+                           borderRadius: "25px", padding: "25px",
+                           background: `${subjectPastelBgColors[subject]}`
+                        }}
+                        className="box fit"
+                     >
+                        <div className="text-sm bold-600 full mb-05">{subject}</div>
+                        <div className="text-xxl bold-700 full" style={{color:subjectColors[subject]}}>
+                           {((newQuizArray[subject]
+                           .reduce((agg: any, quiz: any) => (agg + quiz.score), 0)/newQuizArray[subject].length).toFixed(1))}%
+                        </div>
+                        <div className="box full pd-05">
+                           <Link className="text-xxs fit visible-link accent-color dfb align-center" href={`/quiz-stat/${subject.toLowerCase().replaceAll(" ","-")}`}>
+                              View Stats <ChevronRight size={17} />
+                           </Link>
+                        </div>
+                     </Card>)
+                  })}
+               </div>
+            </>)}
+            <Spacing size={2} />
 
             <Card styles={{ width: "100%", padding: "25px" }}>
                <div className="text-sm bold-600 full mb-05">Tournament</div>

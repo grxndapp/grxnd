@@ -567,6 +567,16 @@ export const subjectColors: Record<string, string> = {
 	"Administration": "#5291cf"
 }
 
+export const subjectPastelBgColors: Record<string, string> = {
+	"Math": "#b7dbff",
+	"Physics": "#e6c3ff",
+	"Biology": "#ccffcc",
+	"Chemistry": "#ffd3c3",
+	"English": "#fff5bf",
+	"Computer Science": "#aadada",
+	"Administration": "#b4cde6"
+}
+
 export function retrieveSubjectTopic (subjectLevel: string, subject: string) {
 	const subjectTopicsList = subjectTopics[subject.toLowerCase().replaceAll(" ", "_")];
 	if (subjectLevel == "National 5") return subjectTopicsList.national5;

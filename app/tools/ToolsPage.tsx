@@ -44,14 +44,13 @@ export default function ToolsPage() {
          <div className="text-xxl bold-700 full dfb align-center justify-center gap-7 mb-2">
             AI Tools
          </div>
-         <div className="box full h-fit pdx-15 dfb column gap-30">
+         <div className="box full h-fit pdx-15 dfb column gap-15">
             {tools.map((tool, index) => (
-               <ToolCard key={index} idClassName={tool.title.toLowerCase().replaceAll(" ","-")}>
+               <ToolCard key={index} idClassName={tool.title.toLowerCase().replaceAll(" ","-")} onClick={() => router.push(tool.href)}>
                   <div className="icon"><tool.icon size={17} /></div>
                   <div className="tool-content">
-                     <div className="text-sm bold-700 pd-05">{tool.title}</div>
-                     <div className="text-xxs grey-5 mb-15">{tool.description}</div>
-                     <button className="xxs pd-11 full" onClick={() => router.push(tool.href)}>{tool.buttonLabel}</button>
+                     <div className="text-m bold-700 pd-1">{tool.title}</div>
+                     <div className="text-xxs grey-5 mb-1">{tool.description}</div>
                   </div>
                </ToolCard>
             ))}

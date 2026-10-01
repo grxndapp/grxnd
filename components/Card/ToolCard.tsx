@@ -5,11 +5,12 @@ import { ReactNode } from 'react';
 type ToolCardProps = {
    idClassName: string;
    children: ReactNode;
+   onClick: () => void;
 }
 
-export default function ToolCard ({ idClassName, children }: ToolCardProps) {
+export default function ToolCard ({ idClassName, children, onClick }: ToolCardProps) {
    return (
-      <div className={`tool-card ${idClassName}`}>
+      <div className={`tool-card ${idClassName}`} onClick={onClick}>
          {children}
       </div>
    )

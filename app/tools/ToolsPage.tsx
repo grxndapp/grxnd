@@ -10,6 +10,13 @@ export default function ToolsPage() {
 
    const tools = [
       {
+         title: 'Super Teacher',
+         icon: NotebookPen,
+         description: 'Turn topics into concise, easy-to-read notes for faster learning.',
+         buttonLabel: <>Learn Anything <ArrowRight size={18} /></>,
+         href: '/note-maker'
+      },
+      {
          title: 'Note Maker',
          icon: NotebookPen,
          description: 'Turn topics into concise, easy-to-read notes for faster learning.',

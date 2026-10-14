@@ -23,8 +23,8 @@ function FooterLink (
 export default function Footer() {
    const cooperations = [
       {
-         link: "https://qualysservs.com/?utm_source=grxnd",
-         iconUrl: "https://qualysservs.com/assets/img/logo.png",
+         link: "https://qualysservices.co.uk/?utm_source=grxnd",
+         iconUrl: "https://qualysservices.co.uk/logo.png",
          label: "Qualys Services"
       },
       {
@@ -41,11 +41,6 @@ export default function Footer() {
          link: "https://minweb.freevar.com/?utm_source=grxnd",
          iconUrl: "https://minweb.freevar.com/favicon.ico",
          label: "Minweb"
-      },
-      {
-         link: "https://detix-website.vercel.app/?utm_source=grxnd",
-         iconUrl: "https://detix-website.vercel.app/favicon.ico",
-         label: "Detix"
       },
    ]
 

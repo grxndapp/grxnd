@@ -25,6 +25,10 @@
    background-color: #ffcaac;
 }
 
+.tool-card.super-teacher {
+   background-color: #a2cbec;
+}
+
 .tool-card.human-writer {
    background-color: #f7c7ff;
 }
@@ -57,6 +61,7 @@
 .tool-card.note-maker .icon {
    background: #f17126;
 }
+.tool-card.super-teacher .icon { background: #075799 }
 
 .tool-card.human-writer button { background: #740188 }
 .tool-card.essay-grader button { background: #d3105a }

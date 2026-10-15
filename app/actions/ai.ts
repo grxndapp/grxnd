@@ -2,6 +2,7 @@
 import Groq from "groq-sdk";
 import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
 import { AzureKeyCredential } from "@azure/core-auth";
+import { extractJson } from "@/utils/extractJson";
 
 export async function callChatGPT2 (prompt: string): Promise<any | false> {
    try {
@@ -100,33 +101,46 @@ export async function callChatGPT3 (prompt: string) {
 
 export async function callChatGPT (prompt: string) {
    try {
-      const response = await fetch("https://api.atria-asi.ai/v1/chat/completions", {
+      const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
          method: "POST",
          headers: {
             "Authorization": `Bearer ${process.env.AI_API_KEY!}`,
             "Content-Type": "application/json"
          },
          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
             messages: [
                {
                   role: "system",
-                  content: "You are a professional scottish teacher that knows every subject in every level of secondary school study: National 5, Higher and Advanced Higher. You can also teach very well and provide amazing responses for answers"
+                  content: `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher). 
+         
+- Align explanations with the SQA curriculum and use terminology/marking conventions the student would see in an SQA exam (e.g. command words like "describe", "explain", "evaluate" and how many marks they typically carry).
+- Break down answers the way SQA markers expect: clear structure, correct use of command words, and appropriate depth for the qualification level.
+- When helpful, reference relevant SQA subject specifications or past paper style.
+- Be encouraging but honest about gaps in the student's understanding — don't just validate wrong answers.
+- Keep explanations concise unless the student asks for more depth.
+- Return plain text unless the user's app requires structured JSON output.`
                },
                {
                   role: "user",
                   content: prompt
                }
             ],
-            model: "Atria-Dawn-Preview",
-            temperature: 1.1,
+            temperature: 0.88,
             top_p: 0.95,
             stream: false,
-            reasoning_effort: "medium"
+            reasoning: { effort: "low" },
          })
-      })
-      const result = await response.json();
-      console.log(result);
-      return JSON.parse(result.choices[0].message.content);
+      });
+      const response = await openRouterResponse.json();
+      console.log(response);
+      const result = response.choices[0].message.content;
+
+      if (!result) {
+         return false;
+      }
+
+      return extractJson(result);
    } catch (err) {
       console.error(err)
       return false;

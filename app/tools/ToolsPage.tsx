@@ -12,7 +12,7 @@ export default function ToolsPage() {
       {
          title: 'Super Teacher',
          icon: NotebookPen,
-         description: 'Turn topics into concise, easy-to-read notes for faster learning.',
+         description: 'Learn anything from just a single sentence, file or image.',
          buttonLabel: <>Learn Anything <ArrowRight size={18} /></>,
          href: '/note-maker'
       },

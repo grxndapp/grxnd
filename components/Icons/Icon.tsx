@@ -28,6 +28,12 @@ export function CustomIcon ({ size, url, round }: CustomIconProps) {
    </div>
 }
 
+export function CustomRawIcon ({ size, url, round }: CustomIconProps) {
+   return <div className={`icon ${round ? 'round' : ''}`} style={{ width: `${size}px`, height: `${size}px` }}>
+      <img src={url} alt="icon" width={size} height={size} />
+   </div>
+}
+
 export function GoogleIcon({ size }: IconProps) {
    return (
       <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width={size} height={size} viewBox="0 0 48 48">

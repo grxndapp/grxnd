@@ -3,7 +3,7 @@ import "./Footer.css"
 import Spacing from "@/components/Spacing/Spacing";
 import Link from "next/link";
 import { Instagram, Mail, Megaphone } from "lucide-react";
-import { CustomIcon } from "@/components/Icons/Icon";
+import { CustomRawIcon } from "@/components/Icons/Icon";
 import { ReactNode } from "react";
 
 
@@ -85,7 +85,7 @@ export default function Footer() {
                         <FooterLink
                            link={cooperation.link}
                            label={cooperation.label}
-                           icon={<CustomIcon url={cooperation.iconUrl} round size={17} />}
+                           icon={<CustomRawIcon url={cooperation.iconUrl} round size={17} />}
                         />
                      </div>
                   ))}
@@ -105,7 +105,7 @@ export default function Footer() {
                      <FooterLink
                         link="https://mypocketskill.com/listings/66222/"
                         label="MyPocketSkill"
-                        icon={<CustomIcon url="https://static.mypocketskill.com/static/favicon/icon-32.png" round size={17} />}
+                        icon={<CustomRawIcon url="https://static.mypocketskill.com/static/favicon/icon-32.png" round size={17} />}
                      />
                   </div>
                </div>

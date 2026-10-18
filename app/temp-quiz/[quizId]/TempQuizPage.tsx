@@ -111,7 +111,7 @@ export default function TempQuizPage ({ tempQuiz }: TempQuizPageProps) {
       if (questionIndex+1 >= quizQuestions.length) {
          setQuizFormDisplay('end');
          if (!retake) {
-            await addQuizScore('', tempQuiz.subject, tempQuiz.title, ((score/quizQuestions.length)*100), (score*5));
+            await addQuizScore('', titleCase(tempQuiz.subject), tempQuiz.title, ((score/quizQuestions.length)*100), (score*5));
             await deleteTempQuiz(tempQuiz.id);
          }
       } else {
@@ -121,6 +121,11 @@ export default function TempQuizPage ({ tempQuiz }: TempQuizPageProps) {
       }
    }
 
+   const presetSubjectFolders = ['math','english','biology','chemistry','physics','computer science','administration']
+   const subjectIconUrl = presetSubjectFolders.includes(tempQuiz.subject.toLowerCase())
+      ? `/subjects/${tempQuiz.subject.toLowerCase().replaceAll(" ", "-")}.png`
+      : `/subjects/any.png`
+
    return (
       <AppWrapper>
          <div className="box full h-full pd-2">
@@ -129,12 +134,9 @@ export default function TempQuizPage ({ tempQuiz }: TempQuizPageProps) {
                   {(quizFormDisplay == "start") ? <>
                      {/* The start of the quiz */}
                      <div className="quiz-start-box">
-                        <CustomIcon 
-                           url={`/subjects/${tempQuiz.subject.toLowerCase().replaceAll(" ", "-")}.png`}
-                           size={140}
-                        />
+                        <CustomIcon url={subjectIconUrl} size={140} />
                         <div className='text-l bold-700 text-center'>{tempQuiz.title}</div>
-                        <div className='text-s bold-500 text-center'>{'Extra'} {tempQuiz.subject}</div>
+                        <div className='text-s bold-500 text-center'>{titleCase(tempQuiz.subject)}</div>
                         <div className="text-xs grey pd-1 text-center">
                            Once you begin this quiz, you can't go back and you must complete it.
                         </div>

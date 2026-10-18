@@ -1,8 +1,10 @@
 'use client';
+import { formatNumber } from '@/utils/num';
 import './OverallProgress.css';
 
 type OverallProgressProps = {
    percentage: number;
+   score: number;
 };
 
 function getProgressStatus(percentage: number) {
@@ -45,7 +47,7 @@ function getProgressStatus(percentage: number) {
    };
 }
 
-export default function OverallProgress ({ percentage }: OverallProgressProps) {
+export default function OverallProgress ({ percentage, score }: OverallProgressProps) {
    const progress = Math.min(100, Math.max(0, percentage));
    const status = getProgressStatus(progress);
 
@@ -64,8 +66,7 @@ export default function OverallProgress ({ percentage }: OverallProgressProps) {
                of other learners.
             </p>
             <div className="overall-progress-level">
-               <span className="overall-progress-dot" />
-               {status.level}
+               {formatNumber(score, { showShortHand: true, useShorthand: true })} points
             </div>
          </div>
       </div>

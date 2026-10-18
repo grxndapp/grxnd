@@ -15,6 +15,7 @@ export const usersTable = pgTable("users", {
 export const quizzesTable = pgTable("quizzes", {
    id: serial("id").primaryKey(),
    userid: text("userid"),
+   folderId: text("folder_id").notNull().default(""),
    subjectLevel: text("subjectLevel"),
    subject: text("subject"),
    topic: text("topic"),
@@ -25,6 +26,7 @@ export const quizzesTable = pgTable("quizzes", {
 export const savedQuizzesTable = pgTable("saved_quizzes", {
    id: uuid("id").defaultRandom().primaryKey(),
    userid: text("userid").notNull(),
+   folderId: text("folder_id").notNull().default(""),
    subjectLevel: text("subjectLevel").notNull(),
    subject: text("subject").notNull(),
    topic: text("topic").notNull(),
@@ -43,11 +45,19 @@ export const tempQuizzesTable = pgTable("temp_quizzes", {
 export const notesTable = pgTable("notes", {
    id: serial("id").primaryKey(),
    userid: text("userid"),
+   folderCodeName: text("folder_code_name").notNull().default(""),
    noteid: text("noteid"),
    subject: text("subject").default(""),
    noteJson: text("note_json"),
    createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const subjectFoldersTable = pgTable("folders", {
+   folderId: uuid("folder_id").defaultRandom().primaryKey(),
+   userid: text("userid").notNull(),
+   name: text("name").notNull(),
+   createdAt: timestamp("created_at").defaultNow(),
+})
 
 export const scoresTable = pgTable("scores", {
    id: serial("id").primaryKey(),

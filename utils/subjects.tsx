@@ -560,7 +560,7 @@ export const subjectTopics: SubjectTopicsList = {
 }
 
 export const subjectColors: Record<string, string> = {
-	"Math": "#1E90FF",
+	"Math": "#1577f8",
 	"Physics": "#6A0DAD",
 	"Biology": "#228B22",
 	"Chemistry": "#FF4500",
@@ -570,7 +570,7 @@ export const subjectColors: Record<string, string> = {
 }
 
 export const subjectPastelBgColors: Record<string, string> = {
-	"Math": "#98c8fc",
+	"Math": "#b4d8ff",
 	"Physics": "#e8d5f5",
 	"Biology": "#dcf7dc",
 	"Chemistry": "#fadfd7",
@@ -597,10 +597,15 @@ export function fullSubjectBreakDown (subjectInfo: string) {
 			subjectLevel: "Higher",
 			subject: subjectInfo.split("Higher ")[1]
 		}
-	} else {
+	} else if (subjectInfo.startsWith("National 5")) {
 		return {
 			subjectLevel: "National 5",
 			subject: subjectInfo.split("National 5 ")[1]
+		};
+	} else {
+		return {
+			subjectLevel: "",
+			subject: subjectInfo
 		};
 	}
 }
@@ -613,4 +618,34 @@ export const subjectIcon: Record<string, any> = {
 	"English": <NotebookPen size={20} />,
 	"Computer Science": <Monitor size={20} />,
 	"Administration": <Lock size={20} />,
+}
+
+export function customSubjectToPastelColor (str: string): string {
+	let hash = 0;
+
+	for (let i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		hash |= 0;
+	}
+
+	const hue = (hash >>> 0) % 360;
+	const saturation = 65 + ((hash >>> 8) % 16); // 65–80%
+	const lightness = 82 + ((hash >>> 16) % 9);  // 82–90%
+
+	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+export function customSubjectToBoldColor (str: string): string {
+	let hash = 0;
+
+	for (let i = 0; i < str.length; i++) {
+		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		hash |= 0;
+	}
+
+	const hue = (hash >>> 0) % 360;
+	const saturation = 85 + ((hash >>> 8) % 16); // 85–100%
+	const lightness = 35 + ((hash >>> 16) % 16); // 35–50%
+
+	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }

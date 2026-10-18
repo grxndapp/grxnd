@@ -59,7 +59,7 @@ function CreateQuizModal ({ note }: { note: Note }) {
          return;
       }
       console.log(data.quiz);
-      const createdTempQuizId = await createTempQuiz(JSON.parse(note.noteJson).title, note.subject, JSON.stringify(data.quiz));
+      const createdTempQuizId = await createTempQuiz(JSON.parse(note.noteJson).title, note.folderCodeName || note.subject, JSON.stringify(data.quiz));
       if (createdTempQuizId) {
          router.push(`/temp-quiz/${createdTempQuizId}`);
          close();
@@ -75,7 +75,7 @@ function CreateQuizModal ({ note }: { note: Note }) {
          <div className="text-ml bold-600 full accent-color">Create Quiz from Note</div>
          <div className="box full pd-15 dfb column gap-5">
             <div className="text-s bold-500 full">{JSON.parse(note.noteJson).title}</div>
-            <div className="text-xs full">{titleCase(note.subject)}</div>
+            <div className="text-xs full">{titleCase(note.folderCodeName ? note.folderCodeName : note.subject)}</div>
          </div>
          <div className="box full pd-2 dfb column gap-5">
             <div className="text-s full bold-500">Number of Questions</div>

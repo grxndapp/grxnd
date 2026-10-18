@@ -68,9 +68,16 @@ type TempQuiz = {
 
 type Note = {
    id: number;
+   folderCodeName: string;
    userid: string;
    noteid: string;
    subject: string;
    noteJson: string;
    createdAt: Date;
+}
+
+type SubjectFolder = {
+   folderId: string;
+   userid: string;
+   name: string;
 }

@@ -7,16 +7,29 @@ import { uuid } from "@/utils/uuid"
 export async function addNoteToBackpack (noteInfo: NoteMaker, subject: string) {
    const result = await dalRequireAuth((user) => 
       dalDbOperation(async () => {
-         const [newQuiz] = await db.insert(notesTable).values({
+         const res = await db.insert(notesTable).values({
             userid: user.userid, subject,
             noteid: uuid(),
             noteJson: JSON.stringify(noteInfo)
-         })
-         .returning({ id: notesTable.userid });
-   
-         return (newQuiz.id === user.userid);
+         });
+         return res.rowCount === 1;
       })
    );
 
-   return result.success;
+   return result.success ? result.data : false;
+}
+
+export async function addNoteToFolder (noteInfo: NoteMaker, folderCodeName: string) {
+   const result = await dalRequireAuth((user) => 
+      dalDbOperation(async () => {
+         const res = await db.insert(notesTable).values({
+            userid: user.userid, subject: '',
+            noteid: uuid(), folderCodeName,
+            noteJson: JSON.stringify(noteInfo)
+         });
+         return res.rowCount === 1;
+      })
+   );
+
+   return result.success ? result.data : false;
 }

@@ -1,15 +1,16 @@
 'use client'
-import { Download, Lightbulb } from "lucide-react";
+import { Download, GraduationCap, Lightbulb } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { fullSubjectBreakDown, retrieveSubjectTopic, subjectIcon, subjectPastelBgColors, subjectTopics } from "@/utils/subjects";
+import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectIcon, subjectPastelBgColors, subjectTopics } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NormalCardStyles, SubjectIconBubble } from "@/styles-extra/styles";
+import { NormalCardStyles, SubjectIconBubble, SubjectProgressCardStyles } from "@/styles-extra/styles";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import OverallProgress from "@/components/OverallProgress/OverallProgress";
+import { pluralSuffixer } from "@/lib/str";
 
 type HomePageProps = {
    quizzes: QuizT[];
@@ -18,14 +19,24 @@ type HomePageProps = {
    overallPercentage: number;
 }
 
-export default function HomePage ({ quizzes, overallPercentage, welcomeString }: HomePageProps) {
+export default function HomePage ({ quizzes, overallPercentage, score, welcomeString }: HomePageProps) {
    const router = useRouter();
    const { data: session } = useSession();
    const [iPhoneOrIpadUser, setIPhoneOrIpadUser] = useState(false);
    
    const subjectProgressQuizzes = quizzes.reduce((agg: any, quiz) => {
       if (quiz.topic == '') return agg;
-      if (quiz.subjectLevel == 'Extra' || quiz.subjectLevel == '') return agg;
+      if (!quiz.subjectLevel) {
+         const subjectKey = quiz.subject;
+         if (!agg[subjectKey]) {
+            agg[subjectKey] = [ { [quiz.topic]: quiz.score } ];
+            return agg;
+         }
+         agg[subjectKey].push({ [quiz.topic]: quiz.score });
+         return agg;
+      }
+
+
       const subjectKey = `${quiz.subjectLevel} ${quiz.subject}`;
 
       if (!agg[subjectKey]) {
@@ -52,6 +63,8 @@ export default function HomePage ({ quizzes, overallPercentage, welcomeString }:
       return agg;
    }, {})
 
+   console.log(subjectProgressQuizzes)
+
    function isIphoneOrIpad(): boolean {
       const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
       const platform = navigator.platform;
@@ -75,7 +88,7 @@ export default function HomePage ({ quizzes, overallPercentage, welcomeString }:
             </div>
 
             <div className="box full">
-               <OverallProgress percentage={overallPercentage} />
+               <OverallProgress percentage={overallPercentage} score={score} />
             </div>
 
             {(quizzes.length < 1) ? (
@@ -93,33 +106,47 @@ export default function HomePage ({ quizzes, overallPercentage, welcomeString }:
                <div className="text-xxl full pd-15 bold-600">Your Progress</div>
                <div className="box full dfb wrap" style={{ gap: "20px" }}>
                   {Object.keys(subjectProgressQuizzes).sort((a,b) => a.localeCompare(b )).map((subject, index) => {
+                     const subjectFolderName = fullSubjectBreakDown(subject).subject.toLowerCase().replaceAll(" ","-");
+                     const subjectLevel = fullSubjectBreakDown(subject).subjectLevel;
+                     const subjectLevelUrlParam = subjectLevel ? `?level=${subjectLevel}` : '';
+                     const isCustomSubject = (subjectLevel == '');
+                     
+                     // Progress
+                     const subjectProgressBg = isCustomSubject ? customSubjectToPastelColor(subject) : subjectPastelBgColors[fullSubjectBreakDown(subject).subject];
+                     const subjectProgressBoldBg = isCustomSubject ? customSubjectToBoldColor(subject) : subjectColors[fullSubjectBreakDown(subject).subject];
+                     const totalTopics = isCustomSubject
+                        ? subjectProgressQuizzes[subject].length
+                        : retrieveSubjectTopic(fullSubjectBreakDown(subject).subjectLevel, fullSubjectBreakDown(subject).subject)?.length;
+                     
+                     const subjectProgressRaw = isCustomSubject
+                        ? subjectProgressQuizzes[subject].map((s: any) => s[Object.keys(s)[0]]).reduce((agg: number, s: any) => agg + s, 0) / subjectProgressQuizzes[subject].length
+                        : (subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length / totalTopics!) * 100
+
+                     const subjectProgressRounded = subjectProgressRaw.toFixed(2);
+
                      return (<Card
                         key={index} 
-                        styles={{
-                           width: "100%", maxWidth: "370px",
-                           borderRadius: "25px", padding: "25px", cursor: "pointer",
-                           background: `${subjectPastelBgColors[fullSubjectBreakDown(subject).subject]}`
-                        }}
+                        styles={{ ...SubjectProgressCardStyles, background: subjectProgressBg }}
                         className="box dfb column gap-10"
-                        onClick={() => router.push(
-                           `/quiz-stat/${fullSubjectBreakDown(subject).subject.toLowerCase().replaceAll(" ","-")}?level=${fullSubjectBreakDown(subject).subjectLevel}
-                        `)}
+                        onClick={() => router.push(`/quiz-stat/${subjectFolderName}${subjectLevelUrlParam}`)}
                      >
-                        <div style={SubjectIconBubble}>{subjectIcon[fullSubjectBreakDown(subject).subject]}</div>
+                        <div style={SubjectIconBubble}>
+                           {isCustomSubject
+                              ? <GraduationCap size={20} />
+                              : subjectIcon[fullSubjectBreakDown(subject).subject]
+                           }
+                        </div>
                         <div className="box full dfb column gap-5">
                            <div className="text-s bold-700 full mb-05">{subject}</div>
-                           {(["Advanced Higher","Higher","National 5"].some(s => subject.startsWith(s))) && (<div className="text-xs full grey-5 bold-500">
-                              {retrieveSubjectTopic(fullSubjectBreakDown(subject).subjectLevel, fullSubjectBreakDown(subject).subject)?.length}
-                              {" "}
-                              topic(s)
-                           </div>)}
+                           <div className="text-xs full grey-5 bold-500">
+                              {totalTopics} {pluralSuffixer('topic', totalTopics!, 's')} {isCustomSubject && 'completed'}
+                           </div>
                            <div className="text-xxs full grey-5 mt-05">
-                              {subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length}% complete
+                              {subjectProgressRounded}%
+                              {isCustomSubject ? ' average Score' : ' complete'}
                            </div>
                            <div className="box pd-05 mt-05">
-                              <ProgressBar 
-                                 percentage={subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length}
-                              />
+                              <ProgressBar percentage={subjectProgressRaw} color={subjectProgressBoldBg} />
                            </div>
                         </div>
                      </Card>)

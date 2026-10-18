@@ -44,7 +44,7 @@ export async function aiFileUpload (prompt: string, file: File) {
          })
       });
       const response = await openRouterResponse.json();
-      console.log(response);
+      console.log(response.choices[0].message.content);
       return extractJson(response.choices[0].message.content);
    } catch (err) {
       console.error(err)
@@ -85,7 +85,7 @@ export async function callChatGPT (prompt: string) {
          })
       });
       const response = await openRouterResponse.json();
-      console.log(response);
+      console.log(response.choices[0].message.content);
       const result = response.choices[0].message.content;
 
       if (!result) {

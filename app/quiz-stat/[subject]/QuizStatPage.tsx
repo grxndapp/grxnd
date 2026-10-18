@@ -1,6 +1,6 @@
 'use client'
 import { titleCase } from "@/lib/str"
-import { subjectColors } from "@/utils/subjects"
+import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects"
 import { formatMilliseconds } from "@/utils/date"
 import { NormalCardStyles } from "@/styles-extra/styles"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
@@ -31,16 +31,18 @@ export default function QuizStatPage ({ quizzes, subject, subjectLevel }: { quiz
       return agg;
    }, 0) / (quizzes.filter(quiz => quiz.subject.toLowerCase() === subject).length);
 
+   const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject))
+
    return (
       <AppWrapper>
          <div className="box w-full h-full pd-2">
-            <div className="text-xl bold-700 full mb-1 pd-1" style={{ color: subjectColors[titleCase(subject)] }}>
+            <div className="text-xl bold-700 full mb-1 pd-1" style={{ color: subjectColor }}>
                {subjectLevel} {titleCase(subject)} Quizzes
             </div>
             
             <div className="box full dfb wrap gap-20">
                <div className="box full mw-500 dfb column gap-5 align-center justify-center">
-                  <div className="text-xxb fit bold-700" style={{ color:subjectColors[titleCase(subject)] }}>
+                  <div className="text-xxb fit bold-700" style={{ color: subjectColor }}>
                      {Math.round(averagePercentage)}%
                   </div>
                   <div className="text-xs fit bold-600 text-center">Average {subjectLevel} {titleCase(subject)} Score</div>
@@ -49,7 +51,7 @@ export default function QuizStatPage ({ quizzes, subject, subjectLevel }: { quiz
 
                <div className="box full mw-500 dfb column gap-10">
                   <QuizBarChart
-                     color={subjectColors[titleCase(subject)]}
+                     color={subjectColor}
                      percentages={newQuizArray.map((q: any) => q.score).toReversed().slice(0,7).toReversed()}
                   />
                </div>
@@ -66,7 +68,7 @@ export default function QuizStatPage ({ quizzes, subject, subjectLevel }: { quiz
                            <div className="text-xxxs pd-05 grey-5 full">{quizInfo.topic}</div>
                            <div className="text-xxxs grey-5 full">Quiz taken on {formatMilliseconds(new Date(quizInfo.createdAt).getTime())}</div>
                         </div>
-                        <div className="text-sm bold-800 fit" style={{color:subjectColors[titleCase(subject)]}}>{quizInfo.score}%</div>
+                        <div className="text-sm bold-800 fit" style={{ color: subjectColor }}>{quizInfo.score}%</div>
                      </div>
                   </Card>
                ))}

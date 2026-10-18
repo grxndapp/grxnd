@@ -8,6 +8,5 @@
 .progress-bar > .progress {
    height: 5px;
    border-radius: 20px;
-   background-color: var(--accent-color);
    transition: all 0.2s;
 }

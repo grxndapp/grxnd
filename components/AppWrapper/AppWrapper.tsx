@@ -1,7 +1,7 @@
 "use client"
 import "./AppWrapper.css"
 import "@/styles/app.css"
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, RefObject, useEffect, useState } from 'react'
 import { Backpack, ChevronRight, House, TextAlignStart, UserRoundCog, Wrench } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -9,12 +9,12 @@ import { CustomIcon } from '../Icons/Icon'
 import { useModal } from "../Modal/ModalContext"
 import { getCurrentUserScore } from "@/app/actions/user"
 import userDefaultImage from "@/public/user-def.png"
+import { formatNumber } from "@/utils/num"
 
 
-export default function AppWrapper ({ children, noNavbar }: { children: ReactNode, noNavbar?: boolean }) {
-   const { data: session } = useSession();
-   const pathName = usePathname()
+export default function AppWrapper ({ children, noNavbar, contentRef }: { children: ReactNode, noNavbar?: boolean, contentRef?: RefObject<any | null> }) {
    const router = useRouter();
+   const { data: session } = useSession();
    const { showModal, close } = useModal();
    const [score, setScore] = useState(0);
    
@@ -28,7 +28,6 @@ export default function AppWrapper ({ children, noNavbar }: { children: ReactNod
    }, [])
    
    function handleNavbarModal () {
-
       showModal({
          content: (
             <div className="box full pd-1 pdx-1">
@@ -40,7 +39,9 @@ export default function AppWrapper ({ children, noNavbar }: { children: ReactNod
 
                   <div className="box full dfb column gap-5 pd-15">
                      <div className="text-xxs grey-5 full">Your Points</div>
-                     <div className="text-xxb fit bold-600 mb-1">{score}</div>
+                     <div className="text-xxb full h-full bold-600 mb-1">
+                        {formatNumber(score, { showShortHand: true, useShorthand: true })}
+                     </div>
                      <div 
                         className="text-xxs fit visible-link accent-color dfb align-center"
                         onClick={() => { router.push("/leaderboard"); close(); }}
@@ -81,7 +82,7 @@ export default function AppWrapper ({ children, noNavbar }: { children: ReactNod
                </div>
             </div>
          </div>
-         <div className="content">
+         <div className="content" ref={contentRef}>
             <div className="content-wrapper">
                {children}
             </div>

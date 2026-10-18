@@ -5,7 +5,7 @@
    flex-direction: column;
    overflow: hidden;
    user-select: none;
-   background: linear-gradient(45deg, #ffffff, var(--accent-color-10));
+   background: linear-gradient(to bottom, #eff0ff, var(--accent-color-10));
 }
 
 .app .content {
@@ -83,6 +83,6 @@
    width: 100%;
    background-color: white;
    border-radius: 25px;
-   padding: 16px 20px;
+   padding: 20px;
    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 }

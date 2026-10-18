@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
 import { db } from "@/db";
 import { quizzesTable } from "@/db/schemas";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { titleCase } from "@/lib/str";
 import QuizStatPage from "./QuizStatPage";
 import LoadingPage from "./loading";
@@ -26,9 +26,17 @@ export default async function NoteBook ({ params, searchParams }: QuizStatProps)
             .select()
             .from(quizzesTable)
             .where(and(
-               eq(quizzesTable.userid, user.userid!), 
-               eq(quizzesTable.subject, `${titleCase(subject.replaceAll("-"," "))}`),
-               eq(quizzesTable.subjectLevel, level),
+               eq(quizzesTable.userid, user.userid!),
+               or(
+                  and(
+                     eq(quizzesTable.subject, `${titleCase(subject.replaceAll("-"," "))}`),
+                     eq(quizzesTable.subjectLevel, level),
+                  ),
+                  and(
+                     eq(quizzesTable.subject, `${titleCase(subject.replaceAll("-"," "))}`),
+                     eq(quizzesTable.subjectLevel, ''),
+                  )
+               )
             ))
       })
    )

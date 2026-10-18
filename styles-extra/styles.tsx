@@ -62,3 +62,8 @@ export const QuizQuestionReviewCardStyles: React.CSSProperties = {
    width: "100%", padding: "20px", border: "1px solid #dfdfdf",
    borderRadius: "20px", display: "flex", flexDirection: "column",
 }
+
+export const SubjectProgressCardStyles: React.CSSProperties = {
+   width: "100%", maxWidth: "370px", borderRadius: "25px",
+   padding: "25px", cursor: "pointer",
+}

@@ -38,7 +38,12 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
                animate={{ opacity: 1 }}
                transition={{ duration: 0.1, ease: [.5,.91,.66,.95] }}
             >
-               <div className="options-modal-box">
+               <motion.div 
+                  className="options-modal-box"
+                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+               >
                   <div className="close-ms">
                      <div className="close-btn" onClick={() => setShowModalSelector(false)}>
                         <X size={18} />
@@ -101,7 +106,7 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
                      >Choose <CircleCheck size={17} /></button>
                   </div>
 
-               </div>
+               </motion.div>
             </motion.div>}
          </AnimatePresence>
 

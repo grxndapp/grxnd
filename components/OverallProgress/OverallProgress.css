@@ -1,0 +1,88 @@
+.overall-progress {
+   width: 100%;
+   min-height: 260px;
+   padding: 45px 24px;
+   position: relative;
+   overflow: hidden;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: none;
+   border-radius: 0;
+   box-shadow: none;
+   background: transparent;
+   isolation: isolate;
+}
+
+.overall-progress::before {
+   content: "";
+   position: absolute;
+   inset: -30%;
+   z-index: -1;
+   pointer-events: none;
+   background: radial-gradient(ellipse 45% 45% at 50% 50%,
+      rgba(78, 157, 255, 0.3) 0%,
+      rgba(135, 190, 255, 0.18) 35%,
+      rgba(190, 220, 255, 0.08) 65%,
+      transparent 100%
+   );
+}
+
+.overall-progress-content {
+   position: relative;
+   z-index: 1;
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 8px;
+}
+
+.overall-progress-percentage {
+   font-size: clamp(48px, 6vw, 68px);
+   font-weight: 600;
+   letter-spacing: -3px;
+   line-height: 1.1;
+   color: #11211f;
+}
+
+.overall-progress-message {
+   font-size: 16px;
+   font-weight: 800;
+   line-height: 1.4;
+   color: var(--progress-color);
+}
+
+.overall-progress-description {
+   font-size: 13px;
+   font-weight: 400;
+   color: #61706b;
+   line-height: 1.6;
+   max-width: 260px;
+   margin: 0;
+}
+
+.overall-progress-description strong {
+   font-weight: 700;
+   color: #11211f;
+}
+
+.overall-progress-level {
+   display: inline-flex;
+   align-items: center;
+   gap: 7px;
+   margin-top: 10px;
+   padding: 8px 14px;
+   border-radius: 100px;
+   background: rgba(17, 33, 31, 0.045);
+   font-size: 11px;
+   font-weight: 700;
+   color: var(--progress-color);
+}
+
+.overall-progress-dot {
+   width: 7px;
+   height: 7px;
+   border-radius: 50%;
+   background: var(--progress-color);
+}

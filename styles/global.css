@@ -1,7 +1,11 @@
 :root {
 	--background: #ffffff;
 	--foreground: #0a0a0a;
-  --accent-color: #1121ff;  
+  --accent-color: #1121ff;
+  --accent-color-70: rgba(17, 33, 255, 0.70);
+  --accent-color-50: rgba(17, 33, 255, 0.50);
+  --accent-color-30: rgba(17, 33, 255, 0.30);
+  --accent-color-10: rgba(17, 33, 255, 0.10);
 }
 
 html,
@@ -15,7 +19,7 @@ body {
   max-height: 100vh;
   color: var(--foreground);
   background: var(--background);
-  font-family: "Inter", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  /* font-family: "Inter", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -26,7 +30,7 @@ body {
   padding: 0;
   margin: 0;
   transition: all 0.2s;
-  font-family: "Inter", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  /* font-family: "Inter", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; */
 }
 
 a {
@@ -106,6 +110,7 @@ a {
 .box.dfb.justify-end, [class*="text-"].dfb.justify-end { justify-content: end; }
 .box.dfb.wrap, [class*="text-"].dfb.wrap { flex-wrap: wrap; }
 
+.box.gap-5, [class*="text-"].gap-5 { gap: 5px; }
 .box.gap-10, [class*="text-"].gap-10 { gap: 10px; }
 .box.gap-15, [class*="text-"].gap-15 { gap: 15px; }
 .box.gap-20, [class*="text-"].gap-20 { gap: 20px; }
@@ -204,6 +209,20 @@ textarea.pdx-9, input.pdx-9, button.pdx-9 { padding-left: 90px; padding-right: 9
 .box.mb-8, [class*="text-"].mb-8 { margin-bottom: 80px;  }
 .box.mb-9, [class*="text-"].mb-9 { margin-bottom: 90px;  }
 
+
+
+[class*="text-"].line-height-10 { line-height: 100%; }
+[class*="text-"].line-height-11 { line-height: 110%; }
+[class*="text-"].line-height-12 { line-height: 120%; }
+[class*="text-"].line-height-13 { line-height: 130%; }
+[class*="text-"].line-height-14 { line-height: 140%; }
+[class*="text-"].line-height-15 { line-height: 150%; }
+[class*="text-"].line-height-16 { line-height: 160%; }
+[class*="text-"].line-height-17 { line-height: 170%; }
+[class*="text-"].line-height-18 { line-height: 180%; }
+[class*="text-"].line-height-19 { line-height: 190%; }
+[class*="text-"].line-height-20 { line-height: 200%; }
+
 [class*="text-"].italic { font-style: italic; }
 
 [class*="text-"].grey-1 { color: #eeeeee; }
@@ -211,6 +230,32 @@ textarea.pdx-9, input.pdx-9, button.pdx-9 { padding-left: 90px; padding-right: 9
 [class*="text-"].grey-3 { color: #b4b4b4; }
 [class*="text-"].grey-4 { color: #838383; }
 [class*="text-"].grey-5 { color: #464646; }
+
+[class*="text-"].color-white { color: #fff; }
+
+.htv.mw-200, .box.mw-200, [class*="text-"].mw-200 { max-width: 200px; }
+.htv.mw-300, .box.mw-300, [class*="text-"].mw-300 { max-width: 300px; }
+.htv.mw-400, .box.mw-400, [class*="text-"].mw-400 { max-width: 400px; }
+.htv.mw-500, .box.mw-500, [class*="text-"].mw-500 { max-width: 500px; }
+.htv.mw-600, .box.mw-600, [class*="text-"].mw-600 { max-width: 600px; }
+.htv.mw-700, .box.mw-700, [class*="text-"].mw-700 { max-width: 700px; }
+.htv.mw-800, .box.mw-800, [class*="text-"].mw-800 { max-width: 800px; }
+.htv.mw-900, .box.mw-900, [class*="text-"].mw-900 { max-width: 900px; }
+.htv.mw-1000, .box.mw-1000, [class*="text-"].mw-1000 { max-width: 1000px; }
+.htv.mw-1100, .box.mw-1100, [class*="text-"].mw-1100 { max-width: 1100px; }
+.htv.mw-1200, .box.mw-1200, [class*="text-"].mw-1200 { max-width: 1200px; }
+
+input.mw-200, button.mw-200, textarea.mw-200 { max-width: 200px; }
+input.mw-300, button.mw-300, textarea.mw-300 { max-width: 300px; }
+input.mw-400, button.mw-400, textarea.mw-400 { max-width: 400px; }
+input.mw-500, button.mw-500, textarea.mw-500 { max-width: 500px; }
+input.mw-600, button.mw-600, textarea.mw-600 { max-width: 600px; }
+input.mw-700, button.mw-700, textarea.mw-700 { max-width: 700px; }
+input.mw-800, button.mw-800, textarea.mw-800 { max-width: 800px; }
+input.mw-900, button.mw-900, textarea.mw-900 { max-width: 900px; }
+input.mw-1000, button.mw-1000, textarea.mw-1000 { max-width: 1000px; }
+input.mw-1100, button.mw-1100, textarea.mw-1100 { max-width: 1100px; }
+input.mw-1200, button.mw-1200, textarea.mw-1200 { max-width: 1200px; }
 
 .box.cursor-pointer, [class*="text-"].cursor-pointer { cursor: pointer; }
 
@@ -222,6 +267,37 @@ textarea.pdx-9, input.pdx-9, button.pdx-9 { padding-left: 90px; padding-right: 9
 .box.h-fit, [class*="text-"].h-fit { height: fit-content; }
 .box.h-full, [class*="text-"].h-full { height: 100%; }
 .box.full { width: 100%; }
+
+.box.radius-5, button.radius-5, textarea.radius-5, input.radius-5 { border-radius: 5px; }
+.box.radius-6, button.radius-6, textarea.radius-6, input.radius-6 { border-radius: 6px; }
+.box.radius-7, button.radius-7, textarea.radius-7, input.radius-7 { border-radius: 7px; }
+.box.radius-8, button.radius-8, textarea.radius-8, input.radius-8 { border-radius: 8px; }
+.box.radius-9, button.radius-9, textarea.radius-9, input.radius-9 { border-radius: 9px; }
+.box.radius-10, button.radius-10, textarea.radius-10, input.radius-10 { border-radius: 10px; }
+.box.radius-12, button.radius-12, textarea.radius-12, input.radius-12 { border-radius: 12px; }
+.box.radius-14, button.radius-14, textarea.radius-14, input.radius-14 { border-radius: 14px; }
+.box.radius-15, button.radius-15, textarea.radius-15, input.radius-15 { border-radius: 15px; }
+.box.radius-16, button.radius-16, textarea.radius-16, input.radius-16 { border-radius: 16px; }
+.box.radius-18, button.radius-18, textarea.radius-18, input.radius-18 { border-radius: 18px; }
+.box.radius-20, button.radius-20, textarea.radius-20, input.radius-20 { border-radius: 20px; }
+.box.radius-25, button.radius-25, textarea.radius-25, input.radius-25 { border-radius: 25px; }
+.box.radius-30, button.radius-30, textarea.radius-30, input.radius-30 { border-radius: 30px; }
+.box.radius-35, button.radius-35, textarea.radius-35, input.radius-35 { border-radius: 35px; }
+.box.radius-40, button.radius-40, textarea.radius-40, input.radius-40 { border-radius: 40px; }
+.box.radius-100p, button.radius-100p, textarea.radius-100p, input.radius-100p { border-radius: 100%; }
+
+button.bg-black, .box.bg-black { background-color: black; }
+button.bg-grey-1, .box.bg-grey-1 { background-color: #eeeeee; }
+button.bg-grey-2, .box.bg-grey-2 { background-color: #d1d1d1; }
+button.bg-grey-3, .box.bg-grey-3 { background-color: #b4b4b4; }
+button.bg-grey-4, .box.bg-grey-4 { background-color: #838383; }
+button.bg-grey-5, .box.bg-grey-5 { background-color: #464646; }
+button.bg-white, .box.bg-white { background-color: white; }
+button.bg-accent-color, .box.bg-accent-color { background-color: var(--accent-color); }
+button.bg-accent-color-70, .box.bg-accent-color-70 { background-color: var(--accent-color-70); }
+button.bg-accent-color-50, .box.bg-accent-color-50 { background-color: var(--accent-color-50); }
+button.bg-accent-color-30, .box.bg-accent-color-30 { background-color: var(--accent-color-30); }
+button.bg-accent-color-10, .box.bg-accent-color-10 { background-color: var(--accent-color-10); }
 
 .list {
   display: flex;
@@ -281,7 +357,7 @@ textarea.pdx-9, input.pdx-9, button.pdx-9 { padding-left: 90px; padding-right: 9
 
 /* font family settings for input, button and textarea */
 input, button, textarea {
-  font-family: "Inter", ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: var(--font-family);
 }
 
 /* button styles */
@@ -359,7 +435,7 @@ input {
   width: fit-content;
   padding: 8px 12px;
   border: 1px solid #ececec;
-  border-radius: 10px;
+  border-radius: 14px;
   outline: none;
 }
 input:focus { border: 1px solid #3a48ff; }

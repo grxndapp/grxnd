@@ -12,6 +12,8 @@ export default async function Admin () {
          const usersGraph = await db
             .select({
                name: usersTable.name,
+               email: usersTable.email,
+               userid: usersTable.userid,
                oauth_provider: usersTable.oauth_provider,
                is_subscribed: usersTable.is_subscribed,
                createdAt: usersTable.createdAt,

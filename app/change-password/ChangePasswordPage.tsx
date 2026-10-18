@@ -49,26 +49,28 @@ export default function ChangePasswordPage() {
             <div className="text-xxs bold-600 error text-center full pd-1 mb-1">{error}</div>
          </>)}
 
-         <div className="box full pd-05">
-            <input 
-               type="password" 
-               className="xxs full pd-12 pdx-2" 
-               placeholder="New Password" 
-               value={password} onChange={(e) => setPassword(e.target.value)}
-            />
-         </div>
-         <div className="box full pd-05">
-            <input 
-               type="password" 
-               className="xxs full pd-12 pdx-2" 
-               placeholder="New Password (again)" 
-               value={password2} onChange={(e) => setPassword2(e.target.value)}
-            />
-         </div>
-         <div className="box full pd-05">
-            <AwaitButton className="xxs pd-12 full" onClick={changePasswordBtn}>
-               Change <KeyRound size={17} />
-            </AwaitButton>
+         <div className="box full dfb column align-center">
+            <div className="box full mw-600 pd-05">
+               <input 
+                  type="password" 
+                  className="xxs full pd-12 pdx-2" 
+                  placeholder="New Password" 
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+               />
+            </div>
+            <div className="box full mw-600 pd-05">
+               <input 
+                  type="password" 
+                  className="xxs full pd-12 pdx-2" 
+                  placeholder="New Password (again)" 
+                  value={password2} onChange={(e) => setPassword2(e.target.value)}
+               />
+            </div>
+            <div className="box full mw-600 pd-05">
+               <AwaitButton className="xxs pd-12 full" onClick={changePasswordBtn}>
+                  Change <KeyRound size={17} />
+               </AwaitButton>
+            </div>
          </div>
       </AppWrapper>
    )

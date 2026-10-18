@@ -35,12 +35,12 @@ export default function DeleteAccountPage () {
          </div>
          <Spacing size={1} />
 
-         <div className="box full dfb column gap-10">
-            <button className="xxs full pd-11 tiny-shadow" onClick={() => router.push('/home')}>
+         <div className="box full dfb column gap-10 align-center">
+            <button className="xxs full mw-500 pd-11 tiny-shadow" onClick={() => router.push('/home')}>
                <CircleX size={17} /> Cancel
             </button>
 
-            <AwaitButton className="xxs full delete pd-11 tiny-shadow" onClick={deleteUserAccountBtn}>
+            <AwaitButton className="xxs full mw-500 delete pd-11 tiny-shadow" onClick={deleteUserAccountBtn}>
                <Trash2 size={17} /> Delete Account
             </AwaitButton>
          </div>

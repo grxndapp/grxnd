@@ -19,53 +19,62 @@ export default function SignInForm() {
    const [authStep, setAuthStep] = useState<'start' | 'reg' | 'login'>('start');
    const [error, setError] = useState<string | undefined>(undefined)
 
-   const continueWithEmailBtn = async () => {
+   const continueWithEmailBtn = async (callback: Function) => {
       setError(undefined);
       if (email == "") {
          setError("Please enter an email");
+         callback();
          return;
       }
-      const existingUserStatus = await checkForNoExistingUser(email);
-      if (existingUserStatus === "google-auth") {
-         setError("This email is connected to a Google Account on Grxnd");
-      } else if (existingUserStatus === false) {
-         setAuthStep("login");
-      } else {
+      const noUserFoundStatus = await checkForNoExistingUser(email);
+      if (noUserFoundStatus === "google-auth") {
+         setError("This account is connected to a Google Account on Grxnd");
+      } else if (noUserFoundStatus) {
          setAuthStep("reg");
+      } else {
+         setAuthStep("login");
       }
+      callback();
    }
 
-   const createAccountBtn = async () => {
+   const createAccountBtn = async (callback: Function) => {
       setError(undefined);
       if (password == "") {
          setError("Please enter a password");
+         callback();
          return;
       }
       if (password.length < 8) {
          setError("Password must contain at least 8 characters");
+         callback();
          return;
       }
       if (password2 !== password) {
          setError("Passwords do not match");
+         callback();
          return;
       }
+
       const createAcc = await createUserAccount({ name, email, password });
       if (createAcc) {
          const response = await signIn("credentials", { email, password, redirect: false });
          if (response?.error) {
             setError("Incorrect Email or Password");
+            callback();
          } else {
             router.push('/home');
          }
       } else {
          setError("Failed to create your account");
+         callback();
       }
    }
 
-   const signInBtn = async () => {
+   const signInBtn = async (callback: Function) => {
       setError(undefined);
       if (password == "") {
          setError("Please enter a password");
+         callback();
          return;
       }
       const response = await signIn("credentials", { email, password, redirect: false });
@@ -74,6 +83,7 @@ export default function SignInForm() {
       } else {
          router.push('/home');
       }
+      callback();
    }
 
    return (

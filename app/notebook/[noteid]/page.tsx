@@ -1,4 +1,4 @@
-import { dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
+import { dalDbOperation, dalRequireSubscribedAuth, dalRequireSubscriber } from "@/dal/helpers";
 import { db } from "@/db";
 import { notesTable } from "@/db/schemas";
 import { and, eq } from "drizzle-orm";
@@ -12,6 +12,7 @@ type NoteBookProps = {
 }
 
 export default async function NoteBook ({ params }: NoteBookProps) {
+   await dalRequireSubscriber();
    const { noteid } = await params;
 
    const notes = await dalRequireSubscribedAuth(user =>

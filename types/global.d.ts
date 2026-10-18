@@ -48,10 +48,29 @@ type QuizT = {
 }
 type QuizT = quizzesTable.$in
 
+type SavedQuiz = {
+   id: string;
+   userid: string;
+   subjectLevel: string;
+   subject: string;
+   topic: string;
+   score: number;
+   quizJson: string;
+   createdAt: Date;
+}
+
+type TempQuiz = {
+   id: string;
+   title: string;
+   subject: string;
+   quizJson: string;
+}
+
 type Note = {
    id: number;
    userid: string;
    noteid: string;
+   subject: string;
    noteJson: string;
    createdAt: Date;
 }

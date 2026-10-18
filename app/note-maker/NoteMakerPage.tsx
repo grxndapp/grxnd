@@ -13,7 +13,7 @@ export default function NoteMakerPage () {
 
    return (
       <AppWrapper>
-         <div className="box full h-full">
+         <div className="box full h-full pd-3">
             <ToolHeading title="AI Note Maker" description="" idClassName="note-maker" />
 
             <SwitchSlide 

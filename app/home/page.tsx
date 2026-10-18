@@ -27,12 +27,14 @@ export default async function Home () {
             .where(eq(scoresTable.userid, user.userid!))
             .limit(1);
          
-         return { quizzes, score: scores[0].score }
+         const allUsersScores = await db.select({ score: scoresTable.score }).from(scoresTable);
+         
+         return { quizzes, score: scores[0].score, allUsersScores: allUsersScores.map(s => s.score) }
       })
    );
 
    if (dataReq.success) {
-      const { quizzes, score } = dataReq.data;
+      const { quizzes, score, allUsersScores } = dataReq.data;
       const welcomeQuestions = [
          "Ready to study today?",
          "One hour of study keeps the F away.",
@@ -49,10 +51,16 @@ export default async function Home () {
          "One session today, less panic tomorrow."
       ];
       const randomItem = welcomeQuestions[Math.floor(Math.random() * welcomeQuestions.length)];
+
+
+      const usersBehind = allUsersScores?.filter(s => s! < score!);
+      const overallPercentage = (usersBehind.length / allUsersScores.length) * 100;
+
       return <HomePage 
          quizzes={quizzes as any}
          score={score as any}
          welcomeString={randomItem}
+         overallPercentage={overallPercentage}
       />;
    } else {
       return <LoadingPage />;

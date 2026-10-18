@@ -8,6 +8,7 @@ type EssayGradeReport = {
 
 type NoteMaker = {
    title: string;
+   subject?: string;
    overview: string;
    key_concepts: string[];
    rules: string[];

@@ -1,30 +1,14 @@
 'use client'
 import { titleCase } from "@/lib/str"
 import { subjectColors } from "@/utils/subjects"
-import { CSSProperties } from "react"
 import { formatMilliseconds } from "@/utils/date"
+import { NormalCardStyles } from "@/styles-extra/styles"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
 import Card from "@/components/Card/Card"
-import ProgressRing from "@/components/ProgressRing/ProgressRing"
 import QuizBarChart from "@/components/QuizBarChart/QuizBarChart"
 
-export default function QuizStatPage ({ quizzes, subject }: { quizzes: QuizT[], subject: string }) {
-   const chartCardStyles: CSSProperties = {
-      padding: "20px", width: "100%",
-      borderColor: subjectColors[titleCase(subject)]
-   }
-
-   const decideColor = (score: number) => {
-      if (score < 40) {
-         return '#ef4444'; // red-500 (bad)
-      } else if (score < 75) {
-         return '#f97316'; // orange-500 (fair)
-      } else {
-         return '#22c55e'; // green-500 (great)
-      }
-   }
-
+export default function QuizStatPage ({ quizzes, subject, subjectLevel }: { quizzes: QuizT[], subject: string, subjectLevel: string }) {
    const newQuizArray = quizzes.reduce((agg: any, quiz) => {
       if (quiz.subject.toLowerCase() === subject) {
          agg.push({
@@ -49,37 +33,33 @@ export default function QuizStatPage ({ quizzes, subject }: { quizzes: QuizT[], 
 
    return (
       <AppWrapper>
-         <div className="box w-full h-full">
-            <div className="text-xl bold-700 full text-center mb-2" style={{ color: subjectColors[titleCase(subject)] }}>{titleCase(subject)} Quizzes</div>
+         <div className="box w-full h-full pd-2">
+            <div className="text-xl bold-700 full mb-1 pd-1" style={{ color: subjectColors[titleCase(subject)] }}>
+               {subjectLevel} {titleCase(subject)} Quizzes
+            </div>
             
-            <Card styles={chartCardStyles}>
-               <div className="box full dfb align-center gap-10">
-                  <div className="box dfb column full" style={{width:"100%"}}>
-                     <div className="text-s bold-600 pd-05">Average {titleCase(subject)} Score</div>
-                     <div className="text-xxs">You have taken {newQuizArray.length} {subject} quizzes</div>
+            <div className="box full dfb wrap gap-20">
+               <div className="box full mw-500 dfb column gap-5 align-center justify-center">
+                  <div className="text-xxb fit bold-700" style={{ color:subjectColors[titleCase(subject)] }}>
+                     {Math.round(averagePercentage)}%
                   </div>
-                  <div className="box dfb fit justify-center">
-                     <ProgressRing 
-                        progress={averagePercentage}
-                        color={decideColor(averagePercentage)}
-                     />
-                  </div>
+                  <div className="text-xs fit bold-600 text-center">Average {subjectLevel} {titleCase(subject)} Score</div>
+                  <div className="text-xxs fit text-center">You have taken {newQuizArray.length} {subject} quizzes</div>
                </div>
-            </Card>
-            <Spacing size={1} />
 
-            <QuizBarChart
-               color={subjectColors[titleCase(subject)]}
-               data={newQuizArray}
-               subject={titleCase(subject)}
-               barDataKey="score"
-            />
-            <Spacing size={2} />
+               <div className="box full mw-500 dfb column gap-10">
+                  <QuizBarChart
+                     color={subjectColors[titleCase(subject)]}
+                     percentages={newQuizArray.map((q: any) => q.score).toReversed().slice(0,7).toReversed()}
+                  />
+               </div>
+            </div>
+            <Spacing size={3} />
             
-            <div className="text-ml bold-700 full mb-15">{titleCase(subject)} Quiz History</div>
-            <div className="box full dfb column" style={{gap:"7px"}}>
+            <div className="text-ml bold-700 full mb-15">{subjectLevel} {titleCase(subject)} Quiz History</div>
+            <div className="box full dfb column gap-15">
                {newQuizArray.toReversed().map((quizInfo: any, index: number) => (
-                  <Card key={index} styles={{ padding: "10px 20px" }}>
+                  <Card key={index} styles={NormalCardStyles}>
                      <div className="box full dfb align-center pd-1 mb-05" style={{gap:"10px"}}>
                         <div className="box full dfb column">
                            <div className="text-s bold-600 full">{quizInfo.subjectLevel} {titleCase(subject)}</div>

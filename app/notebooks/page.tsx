@@ -1,31 +1,25 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions"
-import { dalDbOperation, dalRequireAuth } from "@/dal/helpers";
+import { dalDbOperation, dalRequireAuth, dalRequireSubscriber } from "@/dal/helpers";
 import { db } from "@/db";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { notesTable } from "@/db/schemas";
 import NoteBooksPage from "./NoteBooksPage";
 import LoadingPage from "./loading";
 
 export default async function NoteBooks () {   
+   await dalRequireSubscriber();
    const notes = await dalRequireAuth(user => 
       dalDbOperation(async () => {
          return await db
             .select()
             .from(notesTable)
             .where(eq(notesTable.userid, user.userid!))
+            .orderBy(desc(notesTable.createdAt))
       })
    );
 
-   const session = await getServerSession(authOptions);
-   if (session?.user) {
-      if (notes.success) {
-         return <NoteBooksPage notes={notes.data.toReversed() as any} />;
-      } else {
-         return <LoadingPage />;
-      }
+   if (notes.success) {
+      return <NoteBooksPage notes={notes.data as any} />;
    } else {
-      redirect("/sign-in");
+      return <LoadingPage />;
    }
 }

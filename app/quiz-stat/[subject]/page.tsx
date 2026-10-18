@@ -10,11 +10,15 @@ import LoadingPage from "./loading";
 type QuizStatProps = {
    params: Promise<{
       subject: string;
+   }>,
+   searchParams: Promise<{
+      level: string;
    }>
 }
 
-export default async function NoteBook ({ params }: QuizStatProps) {
+export default async function NoteBook ({ params, searchParams }: QuizStatProps) {
    const { subject } = await params;
+   const { level } = await searchParams;
 
    const quizzes = await dalRequireSubscribedAuth(user =>
       dalDbOperation(async () => {
@@ -23,14 +27,15 @@ export default async function NoteBook ({ params }: QuizStatProps) {
             .from(quizzesTable)
             .where(and(
                eq(quizzesTable.userid, user.userid!), 
-               eq(quizzesTable.subject, `${titleCase(subject.replaceAll("-"," "))}`)
+               eq(quizzesTable.subject, `${titleCase(subject.replaceAll("-"," "))}`),
+               eq(quizzesTable.subjectLevel, level),
             ))
       })
    )
 
    if (quizzes.success) {
       if (quizzes.data.length < 1) redirect("/home");
-      return <QuizStatPage subject={subject.replaceAll("-"," ")} quizzes={quizzes.data as any} />;
+      return <QuizStatPage subject={subject.replaceAll("-"," ")} quizzes={quizzes.data as any} subjectLevel={level} />;
    } else {
       return <LoadingPage />;
    }

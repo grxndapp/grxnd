@@ -28,7 +28,7 @@ export default function Chart({ data, yDataKey, xDataKey, xAxisInterval }: Chart
          setWidth(300)
       } else {
          setHeight(250)
-         setWidth(500)
+         setWidth(1000)
       }
    }, [])
    

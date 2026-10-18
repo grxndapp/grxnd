@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { callChatGPT } from "../actions/ai";
 import { toast } from "sonner";
-import { useModal } from "@/contexts/useModal";
+import { useModal } from "@/components/Modal/ModalContext";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import EssayInput from "@/components/EssayInput/EssayInput";
@@ -16,7 +16,7 @@ export default function EssayGraderPage () {
 
    const callChatGPTEssayMarker = async (question: string, answer: string) => {
       showModal({
-         children: <>
+         content: <>
             <div className="text-xl bold-700 full mb-1 text-center">Essay Grader</div>
             <div className="text-xxs full text-center">
                AI is currently grading your essay...
@@ -37,7 +37,7 @@ export default function EssayGraderPage () {
 
    return (
       <AppWrapper>
-         <div className="box full h-full">
+         <div className="box full h-full pd-3">
             {(essayGradeReport == null) && (<>
                <ToolHeading title="AI Essay Grader" description="Paste or Upload in your essay below and Press Grade" idClassName="essay-grader" />
                <Spacing size={1} />

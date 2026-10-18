@@ -27,7 +27,7 @@ export default function ToolHeading ({ title, description, idClassName }: ToolHe
             </div>
             <div className="title">{title}</div>
          </div>
-         <div className="text-xxs pd-1 grey-4 text-center full">{description}</div>
+         <div className="text-xxs pd-1 grey-4 full">{description}</div>
       </div>
    )
 }

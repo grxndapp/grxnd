@@ -1,7 +1,7 @@
 'use client'
 import { wait } from "@/utils/wait";
 import { useState } from "react";
-import Spinner from "../Spinner/Spinner";
+import { CustomSpinner } from "../Spinner/Spinner";
 
 type AwaitButtonProps = {
    className: string;
@@ -10,23 +10,25 @@ type AwaitButtonProps = {
    waitTime?: number;
    afterRunFunction?: Function;
    blackSpinner?: boolean;
+   style?: React.CSSProperties;
 }
 
-export default function AwaitButton ({ children, onClick, className, waitTime = 0.4, afterRunFunction, blackSpinner }: AwaitButtonProps) {
+export default function AwaitButton ({ children, onClick, className, waitTime, afterRunFunction, blackSpinner, style }: AwaitButtonProps) {
    const [loadingState, setLoadingState] = useState(false);
+
+   const callback = () => setLoadingState(false);
 
    const clickBtn = async () => {
       setLoadingState(true);
-      await wait(waitTime);
-      onClick();
+      await wait(waitTime || 0.25)
+      onClick(callback);
       if (afterRunFunction) afterRunFunction();
-      setLoadingState(false);
       return;
    }
    return (
-      <button className={className} onClick={clickBtn} disabled={loadingState}>
+      <button className={className} onClick={clickBtn} disabled={loadingState} style={style}>
          {loadingState ? <>
-            <Spinner black={blackSpinner} /> {children}
+            <CustomSpinner color={blackSpinner ? '#000' : '#fff'} size={17} /> {children}
          </> : children}
       </button>
    )

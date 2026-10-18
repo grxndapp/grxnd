@@ -12,7 +12,6 @@ type LeaderboardPageProps = {
 }
 
 export default function LeaderboardPage ({ users }: LeaderboardPageProps) {
-
    return (
       <AppWrapper>
          <div className="box full h-full">

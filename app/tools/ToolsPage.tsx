@@ -1,67 +1,61 @@
 'use client'
-import { ArrowRight, ClipboardCheck, Feather, NotebookPen, Puzzle } from "lucide-react"
+import { ClipboardCheck, NotebookPen, Puzzle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { AiToolsCardStyles, ToolIconBubbleStyles } from "@/styles-extra/styles"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
-import ToolCard from "@/components/Card/ToolCard"
+import Card from "@/components/Card/Card"
 
 export default function ToolsPage() {
    const router = useRouter();
 
    const tools = [
+      // {
+      //    title: 'Super Teacher',
+      //    icon: NotebookPen,
+      //    description: 'Learn anything from just a single sentence, file or image.',
+      //    buttonLabel: <>Learn Anything <ArrowRight size={18} /></>,
+      //    href: '/note-maker'
+      // },
       {
-         title: 'Super Teacher',
-         icon: NotebookPen,
-         description: 'Learn anything from just a single sentence, file or image.',
-         buttonLabel: <>Learn Anything <ArrowRight size={18} /></>,
-         href: '/note-maker'
-      },
-      {
-         title: 'Note Maker',
+         title: 'Make New Note',
          icon: NotebookPen,
          description: 'Turn topics into concise, easy-to-read notes for faster learning.',
-         buttonLabel: <>Start Creating Notes <ArrowRight size={18} /></>,
-         href: '/note-maker'
+         href: '/note-maker',
+         color: '#ffd1b6'
       },
       {
-         title: 'Quiz Maker',
+         title: 'Start New Quiz',
          icon: Puzzle,
          description: 'Generate custom quizzes to test your knowledge and sharpen understanding.',
-         buttonLabel: <>Generate Quiz <ArrowRight size={18} /></>,
-         href: '/quiz-maker'
+         href: '/quiz-maker',
+         color: '#afe996'
       },
       {
-         title: 'Essay Grader',
+         title: 'Grade an Essay',
          icon: ClipboardCheck,
          description: 'It grades and evaluate essays with AI, giving instant feedback and suggestions for improvement.',
-         buttonLabel: <>Grade Essay <ArrowRight size={18} /></>,
-         href: '/essay-grader'
-      },
-      {
-         title: 'Human Writer',
-         icon: Feather,
-         description: 'It writes your essay using AI and humanizes it for you',
-         buttonLabel: <>Begin Writing <ArrowRight size={18} /></>,
-         href: '/human-writer'
+         href: '/essay-grader',
+         color: '#ffaaca'
       },
    ]
 
    return (
       <AppWrapper>
-         <div className="text-xxl bold-700 full dfb align-center justify-center gap-7 mb-2">
-            AI Tools
-         </div>
-         <div className="box full h-fit pdx-15 dfb column gap-15">
-            {tools.map((tool, index) => (
-               <ToolCard key={index} idClassName={tool.title.toLowerCase().replaceAll(" ","-")} onClick={() => router.push(tool.href)}>
-                  <div className="icon"><tool.icon size={17} /></div>
-                  <div className="tool-content">
-                     <div className="text-m bold-700 pd-1">{tool.title}</div>
-                     <div className="text-xxs grey-5 mb-1">{tool.description}</div>
-                  </div>
-               </ToolCard>
-            ))}
-            <Spacing size={3} />
+         <div className="box full pd-2">
+            <div className="text-xxl full pd-15 bold-600">AI Assist</div>
+            <div className="box full dfb wrap gap-10">
+               {tools.map(tool => (
+                  <Card key={tool.href} styles={AiToolsCardStyles} onClick={() => router.push(tool.href)}>
+                     <div style={{ ...ToolIconBubbleStyles, background: tool.color }}>
+                        <tool.icon size={20} />
+                     </div>
+                     <div className="text-s bold-500">{tool.title}</div>
+                     <div className="text-xxs grey-5">{tool.description}</div>
+                  </Card>
+               ))}
+            </div>
+            <Spacing size={5} />
          </div>
       </AppWrapper>
    )

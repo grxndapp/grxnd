@@ -1,40 +1,56 @@
 'use client'
-import { ChevronRight, Download, Drama } from "lucide-react";
+import { Download, Lightbulb } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { subjectColors, subjectPastelBgColors } from "@/utils/subjects";
+import { fullSubjectBreakDown, retrieveSubjectTopic, subjectIcon, subjectPastelBgColors, subjectTopics } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { NormalCardStyles, SubjectIconBubble } from "@/styles-extra/styles";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
-import Link from "next/link";
+import ProgressBar from "@/components/ProgressBar/ProgressBar";
+import OverallProgress from "@/components/OverallProgress/OverallProgress";
 
 type HomePageProps = {
    quizzes: QuizT[];
    score: number;
    welcomeString: string;
+   overallPercentage: number;
 }
 
-export default function HomePage ({ quizzes, score, welcomeString }: HomePageProps) {
+export default function HomePage ({ quizzes, overallPercentage, welcomeString }: HomePageProps) {
    const router = useRouter();
    const { data: session } = useSession();
    const [iPhoneOrIpadUser, setIPhoneOrIpadUser] = useState(false);
+   
+   const subjectProgressQuizzes = quizzes.reduce((agg: any, quiz) => {
+      if (quiz.topic == '') return agg;
+      if (quiz.subjectLevel == 'Extra' || quiz.subjectLevel == '') return agg;
+      const subjectKey = `${quiz.subjectLevel} ${quiz.subject}`;
 
-   const newQuizArray = quizzes.reduce((agg: any, quiz) => {
-      if (!agg[quiz.subject]) {
-         agg[quiz.subject] = [{
-            score: quiz.score
-         }];
+      if (!agg[subjectKey]) {
+         agg[subjectKey] = [];
+
+         const subjectTopics = retrieveSubjectTopic(quiz.subjectLevel, quiz.subject);
+         agg[subjectKey] = subjectTopics?.map(subjectTopic => ({
+            [subjectTopic]: (subjectTopic == quiz.topic && quiz.score >= 70) ? true : false
+         }))
 
          return agg;
       }
-      agg[quiz.subject].push({
-         score: quiz.score
-      })
-      return agg;
-   }, {});
-   const existingQuizSubjects = Object.keys(newQuizArray);
+      
 
+      agg[subjectKey] = agg[subjectKey].map((i: any) => {
+         if (Object.keys(i)[0] == quiz.topic && !i[quiz.topic] && quiz.score >= 70) {
+            return {
+               [quiz.topic]: ((quiz.score >= 70) ? true : false)
+            }
+         }
+         return i;
+      })
+
+      return agg;
+   }, {})
 
    function isIphoneOrIpad(): boolean {
       const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
@@ -52,53 +68,59 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
 
    return (
       <AppWrapper>
-         <div className="box full h-full">
-            <div className="box full pd-3">
-               <div className="text-s full dfb align-center gap-5 bold-600">
-                  Welcome <div className="span box accent-color">{session?.user?.name}</div>
-               </div>
-               <div className="text-xxs full pd-05">{welcomeString}</div>
-               <div className="box full dfb align-end pd-05" style={{ gap: "5px" }}>
-                  <div className="text-xxb fit bold-600">{score}</div>
-                  <div className="text-xxs grey-5 pdx-05 full pd-1" style={{ padding: "10px 0" }}>points</div>
-               </div>
-               <Link className="text-xxs fit visible-link accent-color dfb align-center" href="/leaderboard">
-                  Global Leaderboard <ChevronRight size={17} />
-               </Link>
+         <div className="box full h-full pd-1">
+            <div className="box full mt-15">
+               <div className="text-l full dfb wrap gap-5 justify-center">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+               <div className="text-xxs full pd-05 text-center">{welcomeString}</div>
             </div>
 
-            {(quizzes.length < 1) && (<div className="box full">
-               <Card styles={{ width: "100%", padding: "25px" }}>
-                  <div className="text-sm bold-600 full mb-05">Looks like you have never taken a quiz</div>
-                  <div className="text-xxs full mb-15">Let's change that, test your brain</div>
-                  <button className="xxs pd-1 full" onClick={() => router.push("/quiz-maker")}>Take a Quiz</button>
-               </Card>
-               <Spacing size={1} />
-            </div>)}
+            <div className="box full">
+               <OverallProgress percentage={overallPercentage} />
+            </div>
 
-            
-            {(existingQuizSubjects.length > 0) && (<>
-               <div className="text-xxl full pd-15 bold-600">Quizzes</div>
-               <div className="box full dfb column" style={{ gap: "10px" }}>
-                  {existingQuizSubjects.map((subject, index) => {
+            {(quizzes.length < 1) ? (
+               <div className="box full">
+                  <Card styles={NormalCardStyles}>
+                     <div className="text-sm bold-600 full mb-05">Looks like you have never taken a quiz</div>
+                     <div className="text-xxs full mb-15">Let's change that, test your brain</div>
+                     <button className="xxs pd-13 pdx-2 fit" onClick={() => router.push("/quiz-maker")}>
+                        <Lightbulb size={16} /> Take a Quiz
+                     </button>
+                  </Card>
+                  <Spacing size={1} />
+               </div>
+            ) : (<>
+               <div className="text-xxl full pd-15 bold-600">Your Progress</div>
+               <div className="box full dfb wrap" style={{ gap: "20px" }}>
+                  {Object.keys(subjectProgressQuizzes).sort((a,b) => a.localeCompare(b )).map((subject, index) => {
                      return (<Card
                         key={index} 
                         styles={{
-                           width: "100%",
-                           borderRadius: "25px", padding: "25px",
-                           background: `${subjectPastelBgColors[subject]}`
+                           width: "100%", maxWidth: "370px",
+                           borderRadius: "25px", padding: "25px", cursor: "pointer",
+                           background: `${subjectPastelBgColors[fullSubjectBreakDown(subject).subject]}`
                         }}
-                        className="box fit"
+                        className="box dfb column gap-10"
+                        onClick={() => router.push(
+                           `/quiz-stat/${fullSubjectBreakDown(subject).subject.toLowerCase().replaceAll(" ","-")}?level=${fullSubjectBreakDown(subject).subjectLevel}
+                        `)}
                      >
-                        <div className="text-sm bold-600 full mb-05">{subject}</div>
-                        <div className="text-xxl bold-700 full" style={{color:subjectColors[subject]}}>
-                           {((newQuizArray[subject]
-                           .reduce((agg: any, quiz: any) => (agg + quiz.score), 0)/newQuizArray[subject].length).toFixed(1))}%
-                        </div>
-                        <div className="box full pd-05">
-                           <Link className="text-xxs fit visible-link accent-color dfb align-center" href={`/quiz-stat/${subject.toLowerCase().replaceAll(" ","-")}`}>
-                              View Stats <ChevronRight size={17} />
-                           </Link>
+                        <div style={SubjectIconBubble}>{subjectIcon[fullSubjectBreakDown(subject).subject]}</div>
+                        <div className="box full dfb column gap-5">
+                           <div className="text-s bold-700 full mb-05">{subject}</div>
+                           {(["Advanced Higher","Higher","National 5"].some(s => subject.startsWith(s))) && (<div className="text-xs full grey-5 bold-500">
+                              {retrieveSubjectTopic(fullSubjectBreakDown(subject).subjectLevel, fullSubjectBreakDown(subject).subject)?.length}
+                              {" "}
+                              topic(s)
+                           </div>)}
+                           <div className="text-xxs full grey-5 mt-05">
+                              {subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length}% complete
+                           </div>
+                           <div className="box pd-05 mt-05">
+                              <ProgressBar 
+                                 percentage={subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length}
+                              />
+                           </div>
                         </div>
                      </Card>)
                   })}
@@ -106,11 +128,6 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
             </>)}
             <Spacing size={2} />
 
-            <Card styles={{ width: "100%", padding: "25px" }}>
-               <div className="text-sm bold-600 full mb-05">Tournament</div>
-               <div className="text-xxs full mb-15">Answer quizzes and play games with your friends</div>
-               <button className="xxs pd-11 full" onClick={() => router.push("/quiz-room")}>Start Tournament</button>
-            </Card>
             {(iPhoneOrIpadUser) && (<>            
                <Spacing size={1} />
                <Card styles={{ width: "100%", padding: "25px" }}>
@@ -121,7 +138,7 @@ export default function HomePage ({ quizzes, score, welcomeString }: HomePagePro
                   </button>
                </Card>
             </>)}
-            <Spacing size={3} />
+            <Spacing size={5} />
          </div>
       </AppWrapper>
    )

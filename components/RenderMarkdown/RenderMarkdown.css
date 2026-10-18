@@ -1,0 +1,21 @@
+.math-markdown {
+  font-size: inherit;
+  line-height: 2;
+}
+
+.math-markdown .katex {
+  font-size: 1.1em;
+  transition: none;
+}
+
+.math-markdown .katex *,
+.math-markdown .katex {
+  box-sizing: content-box;
+  transition: none;
+}
+
+.math-markdown .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 16px 0;
+}

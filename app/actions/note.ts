@@ -4,11 +4,11 @@ import { db } from "@/db"
 import { notesTable } from "@/db/schemas"
 import { uuid } from "@/utils/uuid"
 
-export async function addNoteToBackpack (noteInfo: NoteMaker) {
+export async function addNoteToBackpack (noteInfo: NoteMaker, subject: string) {
    const result = await dalRequireAuth((user) => 
       dalDbOperation(async () => {
          const [newQuiz] = await db.insert(notesTable).values({
-            userid: user.userid,
+            userid: user.userid, subject,
             noteid: uuid(),
             noteJson: JSON.stringify(noteInfo)
          })

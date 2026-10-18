@@ -1,22 +1,46 @@
-'use client'
+
+'use client';
+import './Modal.css';
 import { X } from 'lucide-react';
-import './Modal.css'
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 type ModalProps = {
-   children: ReactNode;
-   onCloseAction: Function;
-}
+  children: ReactNode;
+  onClose: () => void;
+};
 
-export function Modal ({ children, onCloseAction }: ModalProps) {
+export function Modal({ children, onClose }: ModalProps) {
    return (
-      <div className="modal">
-         <div className='modal-box'>
-            <div className="close">
-               <button className='grey' onClick={() => onCloseAction()}><X color='#000' /></button>
-            </div>
+      <motion.div
+         className="modal"
+         initial={{ opacity: 0 }}
+         animate={{ opacity: 1 }}
+         exit={{ opacity: 0 }}
+         transition={{ duration: 0.2, ease: "easeIn" }}
+         onClick={onClose}
+      >
+         <motion.div
+            className="modal-box"
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{
+               duration: 0.2,
+               ease: [0.22, 1, 0.36, 1]
+            }}
+            onClick={(e) => e.stopPropagation()}
+         >
+            <button
+               type="button"
+               className="modal-close"
+               onClick={onClose}
+               aria-label="Close modal"
+            >
+               <X size={20} />
+            </button>
             {children}
-         </div>
-      </div>
-   )
+         </motion.div>
+      </motion.div>
+   );
 }

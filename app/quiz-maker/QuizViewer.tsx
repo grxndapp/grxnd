@@ -2,13 +2,15 @@
 import '@/styles/quiz.css'
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'
-import { QuizMathComponent } from "@/components/QuizMath/QuizMath";
 import { toast } from 'sonner';
-import { ArrowRightFromLine } from 'lucide-react';
+import { ArrowRightFromLine, Bookmark, Home, RotateCcw } from 'lucide-react';
 import { CustomIcon } from '@/components/Icons/Icon';
-import { addQuizScore } from '../actions/quiz';
+import { addQuizScore, userSavedQuiz } from '../actions/quiz';
+import { titleCase } from '@/lib/str';
 import ProgressRing from '@/components/ProgressRing/ProgressRing';
 import Spacing from '@/components/Spacing/Spacing';
+import RenderMarkdown from '@/components/RenderMarkdown/RenderMarkdown';
+import AwaitButton from '@/components/AwaitButton/AwaitButton';
 
 const decideColor = (score: number) => {
    if (score < 40) {
@@ -54,34 +56,6 @@ const questionTypeFormatting = (type: string) => {
    }
 }
 
-export const renderWithMath = (input: string, inline: boolean) => {
-   const parts = input.split(/(@m)/); // Split on @m@
-   const elements = [];
-
-   let inMath = false;
-   for (let i = 0; i < parts.length; i++) {
-      if (parts[i] === "@m") {
-         inMath = !inMath;
-      } else {
-         if (inMath) {
-            elements.push(
-               <QuizMathComponent key={i} inline={inline}>
-                  {`$\\mathsf{${parts[i]
-                     .replaceAll("\\\\","\\")
-                     .replaceAll("arctan", "tan^{-1}")
-                     .replaceAll("arcsin", "sin^{-1}")
-                     .replaceAll("arccos", "cos^{-1}")
-                  }}$`}
-               </QuizMathComponent>
-            );
-         } else {
-            elements.push(<span key={i}>{parts[i]}</span>);
-         }
-      }
-   }
-   return <>{elements}</>;
-};
-
 type QuizViewerProps = {
    quiz: Quiz;
    subjectLevel: string;
@@ -100,6 +74,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
    const [optionChosen, setOptionChosen] = useState<number | undefined>(undefined);
    const [questionAnswered, setQuestionAnswered] = useState(false);
    const [score, setScore] = useState(0)
+   const [retake, setRetake] = useState(false);
 
    const answerQuestion = () => {
       if (!quizQuestions) return;
@@ -112,6 +87,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
    }
 
    const retakeQuiz = () => {
+      setRetake(true)
       setScore(0)
       setOptionChosen(undefined)
       setQuestionIndex(0)
@@ -119,11 +95,23 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
       setQuizFormDisplay('quiz')
    }
 
+   async function handleSaveQuiz (callback: Function) {
+      const saved = await userSavedQuiz(subjectLevel, subject, subjectTopic, score, JSON.stringify(quiz));
+      if (saved) {
+         toast.success("Saved Quiz");
+      } else {
+         toast.error("Failed to save quiz")
+      }
+      callback();
+   }
+
    const nextQuestionBtn = async () => {
       if (!quizQuestions) return;
       if (questionIndex+1 >= quizQuestions.length) {
          setQuizFormDisplay('end');
-         await addQuizScore(subjectLevel, subject, subjectTopic, ((score/quizQuestions.length)*100), (score*5));
+         if (!retake) {
+            await addQuizScore(subjectLevel, subject, subjectTopic, ((score/quizQuestions.length)*100), (score*5));
+         }
       } else {
          setOptionChosen(undefined);
          setQuestionAnswered(false);
@@ -138,7 +126,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
             <div className="quiz-start-box">
                <CustomIcon 
                   url={`/subjects/${subject.toLowerCase().replaceAll(" ", "-")}.png`}
-                  size={40}
+                  size={140}
                />
                <div className='text-l bold-700 text-center'>{subjectTopic}</div>
                <div className='text-s bold-500 text-center'>{subjectLevel} {subject}</div>
@@ -146,22 +134,22 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                   Once you begin this quiz, you can't go back and you must complete it.
                </div>
                <div className="actions">
-                  <button className='xxs full pd-12 tiny-shadow' onClick={() => setQuizFormDisplay('quiz')}>Start Quiz</button>
-                  <button className='xxs full pd-12 outline-black tiny-shadow'  onClick={() => router.push('/')}>Back to Home</button>
+                  <button className='xxs full mw-400 pd-12 tiny-shadow' onClick={() => setQuizFormDisplay('quiz')}>Start Quiz</button>
+                  <button className='xxs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push('/home')}>Back to Home</button>
                </div>
             </div>
          
          </> : (quizFormDisplay == "quiz") ? <>
             <div className="quiz-begin">
-               <div className="text-sm text-center bold-700 pd-1 mt-05 no-trans">{subjectTopic}</div>
-               <div className="question text-xs pd-1 no-trans">{renderWithMath(quizQuestions[questionIndex].question, true)}</div>
+               <div className="text-ml bold-700 pd-1 mt-05 no-trans">{titleCase(subjectTopic)}</div>
+               <div className="question text-xs pd-1 no-trans"><RenderMarkdown content={quizQuestions[questionIndex].question} /></div>
                <div className="text-xs no-trans">{questionTypeFormatting(quizQuestions[questionIndex].questionType)}</div>
                
                {(questionAnswered) ? <>
                   <div className={`explanation ${optionChosen == quizQuestions[questionIndex].answerIndex ? 'correct' : 'wrong'}`}>
                      <div className="text-sm bold-700">{optionChosen == quizQuestions[questionIndex].answerIndex ? 'Correct' : 'Wrong'}</div>
-                     <div className="text-s">
-                        {renderWithMath(quizQuestions[questionIndex].answerExplanation, true)}
+                     <div className="text-s" style={{ whiteSpace: "pre-line" }}>
+                        <RenderMarkdown content={quizQuestions[questionIndex].answerExplanation} />
                      </div>
                   </div>
                </> : <br />}
@@ -177,7 +165,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                            key={index} 
                            className={`option ${option == quizQuestions[questionIndex].options[quizQuestions[questionIndex].answerIndex] ? 'correct' : 'wrong'}`}
                            onClick={() => {}}
-                        >{renderWithMath(option, true)}</div>
+                        ><RenderMarkdown content={option} /></div>
                      })}
 
                   </> : <>
@@ -187,7 +175,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                            key={index} 
                            className={`option ${index == optionChosen ? 'selected' : ''}`}
                            onClick={() => setOptionChosen(index)}
-                        >{renderWithMath(option, true)}</div>
+                        ><RenderMarkdown content={option} /></div>
                      })}
                   </>}
 
@@ -201,32 +189,37 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                      : <button className='xs full pd-12 tiny-shadow' onClick={answerQuestion}>Submit</button>
                   }
                </div>
-            
+               
+               <Spacing size={3} />
             </div>
 
          </> : <>
             {/* once the quiz ends */}
-            <div className="text-sm text-center bold-700 pd-1">
-               {subjectTopic}
-            </div><br /><br />
-
+            <div className="text-ml text-center bold-700 pd-1">{subjectTopic}</div>
+            <br />
             <div className="box dfb full justify-center">
                <ProgressRing
                   color={decideColor((score/quizQuestions.length)*100)}
                   progress={(score/quizQuestions.length)*100}
                />
-            </div><br />
-
-            <div className="text-sm bold-500 text-center">
-               {getProgressMessage((score/quizQuestions.length)*100).title}
             </div>
-            <div className="text-xs pd-1 grey text-center">
-               {getProgressMessage((score/quizQuestions.length)*100).message}
-            </div><br />
-               
+            <br />
+
+            <div className="text-sm bold-500 text-center">{getProgressMessage((score/quizQuestions.length)*100).title}</div>
+            <div className="text-xs pd-1 grey text-center">{getProgressMessage((score/quizQuestions.length)*100).message}</div>
+            <br />
+
             <div className="actions">
-               <button className='xs full pd-12 tiny-shadow' onClick={retakeQuiz}>Retake Quiz</button>
-               <button className='xs full pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
+               <AwaitButton className='xs full mw-400 pd-12 tiny-shadow' onClick={handleSaveQuiz}>
+                  <Bookmark size={17} /> Save Quiz
+               </AwaitButton>
+               <button className='xs full mw-400 pd-12 tiny-shadow' onClick={retakeQuiz}>
+                  <RotateCcw size={17} /> Retake Quiz
+               </button>
+               <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
+               <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push("/home")}>
+                  <Home size={17} /> Back to Home
+               </button>
             </div>
          </>}
 

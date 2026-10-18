@@ -1,18 +1,19 @@
 'use client'
-import { useModal } from "@/contexts/useModal";
+import { useModal } from "@/components/Modal/ModalContext";
 import { retrieveSubjectTopic, subjectLevels, subjects } from "@/utils/subjects";
 import { BookCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { callChatGPT } from "../actions/ai";
+import { llmForMarkdownAndJson } from "../actions/ai";
 import { toast } from "sonner";
+import { quizMakerPrompt } from "@/prompts/quizMaker";
+import { CustomSpinner } from "@/components/Spinner/Spinner";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import LoadingDots from "@/components/LoadingDots/LoadingDots";
 import ModalSelect from "@/components/ModalSelect/ModalSelect";
 import Spacing from "@/components/Spacing/Spacing"
-import quizMakerPrompt, { quizMakerPromptNoTopic } from "@/prompts/quizMaker";
 import QuizViewer from "./QuizViewer";
 import ToolHeading from "@/components/ToolHeading/ToolHeading";
+
 
 export default function QuizMakerPage () {
    const [subjectLevel, setSubjectLevel] = useState<string>('');
@@ -20,7 +21,8 @@ export default function QuizMakerPage () {
    const [topic, setTopic] = useState<string>('');
    const [numQuestions, setNumQuestions] = useState<string>('5');
    const [canGenerateQuiz, setCanGenerateQuiz] = useState<boolean>(false);
-   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null)
+   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
+   const [detailedTopic, setDetailedTopic] = useState('');
 
    const { showModal, close } = useModal();
 
@@ -32,27 +34,23 @@ export default function QuizMakerPage () {
       setTopic('');
    }, [subject, subjectLevel])
 
-   const createQuizAI = async () => {
+   const createQuizAI = async (callback: Function) => {
       showModal({
-         children: <>
-            <div className="text-xl bold-700 full mb-1 text-center">Quiz Maker</div>
-            <div className="text-xxs full text-center">
+         content: <div className="box full pd-3 pdx-3">
+            <div className="text-xl bold-700 full mb-1 accent-color">Quiz Maker</div>
+            <div className="text-xxs full">
                AI is currently creating a quiz for you about {subjectLevel} {subject}{(topic !== '' && topic) && ` ${topic}`}...
             </div>
-            <div className="box pd-2 full dfb justify-center">
-               <LoadingDots />
+            <div className="box pd-2 full dfb justify-start">
+               <CustomSpinner color="#1121ff" size={40} />
             </div>
-         </>
+         </div>
       });
-      let data;
-      if (topic == '' || !topic) {
-         data = await callChatGPT(quizMakerPromptNoTopic(subjectLevel, subject, numQuestions));
-      } else {
-         data = await callChatGPT(quizMakerPrompt(subjectLevel, subject, topic, numQuestions));
-      }
+      const data = await llmForMarkdownAndJson(quizMakerPrompt({ subjectLevel, subject, subjectTopic: topic, numberOfQuestions: parseInt(numQuestions) }));
       close();
       if (data == false) {
-         toast.error("Failed to chat with AI. Please try again later.");
+         toast.error("Failed to create quiz. Please try again later.");
+         callback();
          return;
       }
       console.log(data.quiz);
@@ -60,17 +58,17 @@ export default function QuizMakerPage () {
    }
 
    return (
-      <AppWrapper>
+      <AppWrapper noNavbar={aiQuiz !== null && aiQuiz !== undefined}>
          {(aiQuiz == null) && (<>
-            <div className="box full h-full">
+            <div className="box full h-full pd-3">
                <ToolHeading title="Create a Quiz" description="Choose your subject level, subject and maybe a topic and press Create Quiz" idClassName="quiz-maker" />
-               <div className="text-xxs full pd-1 text-center">For each question you get, you <b className="accent-color">5</b> points added to your total score.</div>
+               <div className="text-xxs full pd-1">For each question you get, you <b className="accent-color">5</b> points added to your total score.</div>
                <Spacing size={1} />
 
                <div className="text-sm bold-600 full mt-05">Number of Questions</div>
                <div className="text-xs full pd-1">More questions takes a longer time to generate quiz</div>
                <ModalSelect
-                  options={["5","10","20","30","40","50"]}
+                  options={["5","10","15","20"]}
                   onSelect={(option) => setNumQuestions(option)}
                   title="Choose Number of Questions"
                   defaultOption={0}
@@ -91,7 +89,7 @@ export default function QuizMakerPage () {
                   onSelect={(option) => setSubject(option)}
                   title="Choose Subject"
                />
-               <Spacing size={1} />
+               <Spacing />
 
                {(subject !== "" && subjectLevel !== "") && (<>
                   <div className="text-sm bold-600 full pd-1">Subject Topic (optional)</div>
@@ -100,10 +98,17 @@ export default function QuizMakerPage () {
                      onSelect={(option) => setTopic(option)}
                      title={`Choose ${subjectLevel} ${subject} Topic`} showDeselect
                   />
+                  <Spacing />
+                  <div className="text-sm bold-600 full">Detailed Topic (optional)</div>
+                  <div className="text-xs full grey-5 pd-05">Enter the exact thing you want to learn from this</div>
+                  <textarea 
+                     className="xxs pd-15 pdx-2 full h-20 radius-15"
+                     value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
+                  />
                   <Spacing size={2} />
                </>)}
 
-               {(canGenerateQuiz) && <AwaitButton className="xxs full pd-12 tiny-shadow" onClick={createQuizAI}>
+               {(canGenerateQuiz) && <AwaitButton className="xxs full pd-14 tiny-shadow" onClick={createQuizAI}>
                   <BookCheck size={17} /> Create Quiz
                </AwaitButton>}
 

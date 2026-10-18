@@ -1,42 +1,25 @@
 'use client'
 import "./QuizBarChart.css"
-import { CSSProperties } from "react";
-import Card from "../Card/Card";
 
 type QuizBarChartProps = {
-   color: string;
-   data: any[];
-   subject: string;
-   barDataKey: string;
-   labelDataKey?: string;
-}
+   percentages: number[];
+   height?: number;
+   color?: string;
+};
 
-export default function QuizBarChart ({ color, data, subject, barDataKey, labelDataKey }: QuizBarChartProps) {
-   const chartCardStyles: CSSProperties = {
-      padding: "20px", width: "100%",
-      borderColor: color
-   }
-
+export default function QuizBarChart ({ percentages, height = 220, color = '#FF8B4A' }: QuizBarChartProps) {
    return (
-      <Card styles={chartCardStyles}>
-         <div className="text-m full bold-700 mb-1">{subject} Quiz Scores</div>
-         <div className="quiz-bar-chart">
-            {data.map((dataItem, index) => (
-               <div className="bar-wrapper" key={index}>
-                  <div className="bar" style={{
-                     height:`${dataItem[barDataKey]}%`,
-                     background: color,
-                     color: `${parseInt(`${dataItem[barDataKey]}`) > 15 ? 'white' : 'black'}`
-                  }}>
-                     <span className="score">
-                        {(labelDataKey) ? <>
-                           {dataItem[labelDataKey]}
-                        </> : <>{dataItem[barDataKey]}%</>}
-                     </span>
+      <div className="percentage-bar-chart" style={{ height: `${height}px` }}>
+         {percentages.map((percentage, index) => {
+            const value = Math.min(100, Math.max(0, percentage));
+            return (
+               <div className="percentage-bar-track" key={index}>
+                  <div className="percentage-bar-fill" style={{ height: `${value}%`, backgroundColor: color }}>
+                     <span className="percentage-bar-label">{value}%</span>
                   </div>
                </div>
-            ))}
-         </div>
-      </Card>
-   )
+            );
+         })}
+      </div>
+   );
 }

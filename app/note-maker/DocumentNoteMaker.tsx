@@ -1,12 +1,11 @@
 'use client'
 import "@/styles/note-maker.css"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner";
-import { extractPdfText } from "../actions/extras";
-import { NotebookPen, Paperclip, X } from "lucide-react";
-import { callChatGPT } from "../actions/ai";
+import { NotebookPen, X } from "lucide-react";
+import { aiFileUpload } from "../actions/ai";
+import { buildFileNotePrompt } from "@/prompts/subjectNoteMaker";
 import Spacing from "@/components/Spacing/Spacing";
-import documentNoteMakerPrompt from "@/prompts/documentNoteMaker";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
 
@@ -16,108 +15,97 @@ type FileInfo = {
 }
 
 export default function DocumentNoteMaker () {
-   const [documentContent, setDocumentContent] = useState('');
+   const [inputFileValue, setInputFileValue] = useState<any | null>('');
    const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
+   const [documentFile, setDocumentFile] = useState<File | null>(null);
    const [noteFromAI, setNoteFromAI] = useState<NoteMaker | null>(null);
-   const attachFileInputRef = useRef<HTMLInputElement | null>(null);
-   const maxLength = 10000;
-   
+
    const onFileUpload = async (e: any) => {
       const file = e.target.files[0];
       if (!file) {
          toast.error("No file found"); return;
       }
 
-      const acceptableExtensions = ['pdf','txt'];
+      // const acceptableExtensions = ['pdf','txt', 'docx', 'pptx'];
+      const acceptableExtensions = ['pdf'];
       const extension = file.name.split(".").pop().toLowerCase();
       if (!acceptableExtensions.includes(extension)) {
-         toast.error("File must be a PDF or TXT file"); return;
+         // toast.error("File must be a PDF, TXT, DOCX or PPTX file"); return;
+         toast.error("File must be a PDF file"); return;
       }
 
-      if (extension === "pdf") {
-         const pdf = await extractPdfText(file);
-         if (pdf == false) {
-            toast.error("File failed to upload");
-            return;
-         }
-         if (pdf.length > maxLength) {
-            toast.error("The file is too large");
-         } else {
-            setDocumentContent(pdf);
-            setFileInfo({ filename: file.name.split(".")[0], fileExtension: extension.toUpperCase() });
-         }
-      } else {
-         const fileReader = new FileReader();
-         fileReader.onload = (ev) => {
-            const text = ev.target?.result as string;
-            if (text.length > maxLength) {
-               toast.error("The file is too large");
-            } else {
-               setDocumentContent(text);
-               setFileInfo({ filename: file.name.split(".")[0], fileExtension: extension.toUpperCase() });
-            }
-         }
-         fileReader.readAsText(file);
-      }
-
-      if (attachFileInputRef.current) attachFileInputRef.current.value = "";
+      setInputFileValue(e.target.value);
+      setDocumentFile(file);
+      setFileInfo({ filename: file.name.split(".")[0], fileExtension: extension.toUpperCase() });
    }
 
    const attachNewDocument = () => {
-      setDocumentContent("");
+      setInputFileValue(null);
       setFileInfo(null);
    }
 
-   const createNoteAI = async () => {
-      const data: any = await callChatGPT(documentNoteMakerPrompt(documentContent));
+   const createNoteAI = async (callback: Function) => {
+      if (!documentFile) {
+         toast.error("Please choose a file")
+         callback()
+         return;
+      }
+      const data: any = await aiFileUpload(buildFileNotePrompt({ fileName: fileInfo?.filename }), documentFile);
       if (data == false) {
          toast.error("Failed to chat with AI. Please try again later.");
          return;
       }
+      if (Object.keys(data).includes("error")) {
+         toast.error(data.error);
+         return;
+      }
+      console.log(data)
       setNoteFromAI(data.note);
+      callback()
    }
 
    return (<>
       <Spacing size={1} />
-      {(documentContent == "") ? (<>
-
-         <div className="text-xs full text-center pd-15 mt-1 mb-1">
-            Please upload a pdf or text file below.
+      {noteFromAI !== null ? (<>
+         <NoteViewer 
+            subject={noteFromAI.subject} 
+            note={noteFromAI} 
+            makeNewNote={() => setNoteFromAI(null)}
+         />
+      </>) : (fileInfo == null) ? (<>
+         <div className="box full pd-2">
+            <div className="text-m bold-600 full">Upload Document</div>
+            <div className="text-xxs full grey-5">Upload the document you want to learn more about</div>
+            <div className="box full pd-2 dfb column gap-10">
+               <label htmlFor="drag-and-drop-file-input">
+                  <div className="drag-and-drop-media-upload-area">
+                     <div className="text-xs fit">Drag and Drop or Click to upload media asset</div>
+                  </div>
+                  <input 
+                     type="file" name="file" id="drag-and-drop-file-input" value={inputFileValue}
+                     onChange={onFileUpload}
+                     // accept=".pdf,.txt,.docx,.pptx"
+                     accept=".pdf"
+                  />
+               </label>
+            </div>
          </div>
-         <label htmlFor="attach-file" className="attach-doc">
-            <input type="file" ref={attachFileInputRef} name="attach-file" id="attach-file" accept=".pdf,.txt" onChange={onFileUpload} />
-            <div className="attach-btn-doc">
-               <Paperclip size={18} /> Attach Document
-            </div>
-         </label>
-
       </>) : (<>
-
-         {(noteFromAI == null) ? (<>         
-            <div className="text-xs full text-center pd-15 mt-1 mb-1">
-               Your document has been uploaded.
+         <div className="text-xs full text-center pd-15 mt-1 mb-1">
+            Your document has been uploaded.
+         </div>
+         <div className="document-upload-status">
+            <div className="file-info">
+               <div className="file-name">{fileInfo?.filename}</div>
+               <div className="file-extension">{fileInfo?.fileExtension}</div>
             </div>
-            <div className="document-upload-status">
-               <div className="file-info">
-                  <div className="file-name">{fileInfo?.filename}</div>
-                  <div className="file-extension">{fileInfo?.fileExtension}</div>
-               </div>
-               <div className="close-btn">
-                  <button onClick={attachNewDocument}><X size={17} /></button>
-               </div>
+            <div className="close-btn">
+               <button onClick={attachNewDocument}><X size={17} /></button>
             </div>
-            <AwaitButton className="xxs full pd-1 tiny-shadow" onClick={createNoteAI}>
-               <NotebookPen size={17} /> Generate Note
-            </AwaitButton>
-         
-         </>) : (<>
-            <NoteViewer subject={fileInfo?.filename!} note={noteFromAI} makeNewNote={() => {
-               setNoteFromAI(null);
-               setDocumentContent("");
-            }} />
-         
-         </>)}
-         
+         </div>
+         <AwaitButton className="xxs full pd-14 tiny-shadow" onClick={createNoteAI}>
+            <NotebookPen size={17} /> Generate Note
+         </AwaitButton>
       </>)}
    </>)
 }

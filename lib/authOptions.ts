@@ -25,12 +25,12 @@ export const authOptions: NextAuthOptions = {
             if (credentials?.email == "" || credentials?.password == "") {
                return null;
             } else {
-               const results = await db
-               .select().from(usersTable)
+               const results = await db.select().from(usersTable)
                .where(and(
                   eq(usersTable.email, credentials?.email!),
                   eq(usersTable.password, hashPwd(credentials?.password!))
                )).limit(1);
+
                if (results.length > 0) {
                   return {
                      id: results[0].userid!,
@@ -47,11 +47,7 @@ export const authOptions: NextAuthOptions = {
    ],
    callbacks: {
       async signIn({ user, account, profile }) {
-         const existingUser = await db
-            .select()
-            .from(usersTable)
-            .where(eq(usersTable.email, user.email!))
-            .limit(1);
+         const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, user.email!)).limit(1);
 
          if (existingUser.length < 1) {
             const userid = uuid();
@@ -60,7 +56,7 @@ export const authOptions: NextAuthOptions = {
                name: user.name,
                email: user.email,
                oauth_provider: "google",
-               password: hashPwd(`${user.name}${user.email}`),
+               password: hashPwd(`${user.name}${user.email}${Date.now()}`),
                user_role: "user",
                is_subscribed: false
             });

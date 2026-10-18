@@ -2,7 +2,7 @@
 import { ClipboardPen, Copy, Edit, RotateCcw, UserRoundPen } from "lucide-react";
 import { useRef, useState } from "react";
 import { callChatGPT } from "../actions/ai";
-import { useModal } from "@/contexts/useModal";
+import { useModal } from "@/components/Modal/ModalContext";
 import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/str";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
@@ -48,7 +48,7 @@ export default function HumanWriterPage () {
          return;
       }
       showModal({
-         children: <>
+         content: <>
             <div className="text-xl bold-700 full mb-1 text-center">AI Human Writer</div>
             <div className="text-xxs full text-center">
                AI is currently writing your essay...
@@ -66,7 +66,7 @@ export default function HumanWriterPage () {
          return;
       }
       showModal({
-         children: <>
+         content: <>
             <div className="text-xl bold-700 full mb-1 text-center">AI Human Writer</div>
             <div className="text-xxs full text-center">
                AI is currently humanizing your essay...
@@ -96,7 +96,7 @@ export default function HumanWriterPage () {
          return;
       }
       showModal({
-         children: <>
+         content: <>
             <div className="text-xl bold-700 full mb-1 text-center">AI Human Writer</div>
             <div className="text-xxs full text-center">
                AI is currently humanizing your ai text...

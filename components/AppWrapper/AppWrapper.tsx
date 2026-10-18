@@ -1,33 +1,83 @@
 "use client"
-import "@/styles/app.css"
 import "./AppWrapper.css"
-import { ReactNode } from 'react'
-import { Backpack, House, Wrench } from 'lucide-react'
+import "@/styles/app.css"
+import { ReactNode, useEffect, useState } from 'react'
+import { Backpack, ChevronRight, House, TextAlignStart, UserRoundCog, Wrench } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { CustomIcon, GrxndLogo } from '../Icons/Icon'
+import { CustomIcon } from '../Icons/Icon'
+import { useModal } from "../Modal/ModalContext"
+import { getCurrentUserScore } from "@/app/actions/user"
 import userDefaultImage from "@/public/user-def.png"
+
 
 export default function AppWrapper ({ children, noNavbar }: { children: ReactNode, noNavbar?: boolean }) {
    const { data: session } = useSession();
    const pathName = usePathname()
    const router = useRouter();
+   const { showModal, close } = useModal();
+   const [score, setScore] = useState(0);
+   
+   async function getUserScore () {
+      const score = await getCurrentUserScore();
+      setScore(score ?? 0);
+   }
 
-   const navbarItems = [
-      { label: "Backpack", href: "/backpack", icon: Backpack },
-      { label: "Home", href: "/home", icon: House },
-      { label: "AI Tools", href: "/tools", icon: Wrench }
-   ]
+   useEffect(() => {
+      getUserScore()
+   }, [])
+   
+   function handleNavbarModal () {
+
+      showModal({
+         content: (
+            <div className="box full pd-1 pdx-1">
+               <div className="box full pd-15">
+                  <div className="box full pd-1 mb-1">
+                     <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={120} round />
+                  </div>
+                  <div className="text-l full dfb wrap gap-5">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+
+                  <div className="box full dfb column gap-5 pd-15">
+                     <div className="text-xxs grey-5 full">Your Points</div>
+                     <div className="text-xxb fit bold-600 mb-1">{score}</div>
+                     <div 
+                        className="text-xxs fit visible-link accent-color dfb align-center"
+                        onClick={() => { router.push("/leaderboard"); close(); }}
+                     >
+                        Global Leaderboard <ChevronRight size={17} />
+                     </div>
+                  </div>
+                  
+                  <div className="box full pd-1 dfb gap-20 wrap">
+                     <button className="xxs pd-13 full mw-300 tiny-shadow grey" onClick={() => { router.push("/settings"); close() }}>
+                        <UserRoundCog /> Account Settings
+                     </button>
+                  </div>
+               </div>
+            </div>
+         )
+      })
+   }
 
    return (
       <div className="app">
          <div className="account-bar-wrapper">
             <div className="account-bar">
-               <div className="app-icon">
-                  <GrxndLogo size={40} />
-               </div>
-               <div className="account-image" onClick={() => router.push("/settings")}>
-                  <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={40} round />
+               {!noNavbar ? (<>
+                  <div className="box full dfb align-center gap-10">
+                     <div className="hamburger-menu-btn" onClick={() => router.push("/home")}>
+                        <House size={23} />
+                     </div>
+                     <div className="hamburger-menu-btn" onClick={() => router.push("/backpack")}>
+                        <Backpack size={23} />
+                     </div>
+                  </div>
+               </>) : (
+                  <div />
+               )}
+               <div className="account-image" onClick={handleNavbarModal}>
+                  <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={50} round />
                </div>
             </div>
          </div>
@@ -36,16 +86,6 @@ export default function AppWrapper ({ children, noNavbar }: { children: ReactNod
                {children}
             </div>
          </div>
-         {(!noNavbar) && (<div className="navbar">
-            <div className="navbar-wrapper">
-               {navbarItems.map((navbarItem, index) => (
-                  <div className={`navbar-item ${navbarItem.href == pathName && 'selected'}`} key={index} onClick={() => router.push(navbarItem.href)}>
-                     <div className="icon">{<navbarItem.icon size={20} />}</div>
-                     <div className="tiny-label">{navbarItem.label}</div>
-                  </div>
-               ))}
-            </div>
-         </div>)}
       </div>
    )
 }

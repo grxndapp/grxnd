@@ -1,7 +1,7 @@
 "use server"
 import { dalDbOperation, dalRequireAuth } from "@/dal/helpers";
 import { db } from "@/db";
-import { scoresTable, usersTable } from "@/db/schemas";
+import { notesTable, quizzesTable, savedQuizzesTable, scoresTable, usersTable } from "@/db/schemas";
 import { authOptions } from "@/lib/authOptions"
 import { hashPwd, uuid } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
@@ -17,6 +17,25 @@ export async function getCurrentUser (): Promise<User | null> {
       const user = await db.select().from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
       
       return user[0] as User;
+   } catch (err) {
+      return null;
+   }
+}
+
+export async function getCurrentUserScore (): Promise<number | null> {
+   try {
+      const session = await getServerSession(authOptions);
+
+      if (!session) return null;
+      if (!session.user) return null;
+
+      const [user] = await db.select().from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
+      if (!user) return null;
+
+      const [userScore] = await db.select().from(scoresTable).where(eq(scoresTable.userid, user.userid!)).limit(1);
+      if (!userScore) return null;
+      
+      return userScore.score;
    } catch (err) {
       return null;
    }
@@ -91,22 +110,38 @@ export async function deleteUserAccount () {
       
       const res = await dalRequireAuth(user => 
          dalDbOperation(async () => {
-            const result = await db
-            .delete(usersTable)
-            .where(
-               and(
-                  eq(usersTable.userid, user.userid!),
-                  eq(usersTable.email, user.email!)
+            const result = await db.delete(usersTable)
+               .where(
+                  and(
+                     eq(usersTable.userid, user.userid!),
+                     eq(usersTable.email, user.email!)
+                  )
                )
-            )
             if (!(result.rowCount > 0)) return false;
+
             const result2 = await db
-            .delete(scoresTable)
-            .where(eq(scoresTable.userid, user.userid!))
-            return (result2.rowCount > 0);
+               .delete(scoresTable)
+               .where(eq(scoresTable.userid, user.userid!))
+            if (!(result2.rowCount > 0)) return false;
+
+            const result3 = await db
+               .delete(quizzesTable)
+               .where(eq(quizzesTable.userid, user.userid!))
+            if (!(result3.rowCount > 0)) return false;
+
+            const result4 = await db
+               .delete(notesTable)
+               .where(eq(notesTable.userid, user.userid!))
+            if (!(result4.rowCount > 0)) return false;
+            
+            const result5 = await db
+               .delete(savedQuizzesTable)
+               .where(eq(savedQuizzesTable.userid, user.userid!))
+
+            return (result5.rowCount > 0);
          })
       )
-      return res;
+      return res.success ? res.data : false;
    } catch (e) {
       return false;
    }
@@ -114,12 +149,7 @@ export async function deleteUserAccount () {
 
 export async function checkForNoExistingUser (email: string): Promise<boolean | 'google-auth'> {
    try {
-      const users = await db
-      .select().from(usersTable)
-      .where(and(
-         eq(usersTable.email, email)
-      )).limit(1);
-
+      const users = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
       if (users.length < 1) {
          return true;
       } else {

@@ -1,98 +1,51 @@
 "use server"
-import Groq from "groq-sdk";
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
 import { extractJson } from "@/utils/extractJson";
+import { validateKatex } from "@/utils/validateKatex";
 
-export async function callChatGPT2 (prompt: string): Promise<any | false> {
+export async function aiFileUpload (prompt: string, file: File) {
    try {
-      const token = process.env.AI_APIKEY!;
-      const endpoint = "https://models.github.ai/inference";
-      const model = "openai/gpt-4.1-mini";
-   
-      const client = ModelClient(
-         endpoint,
-         new AzureKeyCredential(token),
-      );
-   
-      const response = await client.path("/chat/completions").post({
-         body: {
+      // Convert PDF into Base64
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const base64PDF = buffer.toString("base64");
+      const fileData = `data:application/pdf;base64,${base64PDF}`;
+
+      const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+         method: "POST",
+         headers: {
+            "Authorization": `Bearer ${process.env.AI_API_KEY!}`,
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
             messages: [
-               { role:"system", content: "" },
-               { role:"user", content: prompt }
-            ],
-            temperature: 1,
-            top_p: 1,
-            model: model
-         }
-      });
-   
-      if (isUnexpected(response)) {
-         console.error(response.body.error);
-         return false;
-      }
-      const cleanedJsonResult = response.body.choices[0].message.content?.replace(/```json\s*/g, '')
-         .replace(/```/g, '')
-         .trim();
-
-      // console.log(JSON.parse(cleanedJsonResult!));
-      return JSON.parse(cleanedJsonResult!);
-   } catch (err) {
-      try {
-         const url = "http://192.168.0.4:3002/prompt-gpt"
-         const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt })
-         });
-         const data = await response.json();
-         // console.log(data.data);
-         return data.data;
-      } catch (err) {
-         return false;
-      }
-   }
-}
-
-export async function callChatGPT3 (prompt: string) {
-   try {
-      const groq = new Groq();
-      const chatCompletion = await groq.chat.completions.create({
-         messages: [
-            {
-               role: "system",
-               content: `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher). 
-         
+               {
+                  role: "system",
+                  content: `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher). 
 - Align explanations with the SQA curriculum and use terminology/marking conventions the student would see in an SQA exam (e.g. command words like "describe", "explain", "evaluate" and how many marks they typically carry).
 - Break down answers the way SQA markers expect: clear structure, correct use of command words, and appropriate depth for the qualification level.
 - When helpful, reference relevant SQA subject specifications or past paper style.
 - Be encouraging but honest about gaps in the student's understanding — don't just validate wrong answers.
 - Keep explanations concise unless the student asks for more depth.
 - Return plain text unless the user's app requires structured JSON output.`
-            },
-            {
-               role: "user",
-               content: prompt
-            }
-         ],
-         model: "openai/gpt-oss-120b",
-         temperature: 1,
-         top_p: 1,
-         max_completion_tokens: 9000,
-         stream: false,
-         reasoning_effort: "medium"
+               },
+               {
+                  role: "user",
+                  content: [
+                     { type: "text", text: prompt },
+                     { type: "file", file: { filename: file.name, file_data: fileData } }
+                  ]
+               }
+            ],
+            temperature: 0.88,
+            top_p: 0.95,
+            stream: false,
+            reasoning: { effort: "low" },
+         })
       });
-      // if (chatCompletion.choices[0].message.content == "") {
-      //    return await callChatGPT(prompt);
-      // }
-
-      const response = chatCompletion.choices[0].message.content;
-      console.log(chatCompletion.choices)
-      // const cleanedJsonResult = response?.replace(/```json\s*/g, '').replace(/```/g, '').trim();
-
-      // console.log(cleanedJsonResult);
-      // console.log(JSON.parse(cleanedJsonResult!));
-      return JSON.parse(response!);
+      const response = await openRouterResponse.json();
+      console.log(response);
+      return extractJson(response.choices[0].message.content);
    } catch (err) {
       console.error(err)
       return false;
@@ -113,7 +66,6 @@ export async function callChatGPT (prompt: string) {
                {
                   role: "system",
                   content: `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher). 
-         
 - Align explanations with the SQA curriculum and use terminology/marking conventions the student would see in an SQA exam (e.g. command words like "describe", "explain", "evaluate" and how many marks they typically carry).
 - Break down answers the way SQA markers expect: clear structure, correct use of command words, and appropriate depth for the qualification level.
 - When helpful, reference relevant SQA subject specifications or past paper style.
@@ -141,6 +93,72 @@ export async function callChatGPT (prompt: string) {
       }
 
       return extractJson(result);
+   } catch (err) {
+      console.error(err)
+      return false;
+   }
+}
+
+
+export async function llmForMarkdownAndJson (prompt: string) {
+   try {
+      const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+         method: "POST",
+         headers: {
+            "Authorization": `Bearer ${process.env.AI_API_KEY!}`,
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+               {
+                  role: "system",
+                  content: `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher). 
+- Align explanations with the SQA curriculum and use terminology/marking conventions the student would see in an SQA exam (e.g. command words like "describe", "explain", "evaluate" and how many marks they typically carry).
+- Break down answers the way SQA markers expect: clear structure, correct use of command words, and appropriate depth for the qualification level.
+- When helpful, reference relevant SQA subject specifications or past paper style.
+- Be encouraging but honest about gaps in the student's understanding — don't just validate wrong answers.
+- Keep explanations concise unless the student asks for more depth.
+- Return plain text unless the user's app requires structured JSON output.`
+               },
+               {
+                  role: "user",
+                  content: prompt
+               }
+            ],
+            temperature: 0.88,
+            top_p: 0.95,
+            stream: false,
+            reasoning: { effort: "low" },
+         })
+      });
+      const response = await openRouterResponse.json();
+      const result = response.choices[0].message.content;
+      if (!result) return false;
+
+      const jsonResult: any = extractJson(result);
+      const errors: string[] = [];
+
+      jsonResult.quiz.forEach((question: any, index: number) => {
+         const fields = [
+            question.question,
+            ...question.options,
+            question.explanation,
+         ];
+
+         fields.forEach((content, fieldIndex) => {
+            const result = validateKatex(content);
+            if (!result.valid) {
+               errors.push(`Question ${index + 1}, field ${fieldIndex}: ` + JSON.stringify(result.errors));
+            }
+         });
+      });
+
+      if (errors.length === 0) {
+         return jsonResult;
+      } else {
+         return await llmForMarkdownAndJson(prompt);
+      }
    } catch (err) {
       console.error(err)
       return false;

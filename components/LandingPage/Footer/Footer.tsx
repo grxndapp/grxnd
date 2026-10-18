@@ -38,8 +38,8 @@ export default function Footer() {
          label: "Visora"
       },
       {
-         link: "https://minweb.freevar.com/?utm_source=grxnd",
-         iconUrl: "https://minweb.freevar.com/favicon.ico",
+         link: "https://minwebagency.com/?utm_source=grxnd",
+         iconUrl: "https://minwebagency.com/favicon.ico",
          label: "Minweb"
       },
    ]
@@ -95,7 +95,7 @@ export default function Footer() {
                   <div className="text-s bold-600 full mb-1">Founder - Philip</div>
                   <div className="box fit pd-05">
                      <FooterLink
-                        link="https://www.instagram.com/phillyxm0/"
+                        link="https://www.instagram.com/phillyltd/"
                         label="Instagram"
                         icon={<Instagram color="#ff0062" size={17} />}
                         instagram

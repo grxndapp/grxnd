@@ -3,16 +3,19 @@ import { useEffect, useState } from "react";
 import { chartCurrentMonth, chartGroupByMonth, chartLast7Days, chartTodayHourly, getUniqueYears } from "@/utils/chart";
 import { useSession } from "next-auth/react";
 import { pluralSuffixer } from "@/lib/str";
+import { NormalCardStyles, UserCardStyles } from "@/styles-extra/styles";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
-import QuizBarChart from "@/components/QuizBarChart/QuizBarChart";
 import Chart from "@/components/Chart/Chart";
 import Selections from "@/components/Selections/Selections";
+import ProgressBar from "@/components/ProgressBar/ProgressBar";
 
 type AdminPageProps = {
    usersGraph: {
       name: string;
+      email: string;
+      userid: string;
       oauth_provider: string;
       is_subscribed: boolean;
       createdAt: Date;
@@ -64,60 +67,75 @@ export default function AdminPage ({ usersGraph }: AdminPageProps) {
 
    return (
       <AppWrapper>
-         <div className="text-xxl bold-700 full dfb align-center justify-center gap-7">Admin Dashboard</div>
-         <div className="text-xs full text-center pd-1">Welcome to the Admin Page {session?.user?.name}</div>
+         <div className="box full pd-3">
+            <div className="text-xxl bold-700 full">Admin Dashboard</div>
+            <div className="text-xs full pd-1">Welcome to the Admin Page {session?.user?.name}</div>
 
-         <div className="box full pd-2 dfb column gap-10">
-            <Card styles={{
-               width: "100%", height: "fit-content", padding: "10px",
-               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
-            }}>
-               <div className="text-m bold-700 full pd-1 pdx-15">
-                  User Chart
-               </div>
-               <div className="box full pdx-15 mb-2">
-                  <Selections 
-                     selections={[ 'Today', 'Last 7 days', 'This Month', ...getUniqueYears(usersGraph) ]}
-                     onSelect={(index: any) => setChartLabelIndex(index)}
-                     defaultInitialIndex={0}
+            <div className="box full pd-2 dfb column gap-10">
+               <Card styles={{
+                  width: "100%", height: "fit-content", padding: "15px", borderRadius: "25px",
+                  display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
+               }}>
+                  <div className="text-m bold-700 full pd-1 pdx-15">User Chart</div>
+                  <div className="box full pdx-15 mb-2">
+                     <Selections 
+                        selections={[ 'Today', 'Last 7 days', 'This Month', ...getUniqueYears(usersGraph) ]}
+                        onSelect={(index: any) => setChartLabelIndex(index)}
+                        defaultInitialIndex={0}
+                     />
+                  </div>
+                  <Chart 
+                     data={chartData} 
+                     yDataKey="totalUsers" 
+                     xDataKey={chartDataXAxis} 
+                     xAxisInterval={chartXAxisInterval}
                   />
-               </div>
-               <Chart 
-                  data={chartData} 
-                  yDataKey="totalUsers" 
-                  xDataKey={chartDataXAxis} 
-                  xAxisInterval={chartXAxisInterval}
-               />
-            </Card>
-         </div>
+               </Card>
+            </div>
 
-         <div className="box full pd-2 dfb column gap-10">
-            <Card styles={{ width: "100%", padding: "25px" }}>
-               <div className="text-xxs full">Current Users</div>
-               <div className="text-xxl bold-700 full accent-color">{usersGraph.length}</div>
-               <div className="text-xxxs full pd-1">
-                  <b className="accent-color">{filterUsersBySubscription(true).length}</b> subscribed {pluralSuffixer('user', filterUsersBySubscription(true).length)}
-               </div>
-               <div className="text-xxxs full">
-                  <b className="accent-color">{filterUsersBySubscription(false).length}</b> non-subscribed {pluralSuffixer('user', filterUsersBySubscription(false).length)}
+            <div className="box full pd-2 dfb column gap-10">
+               <Card styles={{ width: "100%", padding: "25px", borderRadius: "25px" }}>
+                  <div className="text-xxs full">Current Users</div>
+                  <div className="text-xxl bold-700 full accent-color">{usersGraph.length}</div>
+                  <div className="text-xxxs full pd-1">
+                     <b className="accent-color">{filterUsersBySubscription(true).length}</b> subscribed {pluralSuffixer('user', filterUsersBySubscription(true).length)}
+                  </div>
+                  <div className="text-xxxs full">
+                     <b className="accent-color">{filterUsersBySubscription(false).length}</b> non-subscribed {pluralSuffixer('user', filterUsersBySubscription(false).length)}
+                  </div>
+               </Card>
+            </div>
+            
+            <Card styles={NormalCardStyles}>
+               <div className="box pd-1 full dfb column gap-10">
+                  <div className="text-m full bold-600">Authentication</div>
+                  <div className="box full dfb column gap-5">
+                     <div className="text-s bold-600">Google Auth</div>
+                     <ProgressBar percentage={(filterUsersByOauth("google").length/usersGraph.length)*100} />
+                  </div>
+                  <div className="box full dfb column gap-5">
+                     <div className="text-s bold-600">Credentials Auth</div>
+                     <ProgressBar percentage={(filterUsersByOauth("credentials").length/usersGraph.length)*100} />
+                  </div>
                </div>
             </Card>
-         </div>
-         
-         <div className="box pd-2 full dfb column gap-10">
-            <QuizBarChart
-               color={"#1121ff"}
-               data={[
-                  { name: "Google Auth", value: ((filterUsersByOauth("google").length/usersGraph.length)*100)  },
-                  { name: "Credentials Auth", value: ((filterUsersByOauth("credentials").length/usersGraph.length)*100)  }
-               ]}
-               subject={"Oauth Providers"}
-               barDataKey="value"
-               labelDataKey="name"
-            />
-         </div>
+            <Spacing />
+            
+            <Card styles={{ ...NormalCardStyles, padding: "30px" }}>
+               <div className="text-m full bold-600">All Users</div>
+               <div className="text-xxs pd-1 full">All the wonderful users of Grxnd</div>
+               <div className="box full dfb wrap gap-10">
+                  {usersGraph.map(user => (
+                     <div key={user.userid} style={UserCardStyles}>
+                        <div className="text-s bold-600 full accent-color">{user.name}</div>
+                        <div className="text-xxs full grey-5">{user.email}</div>
+                     </div>
+                  ))}
+               </div>
+            </Card>
 
-         <Spacing size={4} />
+            <Spacing size={4} />
+         </div>
       </AppWrapper>
    )
 }

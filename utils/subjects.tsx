@@ -1,3 +1,5 @@
+import { Dna, FlaskConical, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
+
 export const subjectLevels = [
 	"National 5", "Higher", "Advanced Higher"
 ]
@@ -568,13 +570,13 @@ export const subjectColors: Record<string, string> = {
 }
 
 export const subjectPastelBgColors: Record<string, string> = {
-	"Math": "#b7dbff",
-	"Physics": "#e6c3ff",
-	"Biology": "#ccffcc",
-	"Chemistry": "#ffd3c3",
-	"English": "#fff5bf",
-	"Computer Science": "#aadada",
-	"Administration": "#b4cde6"
+	"Math": "#98c8fc",
+	"Physics": "#e8d5f5",
+	"Biology": "#dcf7dc",
+	"Chemistry": "#fadfd7",
+	"English": "#f8f4de",
+	"Computer Science": "#ace6e6",
+	"Administration": "#e3eef8"
 }
 
 export function retrieveSubjectTopic (subjectLevel: string, subject: string) {
@@ -582,4 +584,33 @@ export function retrieveSubjectTopic (subjectLevel: string, subject: string) {
 	if (subjectLevel == "National 5") return subjectTopicsList.national5;
 	if (subjectLevel == "Higher") return subjectTopicsList.higher;
 	if (subjectLevel == "Advanced Higher") return subjectTopicsList.advancedHigher;
+}
+
+export function fullSubjectBreakDown (subjectInfo: string) {
+	if (subjectInfo.startsWith("Advanced Higher")) {
+		return {
+			subjectLevel: "Advanced Higher",
+			subject: subjectInfo.split("Advanced Higher ")[1],
+		};
+	} else if (subjectInfo.startsWith("Higher")) {
+		return {
+			subjectLevel: "Higher",
+			subject: subjectInfo.split("Higher ")[1]
+		}
+	} else {
+		return {
+			subjectLevel: "National 5",
+			subject: subjectInfo.split("National 5 ")[1]
+		};
+	}
+}
+
+export const subjectIcon: Record<string, any> = {
+	"Math": <Sigma size={20} />,
+	"Physics": <Orbit size={20} />,
+	"Biology": <Dna size={20} />,
+	"Chemistry": <FlaskConical size={20} />,
+	"English": <NotebookPen size={20} />,
+	"Computer Science": <Monitor size={20} />,
+	"Administration": <Lock size={20} />,
 }

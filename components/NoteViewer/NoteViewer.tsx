@@ -5,6 +5,8 @@ import { NotebookTabs, RotateCcw } from "lucide-react";
 import { addNoteToBackpack } from "@/app/actions/note";
 import { toast } from "sonner";
 import Spacing from "../Spacing/Spacing";
+import RenderMarkdown from "../RenderMarkdown/RenderMarkdown";
+import AwaitButton from "../AwaitButton/AwaitButton";
 
 type NoteViewerProps = {
    note: NoteMaker;
@@ -15,17 +17,32 @@ type NoteViewerProps = {
 }
 
 export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noSubject }: NoteViewerProps) {
-   const saveNoteBtn = async () => {
-      const save = await addNoteToBackpack(note);
+   const saveNoteBtn = async (callback: Function) => {
+      const save = await addNoteToBackpack(note, subject!.toLowerCase());
       if (save == false) {
          toast.error("Failed to save to notebook");
          return;
       }
       toast.success("Saved to Notebook");
+      callback();
    }
 
+   const lineStyles: React.CSSProperties = { whiteSpace: "pre-line" }
+
    return (
-      <div className="note">
+      <div className="note note-viewer-container">
+         {(!noButtons) && (<div className="box full dfb align-center gap-10">
+            <AwaitButton className="xxs pd-15 full" onClick={saveNoteBtn}>
+               <NotebookTabs size={17} /> Save to Notebook
+            </AwaitButton>
+            {(makeNewNote) && (
+               <button className="xxs outline-black tiny-shadow pd-15 full" onClick={() => makeNewNote()}>
+                  <RotateCcw size={17} /> Make Another Note
+               </button>
+            )}
+         </div>)}
+         <Spacing size={2} />
+
          {(!noSubject) && (<>
             {(subject) && (<div className="box full dfb align-center">
                <div className="box full dfb column">
@@ -41,53 +58,56 @@ export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noS
          </>)}
 
          <div className="text-xl bold-700 mb-05 full">{note.title}</div>
-         <div className="text-xxs pd-05" style={{lineHeight:"1.8rem"}}>{note.overview}</div>
+         <div className="text-xxs pd-05 line-height-17" style={lineStyles}>{note.overview}</div>
          <Spacing size={1} />
 
          <div className="text-sm bold-700 mt-1">Key Concepts</div>
          {note.key_concepts.map((keyConcept, index) => (
-            <div className="text-xxs pd-05" style={{lineHeight:"1.5rem"}} key={index}>{keyConcept}</div>
+            <div className="text-xxs pd-05" style={lineStyles} key={index}>
+               <RenderMarkdown content={keyConcept} />
+            </div>
          ))}
          <Spacing size={1} />
          
          <div className="text-sm bold-700 mt-1">Rules</div>
          {note.rules.map((rule, index) => (
-            <div className="text-xxs pd-05" style={{lineHeight:"1.5rem"}} key={index}>- {rule}</div>
+            <div className="text-xxs pd-05" style={lineStyles} key={index}>
+               <RenderMarkdown content={rule} />
+            </div>
          ))}
          <Spacing size={1} />
          
          <div className="text-sm bold-700 mt-1">Examples</div>
          {note.examples.map((example, index) => (
-            <div className="text-xxs pd-05" style={{lineHeight:"1.5rem"}} key={index}>- {example}</div>
+            <div className="text-xxs pd-05" style={lineStyles} key={index}>
+               <RenderMarkdown content={`${example}`} />
+               <Spacing size={2} />
+            </div>
          ))}
          <Spacing size={1} />
          
          <div className="text-sm bold-700 mt-1">Common Mistakes</div>
          {note.common_mistakes.map((mistake, index) => (
-            <div className="text-xxs pd-05" style={{lineHeight:"1.5rem"}} key={index}>- {mistake}</div>
+            <div className="text-xxs pd-05" style={lineStyles} key={index}>
+               <RenderMarkdown content={`${mistake}`} />
+            </div>
          ))}
          <Spacing size={1} />
          
          <div className="text-sm bold-700 mt-1">Practice Questions</div>
          {note.questions.map((question, index) => (
-            <div className="text-xxs pd-05" style={{lineHeight:"1.5rem"}} key={index}>{index+1}. {question}</div>
+            <div className="text-xxs pd-05" style={lineStyles} key={index}>
+               <RenderMarkdown content={`${question}`} />
+            </div>
          ))}
          <Spacing size={1} />
          
          <div className="text-sm bold-700 mt-1">Summary</div>
-         <div className="text-xxs pd-05" style={{lineHeight:"1.8rem"}}>{note.summary}</div>
+         <div className="text-xxs pd-05" style={lineStyles}>
+            <RenderMarkdown content={note.summary.join("\n")} />
+         </div>
          
          <Spacing size={1} />
-         {(!noButtons) && (<div className="box full dfb column gap-10">
-            <button className="xxs pd-1 full" onClick={saveNoteBtn}>
-               <NotebookTabs size={17} /> Save to Notebook
-            </button>
-            {(makeNewNote) && (
-               <button className="xxs outline-black tiny-shadow pd-1 full" onClick={() => makeNewNote()}>
-                  <RotateCcw size={17} /> Make Another Note
-               </button>
-            )}
-         </div>)}
          <Spacing size={4} />
 
       </div>

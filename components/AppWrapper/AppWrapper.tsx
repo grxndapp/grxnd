@@ -2,20 +2,21 @@
 import "./AppWrapper.css"
 import "@/styles/app.css"
 import { ReactNode, RefObject, useEffect, useState } from 'react'
-import { Backpack, ChevronRight, House, TextAlignStart, UserRoundCog, Wrench } from 'lucide-react'
+import { Backpack, ChevronRight, House, UserRoundCog } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { CustomIcon } from '../Icons/Icon'
 import { useModal } from "../Modal/ModalContext"
 import { getCurrentUserScore } from "@/app/actions/user"
-import userDefaultImage from "@/public/user-def.png"
 import { formatNumber } from "@/utils/num"
+import userDefaultImage from "@/public/user-def.png"
 
 
 export default function AppWrapper ({ children, noNavbar, contentRef }: { children: ReactNode, noNavbar?: boolean, contentRef?: RefObject<any | null> }) {
    const router = useRouter();
    const { data: session } = useSession();
    const { showModal, close } = useModal();
+   const pathname = usePathname();
    const [score, setScore] = useState(0);
    
    async function getUserScore () {
@@ -61,6 +62,11 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
       })
    }
 
+   const mobilePagesBackPackAllow = [
+      '/settings', '/home', '/notebooks', '/notebook',
+      '/note-maker', '/tools', '/quiz-stat', '/leaderboard'
+   ]
+
    return (
       <div className="app">
          <div className="account-bar-wrapper">
@@ -86,6 +92,11 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
             <div className="content-wrapper">
                {children}
             </div>
+            {mobilePagesBackPackAllow.some(p => pathname.startsWith(p)) && (
+               <div className="mobile-backpack-accessible-btn" onClick={() => router.push("/backpack")}>
+                  <Backpack size={23} />
+               </div>
+            )}
          </div>
       </div>
    )

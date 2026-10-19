@@ -80,7 +80,7 @@ function BackPackTool ({ label, href, style, description, icon, comingSoon }: Ba
                <div className="box full dfb column gap-5">
                   <div className="text-ml bold-700 full">{label}</div>
                   <div className="text-xxs grey-5 full pd-05">{comingSoon ? 'Coming Soon' : description}</div>
-                  <div style={BackpackOpenIconBubble}><ArrowRight size={17} /></div>
+                  {/* <div style={BackpackOpenIconBubble}><ArrowRight size={17} /></div> */}
                </div>
                <div className="box fit">
                   <CustomIcon url={icon.src} size={120} />

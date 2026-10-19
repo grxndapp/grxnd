@@ -129,7 +129,6 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
                         onChange={(e) => setSearchFolders(e.target.value)}
                      />
                   </div>
-                  <Spacing />
                   <div className="box full dfb wrap gap-10">
                      {applyFolderFilters().map((folderCodeName, index) => (
                         <FolderItem 

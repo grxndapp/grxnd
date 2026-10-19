@@ -46,7 +46,14 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<ModalContext.Provider value={{ showModal, close }}>
 			{children}
-			<AnimatePresence mode="wait">
+			{/* <AnimatePresence mode="wait">
+				{modal !== null && (
+					<Modal key={modal.id} onClose={close}>
+						{modal.content}
+					</Modal>
+				)}
+			</AnimatePresence> */}
+			<AnimatePresence mode="wait" initial={false}>
 				{modal !== null && (
 					<Modal key={modal.id} onClose={close}>
 						{modal.content}

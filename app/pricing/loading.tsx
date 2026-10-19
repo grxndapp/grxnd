@@ -9,8 +9,8 @@ export default async function LoadingPricingPage () {
          <Header />
          <div className="box full pd-2" style={{ background: "linear-gradient(to bottom, #dbd9ff, #ffffff)" }}>
             <div className="hero-section-headline text-b">Loading Grxnd App Pricing</div>
+            <Spacing size={20} />
          </div>
-         <Spacing size={8} />
          <Footer />
       </div>
    )

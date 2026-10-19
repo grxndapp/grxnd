@@ -15,16 +15,6 @@ const features = [
       description: 'Generate smart, adaptive quizzes that test your understanding and help you master every concept.',
    },
    {
-      icon: <UserRoundPen size={24} />,
-      title: 'AI Human Writer',
-      description: 'Write essays that sound natural, thoughtful, and human — powered by advanced AI language models.',
-   },
-   {
-      icon: <UsersRound size={24} />,
-      title: 'Quiz Tournaments',
-      description: 'Challenge friends, climb leaderboards, and prove your knowledge in real-time quiz battles.',
-   },
-   {
       icon: <FilePen size={24} />,
       title: 'AI Essay Grader',
       description: 'Get instant, detailed feedback on your essays — grading accuracy, structure, and writing quality.',
@@ -36,7 +26,7 @@ const features = [
    },
 ];
 
-export default function Features() {
+export default function Features () {
    return (
       <section className="features-section" id="features">
          <h2>Features</h2>

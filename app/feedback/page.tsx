@@ -5,12 +5,13 @@ import { useSession } from 'next-auth/react';
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CustomIcon } from "@/components/Icons/Icon";
-import { SendHorizontal } from "lucide-react";
+import { Mail, SendHorizontal } from "lucide-react";
 import Header from "@/components/LandingPage/Header/Header";
 import Footer from "@/components/LandingPage/Footer/Footer";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import UserDefaultImage from "@/public/user-def.png"
+import Link from "next/link";
 
 export default function FeedbackPage () {
    const { data: session, status } = useSession();
@@ -88,7 +89,7 @@ export default function FeedbackPage () {
             </>)}
             <Spacing size={3} />
          </div>
-         <div className="box full pd-2">
+         <div className="box full pd-4">
             <div className="hero-section-headline text-xxl full bold-700 text-center">Contact Us</div>
             
             <div className="box full dfb align-center justify-center">
@@ -98,12 +99,16 @@ export default function FeedbackPage () {
             </div>
 
             <div className="box full dfb align-center justify-center">
-               <div className="text-xs full text-center mb-2" style={{ width:"100%", maxWidth:"700px" }}>
-                  grxndapp@gmail.com
-               </div>
+               <Link 
+                  className="box fit mb-2"
+                  href={`mailto:grxndapp@gmail.com`} target='_blank'   
+               >
+                  <button className="xxs pd-12 pdx-3" onClick={() => router.push("/sign-in")}>
+                     <Mail size={20} />
+                     Mail Us !
+                  </button>
+               </Link>
             </div>
-
-            <Spacing size={3} />
          </div>
          <Footer />
       </div>

@@ -63,8 +63,6 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
       return agg;
    }, {})
 
-   console.log(subjectProgressQuizzes)
-
    function isIphoneOrIpad(): boolean {
       const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
       const platform = navigator.platform;

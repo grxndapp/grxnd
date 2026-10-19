@@ -77,8 +77,8 @@ export default async function PricingPage () {
                   </Link>
                </Card>
             </div>
+            <Spacing size={8} />
          </div>
-         <Spacing size={8} />
          <Footer />
       </div>
    )

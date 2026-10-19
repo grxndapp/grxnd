@@ -10,22 +10,20 @@ export default function AppImages () {
 	]
 
 	return (
-		<>
-			<div className="app-images">
-				<div className="app-images-wrapper">
-					<div className="box full pd-3">
-						<div className="text-xmb full text-center bold-700">App Images</div>
-					</div>
-					<div className="list-images">
-						{appImagesList.map((appImage, index) => (
-							<div className="app-image" key={index}>
-								<img src={appImage} alt="app image" />
-							</div>
-						))}
-					</div>
+		<div className="app-images">
+			<div className="app-images-wrapper">
+				<div className="box full pd-3">
+					<div className="text-xmb full text-center bold-700">App Images</div>
+				</div>
+				<div className="list-images">
+					{appImagesList.map((appImage, index) => (
+						<div className="app-image" key={index}>
+							<img src={appImage} alt="app image" />
+						</div>
+					))}
 				</div>
 			</div>
 			<Spacing size={4} />
-		</>
+		</div>
 	)
 }

@@ -1,7 +1,7 @@
 'use client';
 import "./Features.css"
 import Spacing from "@/components/Spacing/Spacing";
-import { BookCheck, FilePen, Notebook, Trophy, UserRoundPen, UsersRound } from 'lucide-react';
+import { BookCheck, FilePen, GraduationCap, Notebook, Trophy, UserRoundPen, UsersRound } from 'lucide-react';
 
 const features = [
    {
@@ -13,6 +13,16 @@ const features = [
       icon: <BookCheck size={24} />,
       title: 'AI Quiz Maker',
       description: 'Generate smart, adaptive quizzes that test your understanding and help you master every concept.',
+   },
+   {
+      icon: <BookCheck size={24} />,
+      title: 'Exam Readiness Score',
+      description: 'See how ready you are for your exam and get a custom plan just for you to study for it.',
+   },
+   {
+      icon: <GraduationCap size={24} />,
+      title: 'Uni Students',
+      description: 'Not just secondary school subject, even uni students can use Grxnd.',
    },
    {
       icon: <FilePen size={24} />,

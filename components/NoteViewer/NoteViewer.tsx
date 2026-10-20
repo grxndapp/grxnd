@@ -136,7 +136,7 @@ export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noS
                </div>
                <div className="box fit h-full">
                   <CustomIcon 
-                     url={`/subjectS/${subject.replaceAll(" ", "-").toLowerCase()}.png`}
+                     url={`/subjects/${subject.replaceAll(" ", "-").toLowerCase()}.png`}
                      size={40}
                   />
                </div>

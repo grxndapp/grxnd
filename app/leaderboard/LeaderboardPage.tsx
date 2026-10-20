@@ -1,6 +1,7 @@
 'use client'
 import AppWrapper from '@/components/AppWrapper/AppWrapper'
 import PlayerLeaderboard from '@/components/PlayerLeaderboard/PlayerLeaderboard'
+import Spacing from '@/components/Spacing/Spacing'
 
 type LeaderboardPageProps = {
    users: {
@@ -25,6 +26,7 @@ export default function LeaderboardPage ({ users }: LeaderboardPageProps) {
                players={[...users].sort((a, b) => b.score - a.score)}
                noImage
             />
+            <Spacing size={5} />
          </div>
       </AppWrapper>
    )

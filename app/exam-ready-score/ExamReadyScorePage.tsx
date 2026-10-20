@@ -229,14 +229,14 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
                   </div>
                   
                   <div className="box full dfb column gap-10">
-                     {(examReadyScore.stats.weakestTopics.length > 0) && (
+                     {(examReadyScore.stats.strongestTopics.length > 0) && (
                         <div className="strength-topics-card">
                            <div className="box full dfb align-center gap-10">
                               <div style={StrengthIconBubble}><Trophy size={22} /></div>
                               <div className="text-m bold-600 full line-height-12 dfb align-center gap-10">Strongest Topics</div>
                            </div>
                            <div className="box full pd-2 dfb wrap gap-10">
-                              {examReadyScore.stats.weakestTopics.map(topic => (
+                              {examReadyScore.stats.strongestTopics.map(topic => (
                                  <div key={topic.topic} className="strength-topic-pill">{titleCase(topic.topic)}</div>
                               ))}
                            </div>
@@ -333,17 +333,10 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
                         <div className="text-l full xl bold-700 pd-1">When is your {titleCase(subjectLevel)} {titleCase(subject)} Exam?</div>
                         <div className="box full mb-3">
                            <input 
-                              ref={dateInputRef}
                               type="date" name="grxnd-student-exam-date" id="grxnd-student-exam-date"
                               value={examDate} onChange={e => setExamDate(e.target.value)}
-                              style={{ opacity: 0, accentColor: "var(--accent-color)", padding: "0" }} 
+                              className="xs pd-13 full"
                            />
-                           <div style={ExamDateCardStyles} onClick={() => dateInputRef.current?.showPicker()}>
-                              <div className="text-xs bold-500 dfb align-center justify-center gap-10">
-                                 <Calendar size={18} />
-                                 {formatMilliseconds(new Date(examDate).getTime(), true)}
-                              </div>
-                           </div>
                         </div>
 
                         <div className="box full">

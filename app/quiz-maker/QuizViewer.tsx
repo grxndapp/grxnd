@@ -50,7 +50,7 @@ const questionTypeFormatting = (type: string) => {
    if (type.includes('1')) {
       return <>This is an <b style={{color: "#ffabab"}}>A type question</b></>
    } else if (type.includes('2')) {
-      return <>This is a <b style={{color: "#ffac69   "}}>B type question</b></>
+      return <>This is a <b style={{color: "#ffac69"}}>B type question</b></>
    } else if (type.includes('3')) {
       return <>This is a <b style={{color: "#4ac76b"}}>C type question</b></>
    }
@@ -147,7 +147,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                
                {(questionAnswered) ? <>
                   <div className={`explanation ${optionChosen == quizQuestions[questionIndex].answerIndex ? 'correct' : 'wrong'}`}>
-                     <div className="text-sm bold-700">{optionChosen == quizQuestions[questionIndex].answerIndex ? 'Correct' : 'Wrong'}</div>
+                     <div className="text-ml pd-1 bold-600">{optionChosen == quizQuestions[questionIndex].answerIndex ? 'Correct' : 'Wrong'}</div>
                      <div className="text-s" style={{ whiteSpace: "pre-line" }}>
                         <RenderMarkdown content={quizQuestions[questionIndex].answerExplanation} />
                      </div>

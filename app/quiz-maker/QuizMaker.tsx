@@ -60,7 +60,7 @@ export default function QuizMakerPage () {
    return (
       <AppWrapper noNavbar={aiQuiz !== null && aiQuiz !== undefined}>
          {(aiQuiz == null) && (<>
-            <div className="box full h-full pd-3">
+            <div className="box full h-full mw-700 pd-3">
                <ToolHeading title="Create a Quiz" description="Choose your subject level, subject and maybe a topic and press Create Quiz" idClassName="quiz-maker" />
                <div className="text-xxs full pd-1">For each question you get, you <b className="accent-color">5</b> points added to your total score.</div>
                <Spacing size={1} />

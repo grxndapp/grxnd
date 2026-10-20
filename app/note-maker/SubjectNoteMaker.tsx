@@ -33,7 +33,7 @@ export default function SubjectNoteMaker() {
    const createNoteAI = async () => {
       showModal({
          content: <div className="box full pd-3 pdx-3">
-            <div className="text-xl bold-700 full mb-1 text-center">Note Maker</div>
+            <div className="text-xl bold-700 full mb-1 accent-color">Note Maker</div>
             <div className="text-xxs full text-center">
                AI is currently creating a note for you about {subjectLevel} {subject} {topic}...
             </div>

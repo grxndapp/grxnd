@@ -20,7 +20,7 @@
    aspect-ratio: 1;
    padding: 13px;
    border-radius: 30px;
-   background-color: #b1c9ec;
+   background-color: var(--accent-color-30);
    display: flex;
    align-items: center;
    justify-content: center;

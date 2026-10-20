@@ -64,3 +64,10 @@ export const scoresTable = pgTable("scores", {
    userid: text("userid"),
    score: integer("score"),
 })
+
+export const forgotPasswordTable = pgTable("forgot_password", {
+   id: serial("id").primaryKey(),
+   userid: text("userid").notNull(),
+   forgottenPasswordCode: uuid("code").defaultRandom().notNull(),
+   createdAt: timestamp("created_at").defaultNow().notNull(),
+});

@@ -14,18 +14,21 @@ export default function ChangePasswordPage() {
    const [error, setError] = useState<string | undefined>(undefined)
    const router = useRouter();
 
-   const changePasswordBtn = async () => {
+   const changePasswordBtn = async (callback: Function) => {
       setError(undefined);
       if (password == "") {
          setError("Please enter a password");
+         callback();
          return;
       }
       if (password.length < 8) {
          setError("Password must contain at least 8 characters");
+         callback();
          return;
       }
       if (password2 !== password) {
          setError("Passwords do not match");
+         callback();
          return;
       }
       const changePwd = await changeUserPassword(password);
@@ -35,6 +38,7 @@ export default function ChangePasswordPage() {
       } else {
          setError("Failed to change your password");
       }
+      callback();
    }
 
    return (

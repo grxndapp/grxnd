@@ -65,5 +65,15 @@ export const QuizQuestionReviewCardStyles: React.CSSProperties = {
 
 export const SubjectProgressCardStyles: React.CSSProperties = {
    width: "100%", maxWidth: "370px", borderRadius: "25px",
-   padding: "25px", cursor: "pointer",
+   padding: "25px", cursor: "pointer", border: "1px solid #c4cdff9a",
+}
+
+export const ExamReadyScoreCtaCardStyles: React.CSSProperties = {
+   width: "100%", borderRadius: "25px",
+   padding: "15px 25px", cursor: "pointer", border: "1px solid #c4cdff9a",
+}
+
+export const ExamDateCardStyles: React.CSSProperties = {
+   width: "100%", borderRadius: "15px", background: "white",
+   padding: "13px 15px", cursor: "pointer", border: "1px solid #c4cdff9a",
 }

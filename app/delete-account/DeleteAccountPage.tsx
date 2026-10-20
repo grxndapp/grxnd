@@ -12,14 +12,16 @@ import AwaitButton from '@/components/AwaitButton/AwaitButton';
 export default function DeleteAccountPage () {
    const router = useRouter();
 
-   const deleteUserAccountBtn = async () => {
+   const deleteUserAccountBtn = async (callback: Function) => {
       const deleted = await deleteUserAccount();
       if (deleted) {
          signOut();
          toast.success("Account Deleted");
+         callback();
          return;
       }
       toast.error("Failed to delete account!");
+      callback();
    }
 
    return (

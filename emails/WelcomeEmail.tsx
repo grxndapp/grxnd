@@ -1,16 +1,11 @@
 import {
-  Body, Button, Container, Head, Html,
+  Body, Container, Head, Html,
   Img, Link, Preview, Section, Text,
 } from '@react-email/components';
 
 interface WelcomeToGrxndEmailProps {
   username?: string;
-  password?: string;
 }
-
-const baseUrl = process.env.NEXTAUTH_URL
-  ? `${process.env.NEXTAUTH_URL}`
-  : '';
 
 const features = [
    {
@@ -18,25 +13,26 @@ const features = [
       description: "Generate custom quizzes instantly from any topic or notes."
    },
    {
+      name: "🤖 AI Note Taker",
+      description: "Take notes in class without even being there (as long as you get the pdfs)."
+   },
+   {
       name: "📝 AI Essay Grader",
       description: "Get instant feedback, scores, and improvement tips for your essays."
    },
    {
-      name: "💬 AI Humanizer",
-      description: "Rewrite AI text to sound more natural, human, and authentic."
-   },
-   {
-      name: "💬 AI Humanizer",
-      description: "Rewrite AI text to sound more natural, human, and authentic."
-   },
-   {
-      name: "⚡ Other Cool AI Tools",
+      name: "⚡ Other Cool Features (There are Easter Eggs)",
       description: "Explore study summaries, AI-powered learning insights and more to keep you ahead."
    }
 ];
 
+const grxnd = {
+  url: "https://grxnd.app/",
+  logo: "https://grxnd.app/logo.png",
+  feedback: "https://grxnd.app/feedback",
+}
 
-export const WelcomeToGrxndEmail = ({ username, password }: WelcomeToGrxndEmailProps) => (
+export const WelcomeToGrxndEmail = ({ username }: WelcomeToGrxndEmailProps) => (
    <Html>
       <Head />
       <Body style={main}>
@@ -45,10 +41,10 @@ export const WelcomeToGrxndEmail = ({ username, password }: WelcomeToGrxndEmailP
          </Preview>
          <Container style={container}>
             <Img
-               src={`${baseUrl}/logo.png`}
-               width="32"
-               height="32"
-               alt="Github"
+               src={grxnd.logo}
+               width="50"
+               height="50"
+               alt="grxnd logo"
             />
 
             <Text style={title}>
@@ -71,44 +67,19 @@ export const WelcomeToGrxndEmail = ({ username, password }: WelcomeToGrxndEmailP
                   ))}
                </ul>
                <Text style={text}>
-                  You've officially locked in. It's time to study sharper, not harder.
+                  You've officially locked in. It's time to study smarter, not harder.
                </Text>
-               {(password || password !== "") && (<>
-                  <br />
-                  <Text style={text}>
-                     <strong>To Login to your account:</strong>
-                  </Text>
-                  <Text style={text}>Here's your temporary password: {password}</Text>
-                  <Text style={text}>
-                     For your security, please change your password immediately click the button below:
-                  </Text>
-                  <Text style={text}>
-                     <Link style={link} href={`${baseUrl}/change-password`} target='_blank'>
-                        <Button style={button}>Change Password</Button>
-                     </Link>
-                  </Text>
-                  <br />
-                  <Text style={text}>
-                     If the button above doesn't work use this link:
-                  </Text>
-                  <Text style={text}>
-                     <Link style={link} href={`${baseUrl}/change-password`} target='_blank'>
-                        {baseUrl}/change-password
-                     </Link>
-                  </Text>
-               </>)}
                <br />
                <Text style={text}>Cheers,</Text>
                <Text style={text}>The Grxnd Team</Text>
             </Section>
 
             <Text style={links}>
-               <Link style={link} href={`${baseUrl}/feedback`} target='_blank'>
+               <Link style={link} href={grxnd.feedback} target='_blank'>
                   Contact support
                </Link>
             </Text>
-
-            <Text style={footer}>Grxnd ・ Glasgow, Scotland</Text>
+            <Text style={footer}><Link style={link} href={grxnd.url} target='_blank'>Grxnd</Link> ・ Glasgow, Scotland</Text>
          </Container>
       </Body>
    </Html>

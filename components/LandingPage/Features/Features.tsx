@@ -29,7 +29,8 @@ const features = [
 export default function Features () {
    return (
       <section className="features-section" id="features">
-         <h2>Features</h2>
+         <div className="section-heading text-xxxl bold-700">Features</div>
+         <Spacing />
          <div className="features-grid">
             {features.map((feature, index) => (
                <div key={index} className="feature-card">

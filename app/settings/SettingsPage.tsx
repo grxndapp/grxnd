@@ -10,7 +10,6 @@ import AppWrapper from '@/components/AppWrapper/AppWrapper'
 import Spacing from '@/components/Spacing/Spacing'
 import userDefaultImage from '@/public/user-def.png'
 import Link from 'next/link';
-import { sendVerificationEmailFromGrxnd } from '../actions/email';
 
 type SettingsPageProps = {
    user: UserDetails;
@@ -21,25 +20,6 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
    const { data: session, status } = useSession();
    const { showModal, close } = useModal();
    const manageBillingLink = "https://billing.stripe.com/p/login/aFa7sL5wx17hfb34lSaR200"
-
-   const sendVerificationEmail = async () => {
-      const sentEmail = await sendVerificationEmailFromGrxnd(user.email);
-      if (sentEmail) {
-         showModal({
-            content: <div className='box full h-fit pdx-2 pd-2'>
-               <div className="text-xl bold-700 full mb-1 text-center">Verification Email Sent</div>
-               <div className="text-xxs full text-center pd-1">
-                  An email with a verification link has been sent to {user.email}. Please check spam folder if you can not find the email in your inbox.
-               </div>
-               <div className="box full mt-2">
-                  <button className="xxs pd-11 full" onClick={close}>Continue</button>
-               </div>
-            </div>
-         });
-      } else {
-         toast.error(`Failed to send ${user.email} a verification email`);
-      }
-   }
 
    const credentialVerifier = (oauth_provider: string) => {
       if (oauth_provider == "nv-credentials") {

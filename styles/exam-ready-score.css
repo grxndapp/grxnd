@@ -1,0 +1,93 @@
+.target-grade-pill {
+   width: fit-content;
+   background-color: white;
+   padding: 10px 14px;
+   border-radius: 20px;
+}
+
+.exam-card-wrapper {
+   width: 100%;
+   padding: 20px 0;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+}
+
+@media screen and (min-width: 1200px) {
+   .exam-card-wrapper {
+      flex-wrap: nowrap;
+   }
+}
+
+.exam-score-card {
+   width: 100%;
+   border-radius: 20px;
+   padding: 15px 20px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: white;
+   box-shadow:
+      0 8px 28px rgba(63, 79, 130, 0.045),
+      0 2px 8px rgba(63, 79, 130, 0.025),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.exam-score-card.green {
+   background-color: #d9ffd5;
+}
+
+.exam-score-card.orange {
+   background-color: #fff5f0;
+}
+
+.simple-exam-score-card {
+   width: 100%;
+   border-radius: 20px;
+   padding: 15px 20px;
+   background-color: white;
+   box-shadow: 0 2px 10px rgba(63, 79, 130, 0.045);
+}
+
+.plan-card {
+   background-color: #f7f7ff;
+   padding: 30px 25px;
+   border-radius: 20px;
+   box-shadow: 0 2px 30px rgba(63, 79, 130, 0.205);
+}
+
+.focus-topics-card {
+   height: fit-content;
+   background-color: #ffdcdc;
+   color: #940606;
+   padding: 30px 25px;
+   border-radius: 20px;
+   box-shadow: 0 2px 10px rgba(63, 79, 130, 0.045);
+}
+
+.focus-topic-pill {
+   width: fit-content;
+   background-color: #ffb7b7;
+   color: #940606;
+   font-weight: 500;
+   padding: 10px 14px;
+   border-radius: 20px;
+}
+
+.strength-topics-card {
+   height: fit-content;
+   background-color: #ddffdc;
+   color: #046d04;
+   padding: 30px 25px;
+   border-radius: 20px;
+   box-shadow: 0 2px 10px rgba(63, 79, 130, 0.045);
+}
+
+.strength-topic-pill {
+   width: fit-content;
+   background-color: #95f88c;
+   color: #055205;
+   font-weight: 500;
+   padding: 10px 14px;
+   border-radius: 20px;
+}

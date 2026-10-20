@@ -1,6 +1,7 @@
 import {
-  Body, Container, Head, Html,
+  Body, Container, Head, Html, Link,
   Img, Preview, Section, Text,
+  Button,
 } from '@react-email/components';
 
 interface ForgotPwdEmailProps {
@@ -8,11 +9,13 @@ interface ForgotPwdEmailProps {
   code: string;
 }
 
-const baseUrl = process.env.NEXTAUTH_URL
-  ? `${process.env.NEXTAUTH_URL}`
-  : '';
+const grxnd = {
+  url: "https://grxnd.app/",
+  logo: "https://grxnd.app/logo.png",
+  feedback: "https://grxnd.app/feedback",
+}
 
-export const ForgotPwdEmail = ({ username, code }: ForgotPwdEmailProps) => (
+export const ForgotPwdEmail = ({ username, code='1000' }: ForgotPwdEmailProps) => (
    <Html>
       <Head />
       <Body style={main}>
@@ -21,33 +24,40 @@ export const ForgotPwdEmail = ({ username, code }: ForgotPwdEmailProps) => (
          </Preview>
          <Container style={container}>
             <Img
-               src={`${baseUrl}/logo.png`}
-               width="32"
-               height="32"
-               alt="Github"
+               src={grxnd.logo}
+               width="50"
+               height="50"
+               alt="grxnd logo"
             />
             <br />
 
             <Section style={section}>
                <Text style={text}>
-                  Hey <strong>{username || 'Kevin'}</strong>,
+                  Hey <strong>{username || 'there'}</strong>,
                </Text>
                <Text style={text}>
                   We received a request to reset your Grxnd password.
                </Text>
                <Text style={text}>To continue, enter the code below on the password reset page:</Text>
+               <br />
                <Text style={text}>
-                  <strong>{code}</strong>
+                  <Button style={button} href={`${grxnd.url}forgot-password/${code}`} target='_blank'>
+                     Reset Password
+                  </Button>
                </Text>
-					<Text style={text}>
-						This code will expire in <strong>10 minutes</strong> for your security.
-					</Text>
+               <br />
+               <Text style={text}>Or copy this url:</Text>
+               <Text style={text}>{grxnd.url}forgot-password/{code}</Text>
+               <br />
+              <Text style={text}>
+                This code will expire in <strong>10 minutes</strong> for your security.
+              </Text>
                <Text style={text}>If you didn't request a password reset, you can safely ignore this email. Your account is still secure.</Text>
                <Text style={text}>Stay Sharp,</Text>
                <Text style={text}>The Grxnd Team</Text>
             </Section>
 
-            <Text style={footer}>Grxnd ・ Glasgow, Scotland</Text>
+            <Text style={footer}><Link style={link} href={grxnd.url} target='_blank'>Grxnd</Link> ・ Glasgow, Scotland</Text>
          </Container>
       </Body>
    </Html>

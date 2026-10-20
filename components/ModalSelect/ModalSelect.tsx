@@ -44,11 +44,11 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                >
-                  <div className="close-ms">
+                  {/* <div className="close-ms">
                      <div className="close-btn" onClick={() => setShowModalSelector(false)}>
                         <X size={18} />
                      </div>
-                  </div>
+                  </div> */}
 
                   <div className="text-l bold-700 full">{title}</div>
 
@@ -87,6 +87,10 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
                   </div>
 
                   <div className="text-s dfb align-center justify-end gap-10 mt-1">
+                     <button 
+                        className='xs outline-black tiny-shadow pd-1 pdx-2'
+                        onClick={() => setShowModalSelector(false)}
+                     >Close <X size={17} /></button>
                      {(showDeselect) && (<button 
                         className='xs outline-black tiny-shadow pd-1 pdx-2'
                         onClick={() => {

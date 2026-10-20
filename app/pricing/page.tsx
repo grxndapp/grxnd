@@ -5,26 +5,12 @@ import { dalCheckUserSubscription } from "@/dal/helpers";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import { plans } from "@/lib/stripe"
 import Header from "@/components/LandingPage/Header/Header";
 import Card from "@/components/Card/Card";
 import Spacing from "@/components/Spacing/Spacing";
 import Footer from "@/components/LandingPage/Footer/Footer";
 import Link from "next/link";
-
-export const plans = [
-   {
-      priceId: "price_1SMtpME7sK0TWDbZUA2dkaaF",
-      billingLink: "https://buy.stripe.com/8x29ATe3317h9QJ19GaR201",
-      price: 2.99,
-      duration: '/month'
-   },
-   {
-      priceId: "price_1SMtpJE7sK0TWDbZLuWJfhhn",
-      billingLink: "https://buy.stripe.com/aFa7sL5wx17hfb34lSaR200",
-      price: 55,
-      duration: 'lifetime'
-   }
-]
 
 export default async function PricingPage () {
    const subscriptionStatus = await dalCheckUserSubscription();
@@ -57,9 +43,15 @@ export default async function PricingPage () {
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Collaborative Quizzes</div>
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Global Leaderboard Access</div>
                   <br />
-                  <Link href={`${plans[0].billingLink}?prefilled_email=${session?.user?.email}`} target="_blank">
-                     <button className="xxs pd-12 full">Subscribe</button>
-                  </Link>
+                  {session?.user ? (
+                     <Link href={`${plans[0].billingLink}?prefilled_email=${session?.user?.email}`} target="_blank">
+                        <button className="xxs pd-12 full">Subscribe</button>
+                     </Link>
+                  ) : (
+                     <Link href='/sign-in?redirect=pricing' target="_blank">
+                        <button className="xxs pd-12 full">Sign In</button>
+                     </Link>
+                  )}
                </Card>
 
                <Card styles={pricingCardStyles}>
@@ -72,9 +64,15 @@ export default async function PricingPage () {
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Priority Feature Updates</div>
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Early Access to New Tools</div>
                   <Spacing size={5} />
-                  <Link href={`${plans[1].billingLink}?prefilled_email=${session?.user?.email}`} target="_blank">
-                     <button className="xxs pd-12 full">Purchase</button>
-                  </Link>
+                  {session?.user ? (
+                     <Link href={`${plans[1].billingLink}?prefilled_email=${session?.user?.email}`} target="_blank">
+                        <button className="xxs pd-12 full">Purchase</button>
+                     </Link>
+                  ) : (
+                     <Link href='/sign-in?redirect=pricing' target="_blank">
+                        <button className="xxs pd-12 full">Sign In</button>
+                     </Link>
+                  )}
                </Card>
             </div>
             <Spacing size={8} />

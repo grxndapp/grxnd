@@ -10,7 +10,7 @@ export default function Header() {
       <div className="header">
          <div className="header-container">
             <div className="app-icon" onClick={() => router.push('/')}>
-               <GrxndLogo size={40} />
+               <GrxndLogo size={55} />
             </div>
             <div className="header-items">
                <div className="header-item" onClick={() => router.push("/pricing")}>Pricing</div>

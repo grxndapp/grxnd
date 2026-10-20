@@ -10,7 +10,7 @@ type CardProps = {
    onClick?: Function;
 }
 
-export default function Card({ children, className, cursor, onClick, styles }: CardProps) {
+export default function Card ({ children, className, cursor, onClick, styles }: CardProps) {
    return (
       <div 
          className={`card ${className}`}

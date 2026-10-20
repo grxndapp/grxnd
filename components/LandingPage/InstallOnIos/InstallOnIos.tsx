@@ -13,9 +13,8 @@ export default function InstallOnIos() {
 	return (
 		<div className="ios-install">
 			<div className="ios-install-wrapper">
-				<div className="box full pd-2">
-					<div className="text-xmb full text-center bold-700">Install on iOS</div>
-				</div>
+				<div className="section-heading text-xxxl bold-700 full text-center">Install on Ios</div>
+				<Spacing />
 				<div className="install-cards">
 					{installSteps.map((installStep, index) => (
 						<Card key={index} styles={{
@@ -32,8 +31,8 @@ export default function InstallOnIos() {
 						</Card>
 					))}
 				</div>
+				<Spacing size={4} />
 			</div>
-			<Spacing size={4} />
 		</div>
 	)
 }

@@ -1,12 +1,12 @@
 {
   "name": "Grxnd",
   "short_name": "Grxnd",
-  "description": "An AI Study Partner",
+  "description": "An AI Study Partner for Scottish Students",
   "icons": [
     {
-    "src": "/logo.png",
-    "sizes": "192x192",
-    "type": "image/png"
+      "src": "/apple-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ],
   "start_url": "/home",

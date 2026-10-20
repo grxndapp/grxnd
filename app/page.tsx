@@ -14,7 +14,6 @@ export default function LandingPage () {
          <Header />
          <HeroSection />
 			<InfoSubjects />
-			<AppImages />
 			<Features />
 			<InstallOnIos />
          <Footer />

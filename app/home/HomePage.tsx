@@ -1,16 +1,16 @@
 'use client'
-import { Download, GraduationCap, Lightbulb } from "lucide-react";
+import {  Download, GraduationCap, Lightbulb } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectIcon, subjectPastelBgColors, subjectTopics } from "@/utils/subjects";
+import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NormalCardStyles, SubjectIconBubble, SubjectProgressCardStyles } from "@/styles-extra/styles";
+import { pluralSuffixer } from "@/lib/str";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import OverallProgress from "@/components/OverallProgress/OverallProgress";
-import { pluralSuffixer } from "@/lib/str";
 
 type HomePageProps = {
    quizzes: QuizT[];
@@ -18,6 +18,7 @@ type HomePageProps = {
    welcomeString: string;
    overallPercentage: number;
 }
+
 
 export default function HomePage ({ quizzes, overallPercentage, score, welcomeString }: HomePageProps) {
    const router = useRouter();

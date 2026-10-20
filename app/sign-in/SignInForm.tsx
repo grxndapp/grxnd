@@ -4,11 +4,12 @@ import { useState } from "react"
 import { GoogleIcon, GrxndLogo } from "@/components/Icons/Icon"
 import { signIn } from "next-auth/react"
 import { ArrowRight, ChevronLeft } from "lucide-react"
-import { checkForNoExistingUser, createUserAccount } from "../actions/user"
-import { useRouter } from "next/navigation"
+import { checkForNoExistingUser, createUserAccount, sendUserForgotPasswordEmail } from "../actions/user"
+import { useRouter, useSearchParams } from "next/navigation"
 import AwaitButton from "@/components/AwaitButton/AwaitButton"
 
 export default function SignInForm() {
+   const searchParams = useSearchParams();
    const router = useRouter();
 
    const [email, setEmail] = useState('');
@@ -16,8 +17,9 @@ export default function SignInForm() {
    const [password, setPassword] = useState('');
    const [password2, setPassword2] = useState('');
 
-   const [authStep, setAuthStep] = useState<'start' | 'reg' | 'login'>('start');
-   const [error, setError] = useState<string | undefined>(undefined)
+   const [authStep, setAuthStep] = useState<'start' | 'forgot' | 'reg' | 'login'>('start');
+   const [error, setError] = useState<string | undefined>(undefined);
+   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
 
    const continueWithEmailBtn = async (callback: Function) => {
       setError(undefined);
@@ -62,12 +64,24 @@ export default function SignInForm() {
             setError("Incorrect Email or Password");
             callback();
          } else {
-            router.push('/home');
+            router.push(searchParams.get("redirect") ? `/${searchParams.get("redirect")}` : '/home');
          }
       } else {
          setError("Failed to create your account");
          callback();
       }
+   }
+
+   async function handleSendForgotPasswordEmail (callback: Function) {
+      setError(undefined);
+      if (email == "") {
+         setError("Please enter an email");
+         callback();
+         return;
+      }
+      const sent = await sendUserForgotPasswordEmail(email);
+      setForgotPasswordSent(sent);
+      callback();
    }
 
    const signInBtn = async (callback: Function) => {
@@ -92,7 +106,9 @@ export default function SignInForm() {
             <div className="text-s pd-1 full dfb align-center justify-center">
                <GrxndLogo size={60} />
             </div>
-            <div className="text-ml bold-700 pd-2">Sign In to Grxnd</div>
+            <div className="text-ml bold-700 pd-2">
+               {authStep == "forgot" ? 'Reset your password' : 'Sign In to Grxnd'}
+            </div>
 
             {(error !== undefined) && (<>
                <div className="text-xxs bold-600 error full pd-1 mb-1">{error}</div>
@@ -103,12 +119,17 @@ export default function SignInForm() {
                   <div className="box full">
                      <input type="text" className="xxs pd-12 pdx-2 full" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                   </div>
+                  <div className="box full pd-05">
+                     <div className="text-xs fit bold-600 cursor-pointer accent-color visible-link" onClick={() => setAuthStep("forgot")}>
+                        Forgot Password?
+                     </div>
+                  </div>
                   <div className="box full mb-05">
                      <AwaitButton className='xxs full pd-12 tiny-shadow' onClick={continueWithEmailBtn}>
                         Continue with Email <ArrowRight size={17} />
                      </AwaitButton>
                   </div>
-               </div>            
+               </div>
                <div className="form">
                   <div className="form-content">
                      <button className='xxs full pd-12 outline-black tiny-shadow' onClick={() => signIn("google")}>
@@ -116,6 +137,44 @@ export default function SignInForm() {
                      </button>
                   </div>
                </div>
+            </>)}
+
+            {(authStep == "forgot") && (<>
+               {forgotPasswordSent ? (<>
+                  <div className="box full dfb column gap-10">
+                     <div className="box full">
+                        <div className="text-xs full text-center">
+                           The reset password link has been sent to <b>{email}</b>. Please check your inbox and spam folders.
+                        </div>
+                     </div>
+                     <div className="box full pd-05 dfb align-center justify-center">
+                        <div className="text-xxs fit bold-600 cursor-pointer visible-link" onClick={() => setAuthStep("start")}>
+                           Back to Login
+                        </div>
+                     </div>
+                  </div>
+               </>) : (<>
+                  <div className="box full dfb column gap-10">
+                     <div className="box full">
+                        <div className="text-xs full text-center">
+                           Enter your email and we'll send you a link to reset your password.
+                        </div>
+                     </div>
+                     <div className="box full">
+                        <input type="text" className="xxs pd-12 pdx-2 full" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                     </div>
+                     <div className="box full mb-05">
+                        <AwaitButton className='xxs full pd-12 tiny-shadow' onClick={handleSendForgotPasswordEmail}>
+                           Send Reset Link <ArrowRight size={17} />
+                        </AwaitButton>
+                     </div>
+                     <div className="box full pd-05 dfb align-center justify-center">
+                        <div className="text-xxs fit bold-600 cursor-pointer visible-link" onClick={() => setAuthStep("start")}>
+                           Back to Login
+                        </div>
+                     </div>
+                  </div>
+               </>)}
             </>)}
 
             {(authStep == "reg") && (<>
@@ -149,6 +208,11 @@ export default function SignInForm() {
                   </div>
                   <div className="box full">
                      <input type="password" className="xxs pd-12 pdx-2 full" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  </div>
+                  <div className="box full pd-05">
+                     <div className="text-xs fit bold-600 cursor-pointer accent-color visible-link" onClick={() => setAuthStep("forgot")}>
+                        Forgot Password?
+                     </div>
                   </div>
                   <div className="box full mb-05">
                      <AwaitButton className='xxs full pd-12 tiny-shadow' onClick={signInBtn}>

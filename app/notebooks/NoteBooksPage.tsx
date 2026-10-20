@@ -96,10 +96,10 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
                </div>
             )}
             
-            {(notes.length > 0) && (<>
+            {(notes.length > 0) && (<div className="box full" style={{ transition: "none" }}>
                {(openSubjectFolder !== null) ? (<>
                   <div className="box full pd-1 dfb wrap gap-10">
-                     <button className="xxs pd-13 pdx-2 grey no-shadow" onClick={() => setOpenSubjectFolder(null)}>Back to Folders</button>
+                     <button className="xxs pd-13 pdx-2 outline-black no-shadow" onClick={() => setOpenSubjectFolder(null)}>Back to Folders</button>
                   </div>
                   <div className="box full pd-15">
                      <input 
@@ -110,7 +110,6 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
                         onChange={(e) => setSearchNotes(e.target.value)}
                      />
                   </div>
-                  <Spacing />
                   <div className="box full dfb wrap gap-10">
                      {applyNoteFilters().length < 1 && (
                         <div className="text-s grey-5 full pd-05 pdx-1">No Notes in this folder</div>
@@ -142,7 +141,7 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
                      ))}
                   </div>
                </>)}
-            </>)}
+            </div>)}
 
             <Spacing size={5} />
          </div>

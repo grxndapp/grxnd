@@ -1,0 +1,61 @@
+
+.exam-analysis-loader {
+   width: 100%;
+   max-width: 500px;
+   padding: 20px 0;
+}
+
+.analysis-steps {
+   display: flex;
+   flex-direction: column;
+   gap: 30px;
+}
+
+.analysis-step {
+   display: flex;
+   align-items: flex-start;
+   gap: 15px;
+}
+
+.analysis-step-icon {
+   width: fit-content;
+   height: fit-content;
+   padding: 6px;
+   flex-shrink: 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   background: rgba(55, 81, 199, 0.178);
+   color: var(--accent-color);
+   margin-top: 10px;
+}
+
+.analysis-step-content {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   padding-top: 2px;
+}
+
+.analysis-step-title {
+   color: var(--accent-color);
+   letter-spacing: -0.2px;
+   line-height: 1.4;
+}
+
+.analysis-step-description {
+   font-weight: 400;
+   color: #13153b;
+   line-height: 1.6;
+}
+
+.analysis-spinner {
+   animation: analysis-spin 1s linear infinite;
+}
+
+@keyframes analysis-spin {
+   to {
+      transform: rotate(360deg);
+   }
+}

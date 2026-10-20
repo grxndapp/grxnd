@@ -268,6 +268,8 @@ input.mw-1200, button.mw-1200, textarea.mw-1200 { max-width: 1200px; }
 .box.h-full, [class*="text-"].h-full { height: 100%; }
 .box.full { width: 100%; }
 
+.whitespace-nowrap { white-space: nowrap; }
+
 .box.radius-5, button.radius-5, textarea.radius-5, input.radius-5 { border-radius: 5px; }
 .box.radius-6, button.radius-6, textarea.radius-6, input.radius-6 { border-radius: 6px; }
 .box.radius-7, button.radius-7, textarea.radius-7, input.radius-7 { border-radius: 7px; }

@@ -7,9 +7,11 @@ interface CancelledSubscriptionEmailProps {
   username: string;
 }
 
-const baseUrl = process.env.NEXTAUTH_URL
-  ? `${process.env.NEXTAUTH_URL}`
-  : '';
+const grxnd = {
+  url: "https://grxnd.app/",
+  logo: "https://grxnd.app/logo.png",
+  feedback: "https://grxnd.app/feedback",
+}
 
 export const CancelledSubscriptionEmail = ({ username }: CancelledSubscriptionEmailProps) => (
    <Html>
@@ -20,33 +22,40 @@ export const CancelledSubscriptionEmail = ({ username }: CancelledSubscriptionEm
          </Preview>
          <Container style={container}>
             <Img
-               src={`${baseUrl}/logo.png`}
-               width="32"
-               height="32"
-               alt="Github"
+               src={grxnd.logo}
+               width="50"
+               height="50"
+               alt="grxnd logo"
             />
             <br />
 
             <Section style={section}>
                <Text style={text}>
-                  Hey <strong>{username || 'Kevin'}</strong>,
+                  Hey <strong>{username || 'there'}</strong>,
                </Text>
+               <br />
                <Text style={text}>
                   We've confirmed that your Grxnd subscription has been cancelled. You'll still have access until the end of your current billing period, after which your premium features - including AI tools like the Quiz Maker, Essay Grader, and Humanizer. These features will be locked.
                </Text>
-               <Text style={text}>We're genuinely grateful you gave us a shot. If you have a minute, we'd love to know why you cancelled. Your feedback helps us improve.</Text>
+               <br />
                <Text style={text}>
-                  <Link style={link} href={`${process.env.NEXTAUTH_URL}/feedback`} target='_blank'>
+                We're genuinely grateful you gave us a shot. If you have a minute, we'd love to know why you cancelled. Your feedback helps us improve.
+                </Text>
+               <br />
+               <Text style={text}>
+                  <Button style={button} href={grxnd.feedback} target='_blank'>
                      Share Feedback
-                  </Link>
+                  </Button>
                </Text>
+               <br />
                <Text style={text}>And if you ever decide to come back, your account and progress will be waiting for you.</Text>
+               <br />
                <Text style={text}>Until then, keep learning smart.</Text>
                <Text style={text}>Cheers,</Text>
                <Text style={text}>The Grxnd Team</Text>
             </Section>
 
-            <Text style={footer}>Grxnd ・ Glasgow, Scotland</Text>
+            <Text style={footer}><Link style={link} href={grxnd.url} target='_blank'>Grxnd</Link> ・ Glasgow, Scotland</Text>
          </Container>
       </Body>
    </Html>

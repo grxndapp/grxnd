@@ -1,0 +1,93 @@
+.frosted-card {
+   --card-tint: 225, 233, 255;
+
+   position: relative;
+   isolation: isolate;
+   width: 100%;
+   box-sizing: border-box;
+   overflow: hidden;
+
+   border-radius: 30px;
+
+   /* Translucent frosted surface */
+   background:
+      linear-gradient(
+         135deg,
+         rgba(255, 255, 255, 0.62) 0%,
+         rgba(var(--card-tint), 0.96) 55%,
+         rgba(255, 255, 255, 0.747) 100%
+      );
+
+   backdrop-filter: blur(22px) saturate(140%);
+   -webkit-backdrop-filter: blur(22px) saturate(140%);
+
+   /* Glass edge */
+   border: 1px solid rgba(255, 255, 255, 0.75);
+
+   /* Soft floating shadow */
+   box-shadow:
+      0 8px 28px rgba(63, 79, 130, 0.045),
+      0 2px 8px rgba(63, 79, 130, 0.025),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+   color: #11211f;
+}
+
+/* Subtle inner colour glow */
+.frosted-card::before {
+   content: "";
+   position: absolute;
+   inset: 0;
+   z-index: -1;
+   pointer-events: none;
+
+   background:
+      radial-gradient(
+         ellipse at 15% 15%,
+         rgba(255, 255, 255, 0.95),
+         transparent 60%
+      ),
+      radial-gradient(
+         ellipse at 85% 80%,
+         rgba(var(--card-tint), 0.32),
+         transparent 65%
+      );
+}
+
+.frosted-card--default {
+  --card-tint: 235, 239, 255;
+}
+
+.frosted-card--blue {
+  --card-tint: 181, 215, 255;
+}
+
+.frosted-card--green {
+  --card-tint: 191, 232, 216;
+}
+
+.frosted-card--pink {
+  --card-tint: 255, 205, 220;
+}
+
+@media (hover: hover) {
+   .frosted-card {
+      transition:
+         transform 0.25s ease,
+         box-shadow 0.25s ease;
+   }
+
+   .frosted-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+         0 12px 32px rgba(63, 79, 130, 0.08),
+         0 2px 8px rgba(63, 79, 130, 0.03),
+         inset 0 1px 0 rgba(255, 255, 255, 0.8);
+   }
+}
+
+@media (max-width: 600px) {
+   .frosted-card {
+      border-radius: 25px;
+   }
+}

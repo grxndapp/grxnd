@@ -38,9 +38,15 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
                   </div>
                   <div className="text-l full dfb wrap gap-5">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
 
-                  <div className="box full dfb column gap-5 pd-15">
+                  <div className="box full dfb column pd-15">
                      <div className="text-xxs grey-5 full">Your Points</div>
-                     <div className="text-xxb full h-full bold-600 mb-1">
+                     <div 
+                        className="text-xxb full h-full bold-700 mb-1"
+                        style={{
+                           background: "linear-gradient(to bottom, var(--accent-color-70), var(--accent-color))",
+                           backgroundClip: "text", color: "transparent"
+                        }}
+                     >
                         {formatNumber(score, { showShortHand: true, useShorthand: true })}
                      </div>
                      <div 
@@ -52,8 +58,8 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
                   </div>
                   
                   <div className="box full pd-1 dfb gap-20 wrap">
-                     <button className="xxs pd-13 full mw-300 tiny-shadow grey" onClick={() => { router.push("/settings"); close() }}>
-                        <UserRoundCog /> Account Settings
+                     <button className="xxs pd-13 full mw-300 tiny-shadow" onClick={() => { router.push("/settings"); close() }}>
+                        <UserRoundCog size={17} /> Account Settings
                      </button>
                   </div>
                </div>

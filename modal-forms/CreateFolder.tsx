@@ -18,7 +18,7 @@ export default function CreateSubjectFolder ({ onCreated }: { onCreated?: () => 
       }
       const folders = await getUserSubjectFolders();
       if (folders) {
-         if (folders.find(f => f.name == folderName)) {
+         if (folders.find(f => f.name.toLowerCase() == folderName.toLowerCase())) {
             toast.error(`You already have a folder named ${folderName}`)
          }
       }

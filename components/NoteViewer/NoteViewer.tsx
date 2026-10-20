@@ -7,10 +7,10 @@ import { toast } from "sonner";
 import Spacing from "../Spacing/Spacing";
 import RenderMarkdown from "../RenderMarkdown/RenderMarkdown";
 import AwaitButton from "../AwaitButton/AwaitButton";
-import ModalSelect from "../ModalSelect/ModalSelect";
 import { useModal } from "../Modal/ModalContext";
 import { useEffect, useState } from "react";
 import { getUserSubjectFolders } from "@/app/actions/folder";
+import { ChooseFolderSaveBtnSelectedStyles, ChooseFolderSaveBtnStyles } from "@/styles-extra/styles";
 
 type NoteViewerProps = {
    note: NoteMaker;
@@ -24,6 +24,7 @@ type NoteViewerProps = {
 function NoteSaver ({ note, subject }: { note: NoteMaker, subject?: string }) {
    const { close } = useModal();
    const presetSubjectFolders = ['math','english','biology','chemistry','physics','computer science','administration']
+   const [searchFolders, setSearchFolders] = useState("");
    const [allFolders, setAllFolders] = useState<string[]>([]);
    const [folderChosen, setFolderChosen] = useState<string | null>(subject ?? null);
 
@@ -72,12 +73,28 @@ function NoteSaver ({ note, subject }: { note: NoteMaker, subject?: string }) {
          <div className="box full pd-2 dfb column gap-5">
             <div className="text-s full bold-500">Subject Folder Name</div>
             <div className="text-xxs full grey-5">This is where the note will be saved</div>
-            <ModalSelect
-               title="Choose Folder"
-               options={allFolders.map(f => titleCase(f))}
-               onSelect={option => setFolderChosen(allFolders.find(f => (f == option.toLowerCase()))!.toLowerCase())}
-               defaultOption={folderChosen ? allFolders.indexOf(folderChosen) : undefined}
-            />
+            <div className="box full pd-05">
+               <input 
+                  type="text" className="xxs pd-14 pdx-2 full"
+                  value={searchFolders} onChange={e => setSearchFolders(e.target.value)}
+                  placeholder="Search Folders"
+               />
+            </div>
+            <div className="box full pd-1 dfb column gap-10" style={{ height: "35vh", overflowY: "scroll", overflowX: "hidden" }}>
+               {
+                  allFolders
+                     .filter(f => f.toLowerCase().includes(searchFolders.toLowerCase()))   
+                     .map(f => titleCase(f)).map((folder, index) => (
+                        <div 
+                           key={index} 
+                           style={folder.toLowerCase() == folderChosen ? ChooseFolderSaveBtnSelectedStyles : ChooseFolderSaveBtnStyles}
+                           onClick={() => setFolderChosen(folder.toLowerCase())}
+                        >
+                           {folder}
+                        </div>
+                     ))
+               }
+            </div>
          </div>
          <AwaitButton className="xxs pd-14 pdx-2" onClick={saveNoteBtn}>
             <Bookmark size={17} /> Save Note

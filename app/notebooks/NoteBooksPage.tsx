@@ -6,13 +6,15 @@ import { formatMilliseconds } from "@/utils/date"
 import { NotebookCardStyles, SubjectIconBubble } from "@/styles-extra/styles"
 import { titleCase } from "@/lib/str"
 import { customSubjectToPastelColor, subjectIcon, subjectPastelBgColors } from "@/utils/subjects"
-import { Folder, FolderPlus, GraduationCap} from "lucide-react"
+import { ArrowLeft, ChevronDown, Folder, FolderPlus, GraduationCap, Trash2} from "lucide-react"
 import { getUserSubjectFolders } from "../actions/folder"
 import { useModal } from "@/components/Modal/ModalContext"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Card from "@/components/Card/Card"
 import Spacing from "@/components/Spacing/Spacing"
 import CreateFolder from "@/modal-forms/CreateFolder"
+import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
+import DeleteFolder from "@/modal-forms/DeleteFolder"
 
 const presetSubjectFolders = ['math','english','biology','chemistry','physics','computer science','administration']
 
@@ -22,6 +24,7 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
    const { data: session } = useSession();
    const [searchNotes, setSearchNotes] = useState('');
    const [searchFolders, setSearchFolders] = useState('');
+   const [actualFolders, setActualFolders] = useState<any[] | null>([]);
    const [filterSubjects, setFilterSubjects] = useState<string[]>([]);
 
    // view states
@@ -34,9 +37,10 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
          // get only subjects that the user has made notes from
          const relevantSubjectFolders = notes.filter(n => presetSubjectFolders.includes(n.subject)).map(n => n.subject)
 
+         setActualFolders(folders)
          setFilterSubjects([
-            ...folders.map(f => f.name.toLowerCase()),
-            ...[...new Set(relevantSubjectFolders)]
+            ...folders.map(f => f.name),
+            ...[...new Set(relevantSubjectFolders)].map(f => titleCase(f))
          ])
       }
    }
@@ -44,6 +48,18 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
    function handleOpenCreateFolder () {
       showModal({
          content: <CreateFolder onCreated={getUserFolders} />
+      })
+   }
+
+   function handleDeleteFolder () {
+      if (!actualFolders) return;
+      if (!openSubjectFolder) return;
+      showModal({
+         content: <DeleteFolder 
+            folderName={titleCase(openSubjectFolder)} 
+            folderId={actualFolders.find(f => f.name.toLowerCase() == openSubjectFolder.toLowerCase())?.folderId}
+            onDeleted={() => setOpenSubjectFolder(null)}
+         />
       })
    }
 
@@ -68,7 +84,7 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
             (JSON.parse(note.noteJson).title.toLowerCase().includes(searchNotes.toLowerCase()) ||
             note.subject.toLowerCase().includes(searchNotes.toLowerCase())
          ) && (
-            note.folderCodeName == openSubjectFolder || note.subject == openSubjectFolder
+            note.folderCodeName == openSubjectFolder?.toLowerCase() || note.subject == openSubjectFolder?.toLowerCase()
          )
       ))
    }
@@ -77,7 +93,7 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
       <AppWrapper contentRef={contentRef}>
          <div className="box full h-full pd-3">
             {openSubjectFolder !== null ? (<>
-               <div className="text-xxl bold-700 full">{titleCase(openSubjectFolder)} Folder</div>
+               <div className="text-xxl bold-700 full">{openSubjectFolder} Folder</div>
             </>) : (<>
                <div className="text-xxl bold-700 full">NoteBook Folders</div>
                <div className="box full pd-1">
@@ -98,8 +114,22 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
             
             {(notes.length > 0) && (<div className="box full" style={{ transition: "none" }}>
                {(openSubjectFolder !== null) ? (<>
-                  <div className="box full pd-1 dfb wrap gap-10">
-                     <button className="xxs pd-13 pdx-2 outline-black no-shadow" onClick={() => setOpenSubjectFolder(null)}>Back to Folders</button>
+                  <div className="box full pd-1 dfb align-center gap-10">
+                     <button className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40" onClick={() => setOpenSubjectFolder(null)}><ArrowLeft size={16} /></button>
+                     <div className="box full dfb align-center justify-end">
+                        <MultiActionDropdown
+                           className="xxxs pd-11 pdx-2 outline-black no-shadow"
+                           actions={[
+                              {
+                                 label: <><Trash2 size={17} /> Delete Folder</>,
+                                 action: handleDeleteFolder,
+                                 appearance: "delete"
+                              }
+                           ]}
+                        >
+                           More <ChevronDown size={16} />
+                        </MultiActionDropdown>
+                     </div>
                   </div>
                   <div className="box full pd-15">
                      <input 
@@ -129,13 +159,13 @@ export default function NoteBooksPage ({ notes }: { notes: Note[] }) {
                      />
                   </div>
                   <div className="box full dfb wrap gap-10">
-                     {applyFolderFilters().map((folderCodeName, index) => (
+                     {applyFolderFilters().map((folderName, index) => (
                         <FolderItem 
                            key={index} 
-                           folderCodeName={folderCodeName}
-                           onOpenFolder={folderCodeName => {
+                           folderName={folderName}
+                           onOpenFolder={folderName => {
                               setSearchNotes("")
-                              setOpenSubjectFolder(folderCodeName)
+                              setOpenSubjectFolder(folderName)
                            }}
                         />
                      ))}
@@ -174,11 +204,11 @@ function NoteBookItem ({ note }: { note: Note }) {
    </Card>)
 }
 
-function FolderItem ({ folderCodeName, onOpenFolder }: { folderCodeName: string, onOpenFolder: (folderCodeName: string) => void; }) {
-   return (<Card styles={NotebookCardStyles} onClick={() => onOpenFolder(folderCodeName)}>
+function FolderItem ({ folderName, onOpenFolder }: { folderName: string, onOpenFolder: (folderName: string) => void; }) {
+   return (<Card styles={NotebookCardStyles} onClick={() => onOpenFolder(folderName)}>
       <div className="box full dfb align-center gap-5">
          <div className="box full dfb column">
-            <div className="text-s bold-700 full">{titleCase(folderCodeName)}</div>
+            <div className="text-s bold-700 full">{folderName}</div>
             <div className="text-xxs grey-4 full">Folder</div>
          </div>
          <div style={{ ...SubjectIconBubble, background: '#a6c9ff' }}>

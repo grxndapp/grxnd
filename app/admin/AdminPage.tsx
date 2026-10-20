@@ -10,6 +10,12 @@ import Card from "@/components/Card/Card";
 import Chart from "@/components/Chart/Chart";
 import Selections from "@/components/Selections/Selections";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
+import { adminUpgradeUserSubscription } from "../actions/user";
+import { toast } from "sonner";
+import { useModal } from "@/components/Modal/ModalContext";
+import { formatMilliseconds } from "@/utils/date";
+import AwaitButton from "@/components/AwaitButton/AwaitButton";
+import { Crown, Delete } from "lucide-react";
 
 type AdminPageProps = {
    usersGraph: {
@@ -20,6 +26,76 @@ type AdminPageProps = {
       is_subscribed: boolean;
       createdAt: Date;
    }[]
+}
+
+function UserManageCard ({ usersGraph }: { usersGraph: AdminPageProps['usersGraph'] }) {
+   const { showModal, close } = useModal();
+   const [searchUsers, setSearchUsers] = useState("");
+
+   function applySearchFilters () {
+      return usersGraph.filter(user => (
+         user.name.toLowerCase().includes(searchUsers.toLowerCase()) ||
+         user.email.toLowerCase().includes(searchUsers.toLowerCase())
+      ))
+   }
+
+   function handleOpenUserDetails (user: AdminPageProps['usersGraph'][0]) {
+      async function toggleUserSubscription (callback: Function) {
+         const completed = await adminUpgradeUserSubscription(user.userid, user.email, user.name, !user.is_subscribed);
+         if (completed) {
+            toast.success(
+               user.is_subscribed
+                  ? `Removed ${user.name} from Grxnd Subscription`
+                  : `Subscribed ${user.name} to Grxnd`
+            )
+            close();
+         } else {
+            toast.error("Failed to update user subscription");
+         }
+         callback();
+      }
+
+      showModal({
+         content: (
+            <div className="box full pd-2 pdx-2">
+               <div className="text-ml full bold-600 accent-color">{user.name}</div>
+               <div className="text-xxs full grey-5 pd-05">{user.email}</div>
+               <div className="text-xxs full grey-5">{user.oauth_provider}</div>
+               <div className="box full pd-2">
+                  <AwaitButton className="xxs pd-12 pdx-2" onClick={toggleUserSubscription}>
+                     {(user.is_subscribed) ? (<>
+                        <Delete size={17} /> Remove Subscription
+                     </>) : (<>
+                        <Crown size={17} /> Give Subscription
+                     </>)}
+                  </AwaitButton>
+               </div>
+               <div className="text-xxs full grey-5">Joined Grxnd on {formatMilliseconds(new Date(user.createdAt).getTime(), true)}</div>
+            </div>
+         )
+      })
+   }
+
+   return (
+      <Card styles={{ ...NormalCardStyles, padding: "30px" }}>
+         <div className="text-m full bold-600">All Users</div>
+         <div className="text-xxs pd-1 full">All the wonderful users of Grxnd</div>
+         <div className="box full pd-15">
+            <input 
+               type="text" className="xxs pd-13 pdx-2 full mw-400" placeholder="Search Users"
+               value={searchUsers} onChange={e => setSearchUsers(e.target.value)}
+            />
+         </div>
+         <div className="box full dfb wrap gap-10">
+            {applySearchFilters().map(user => (
+               <div key={user.userid} style={UserCardStyles} onClick={() => handleOpenUserDetails(user)}>
+                  <div className="text-s bold-600 full accent-color">{user.name}</div>
+                  <div className="text-xxs full grey-5">{user.email}</div>
+               </div>
+            ))}
+         </div>
+      </Card>
+   )
 }
 
 export default function AdminPage ({ usersGraph }: AdminPageProps) {
@@ -121,18 +197,7 @@ export default function AdminPage ({ usersGraph }: AdminPageProps) {
             </Card>
             <Spacing />
             
-            <Card styles={{ ...NormalCardStyles, padding: "30px" }}>
-               <div className="text-m full bold-600">All Users</div>
-               <div className="text-xxs pd-1 full">All the wonderful users of Grxnd</div>
-               <div className="box full dfb wrap gap-10">
-                  {usersGraph.map(user => (
-                     <div key={user.userid} style={UserCardStyles}>
-                        <div className="text-s bold-600 full accent-color">{user.name}</div>
-                        <div className="text-xxs full grey-5">{user.email}</div>
-                     </div>
-                  ))}
-               </div>
-            </Card>
+            <UserManageCard usersGraph={usersGraph} />
 
             <Spacing size={4} />
          </div>

@@ -1,5 +1,5 @@
 "use server"
-import { dalDbOperation, dalRequireAuth } from "@/dal/helpers";
+import { dalDbOperation, dalRequireAdminAuth, dalRequireAuth } from "@/dal/helpers";
 import { db } from "@/db";
 import { forgotPasswordTable, notesTable, quizzesTable, savedQuizzesTable, scoresTable, usersTable } from "@/db/schemas";
 import { authOptions } from "@/lib/authOptions"
@@ -10,6 +10,7 @@ import ForgotPwdEmail from "@/emails/ForgotPwdEmail";
 import WelcomeToGrxndEmail from "@/emails/WelcomeEmail";
 import sendMail from "@/lib/sendMail";
 import SuccessResetPasswordEmail from "@/emails/SuccessResetPasswordEmail";
+import FreeSubscriptionTestEmail from "@/emails/FreeSubscriptionTestEmail";
 
 export async function getCurrentUser (): Promise<User | null> {
    try {
@@ -211,6 +212,36 @@ export async function checkForNoExistingUser (email: string): Promise<boolean | 
          return false;
       }
    } catch (e) {
+      return false;
+   }
+}
+
+export async function adminUpgradeUserSubscription (targetUserId: string, userEmail: string, username: string, subscribe: boolean) {
+   try {
+      const upgraded = await dalRequireAdminAuth(async user => 
+         await dalDbOperation(async () => {
+            const res = await db
+               .update(usersTable).set({ is_subscribed: subscribe })
+               .where(eq(usersTable.userid, targetUserId));
+            
+            return (res.rowCount == 1)
+         })
+      )
+
+      if (upgraded.success && upgraded.data) {
+         if (subscribe) {
+            const sent = await sendMail(
+               userEmail, "I have a gift for you",
+               FreeSubscriptionTestEmail({ username })
+            );
+            return sent;
+         }
+         return true;
+      } else {
+         return false;
+      }
+   } catch (e) {
+      console.error(e);
       return false;
    }
 }

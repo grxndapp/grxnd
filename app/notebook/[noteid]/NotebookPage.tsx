@@ -4,7 +4,7 @@ import { createTempQuiz } from "@/app/actions/quiz"
 import { useModal } from "@/components/Modal/ModalContext"
 import { titleCase } from "@/lib/str"
 import { buildNoteQuizPrompt } from "@/prompts/quizMaker"
-import { ChevronLeft } from "lucide-react"
+import { ArrowLeft, BookCheck, ChevronDown, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -13,6 +13,8 @@ import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import NoteViewer from "@/components/NoteViewer/NoteViewer"
 import Select from "@/components/Select/Select"
 import Spacing from "@/components/Spacing/Spacing"
+import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
+import DeleteNote from "@/modal-forms/DeleteNote"
 
 export default function NotebookPage ({ note }: { note: Note }) {
    const router = useRouter();
@@ -23,19 +25,44 @@ export default function NotebookPage ({ note }: { note: Note }) {
          content: <CreateQuizModal note={note} />
       })
    }
+   
+   function handleDeleteNote () {
+      showModal({
+         content: <DeleteNote
+            note={note}
+            onDeleted={() => router.push("/notebooks")}
+         />
+      })
+   }
 
    return (
       <AppWrapper>
          <div className="box w-full h-full pd-1">
-            <div className="box full dfb align-center pd-2" style={{ color: "grey" }}>
-               <div className="box full dfb align-center gap-10 cursor-pointer" onClick={() => router.push("/notebooks")}>
-                  <ChevronLeft size={26} />
-                  <div className="text-xs">All Notebooks</div>
-               </div>
-               <div className="box full dfb justify-end">
-                  <button className="xxs pd-12 pdx-2" onClick={handleCreateQuiz}>Create Quiz</button>
+            <div className="box full pd-1 dfb align-center gap-10">
+               <button className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40" onClick={() => router.push("/notebooks")}>
+                  <ArrowLeft size={16} />
+               </button>
+               <div className="box full dfb align-center justify-end">
+                  <MultiActionDropdown
+                     className="xxxs pd-11 pdx-2 outline-black no-shadow"
+                     actions={[
+                        {
+                           label: <><BookCheck size={17} /> Create Quiz</>,
+                           action: handleCreateQuiz,
+                           appearance: "accent"
+                        },
+                        {
+                           label: <><Trash2 size={17} /> Delete Note</>,
+                           action: handleDeleteNote,
+                           appearance: "delete"
+                        }
+                     ]}
+                  >
+                     More <ChevronDown size={16} />
+                  </MultiActionDropdown>
                </div>
             </div>
+            
             <NoteViewer note={JSON.parse(note.noteJson)} noButtons noSubject />
             <Spacing size={4} />
          </div>

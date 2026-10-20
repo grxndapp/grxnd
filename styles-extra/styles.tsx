@@ -77,3 +77,13 @@ export const ExamDateCardStyles: React.CSSProperties = {
    width: "100%", borderRadius: "15px", background: "white",
    padding: "13px 15px", cursor: "pointer", border: "1px solid #c4cdff9a",
 }
+
+export const ChooseFolderSaveBtnStyles: React.CSSProperties = {
+   width: "100%", borderRadius: "15px", background: "white",
+   padding: "15px", cursor: "pointer", border: "1px solid #c4cdff9a",
+}
+
+export const ChooseFolderSaveBtnSelectedStyles: React.CSSProperties = {
+   width: "100%", borderRadius: "15px", background: "var(--accent-color-30)",
+   padding: "15px", cursor: "pointer", border: "1px solid #c4cdff9a", fontWeight: "600"
+}

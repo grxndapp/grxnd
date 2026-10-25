@@ -1,16 +1,19 @@
 'use client'
-import {  Download, GraduationCap, Lightbulb } from "lucide-react";
+import {  BookOpen, Download, GraduationCap, Lightbulb } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NormalCardStyles, SubjectIconBubble, SubjectProgressCardStyles } from "@/styles-extra/styles";
 import { pluralSuffixer } from "@/lib/str";
+import { CustomRawIcon } from "@/components/Icons/Icon";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import OverallProgress from "@/components/OverallProgress/OverallProgress";
+import { CustomIconUrls } from "@/lib/icons";
+import { BiLogoApple } from "react-icons/bi";
 
 type HomePageProps = {
    quizzes: QuizT[];
@@ -81,34 +84,64 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
    return (
       <AppWrapper>
          <div className="box full h-full pd-1">
-            <div className="box full mt-15">
-               <div className="text-l full dfb wrap gap-5 justify-center">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
-               <div className="text-xxs full pd-05 text-center">{welcomeString}</div>
-            </div>
-
-            <div className="box full">
-               <OverallProgress percentage={overallPercentage} score={score} />
-            </div>
-
             {(quizzes.length < 1) ? (
+
                <div className="box full">
-                  <Card styles={NormalCardStyles}>
-                     <div className="text-sm bold-600 full mb-05">Looks like you have never taken a quiz</div>
-                     <div className="text-xxs full mb-15">Let's change that, test your brain</div>
-                     <button className="xxs pd-13 pdx-2 fit" onClick={() => router.push("/quiz-maker")}>
-                        <Lightbulb size={16} /> Take a Quiz
+                  <div className="box full mt-15">
+                     <div className="box full mb-1 dfb align-center justify-center">
+                        <CustomRawIcon url={CustomIconUrls.WelcomeIcon} size={150} />
+                     </div>
+                     <div className="text-l full dfb wrap gap-5 align-center justify-center">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+                     <div className="text-xxs full pd-05 text-center">{welcomeString}</div>
+                  </div>
+
+                  <div className="box full dfb column gap-10 align-center pd-4">
+                     <button className="xs pd-15 full mw-500 radius-20" onClick={() => router.push("/quiz-maker")}>
+                        <Lightbulb size={19} /> Start A Quiz
                      </button>
-                  </Card>
+                     <button className="xs pd-15 full mw-500 radius-20 outline-black" onClick={() => router.push("/note-maker")}>
+                        <BookOpen size={19} /> Learn Something
+                     </button>
+                     {(iPhoneOrIpadUser) && (<div className="box full pd-15 dfb justify-center">
+                        <div className="box text-xs fit dfb align-center justify-center gap-5 cursor-pointer visible-link" onClick={() => router.push("/install-ios")}>
+                           <BiLogoApple size={19} /> Got an iPhone?
+                        </div>
+                     </div>)}
+                  </div>
+
                   <Spacing size={1} />
                </div>
+
             ) : (<>
-               <div className="text-xxl full pd-15 bold-600">Your Progress</div>
-               <div className="box full dfb wrap" style={{ gap: "20px" }}>
+
+               <div className="box full mt-15">
+                  <div className="box full mb-1 dfb align-center justify-center">
+                     <CustomRawIcon url={CustomIconUrls.WelcomeIcon} size={150} />
+                  </div>
+                  <div className="text-l full dfb wrap gap-5 align-center justify-center">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+                  <div className="text-xxs full pd-05 text-center">{welcomeString}</div>
+               </div>
+               
+
+               <div className="box full dfb column gap-10 align-center pd-4">
+                  <button className="xs pd-15 full mw-500 radius-20" onClick={() => router.push("/quiz-maker")}>
+                     <Lightbulb size={19} /> Start A Quiz
+                  </button>
+                  <button className="xs pd-15 full mw-500 radius-20 outline-black" onClick={() => router.push("/note-maker")}>
+                     <BookOpen size={19} /> Learn Something
+                  </button>
+               </div>
+
+               <div className="box full dfb wrap justify-center pd-2" style={{ gap: "20px" }}>
                   {Object.keys(subjectProgressQuizzes).sort((a,b) => a.localeCompare(b )).map((subject, index) => {
                      const subjectFolderName = fullSubjectBreakDown(subject).subject.toLowerCase().replaceAll(" ","-");
                      const subjectLevel = fullSubjectBreakDown(subject).subjectLevel;
-                     const subjectLevelUrlParam = subjectLevel ? `?level=${subjectLevel}` : '';
                      const isCustomSubject = (subjectLevel == '');
+                     const subjectLevelUrlParam = subjectLevel ? `${subjectLevel.replaceAll(" ","-").toLowerCase()}` : 'none';
+                     
+                     const subjectLevelUrlParams = subjectLevel 
+                        ? `${subjectLevel} ${subjectFolderName}`.replaceAll(" ","-").toLowerCase()
+                        : subjectFolderName;
                      
                      // Progress
                      const subjectProgressBg = isCustomSubject ? customSubjectToPastelColor(subject) : subjectPastelBgColors[fullSubjectBreakDown(subject).subject];
@@ -127,7 +160,7 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
                         key={index} 
                         styles={{ ...SubjectProgressCardStyles, background: subjectProgressBg }}
                         className="box dfb column gap-10"
-                        onClick={() => router.push(`/quiz-stat/${subjectFolderName}${subjectLevelUrlParam}`)}
+                        onClick={() => router.push(`/subject/${subjectLevelUrlParam}/${subjectFolderName}`)}
                      >
                         <div style={SubjectIconBubble}>
                            {isCustomSubject
@@ -142,7 +175,7 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
                            </div>
                            <div className="text-xxs full grey-5 mt-05">
                               {subjectProgressRounded}%
-                              {isCustomSubject ? ' average Score' : ' complete'}
+                              {isCustomSubject ? ' average score' : ' complete'}
                            </div>
                            <div className="box pd-05 mt-05">
                               <ProgressBar percentage={subjectProgressRaw} color={subjectProgressBoldBg} />
@@ -151,20 +184,20 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
                      </Card>)
                   })}
                </div>
-            </>)}
-            <Spacing size={2} />
+               
+               {(iPhoneOrIpadUser) && (<>            
+                  <Spacing size={1} />
+                  <Card styles={{ width: "100%", padding: "25px" }}>
+                     <div className="text-sm bold-600 full mb-05">iPhone?</div>
+                     <div className="text-xxs full mb-15">Install the Grxnd App by following these simple steps</div>
+                     <button className="xxs pd-11 full" onClick={() => router.push("/install-ios")}>
+                        Install <Download size={17} />
+                     </button>
+                  </Card>
+               </>)}
 
-            {(iPhoneOrIpadUser) && (<>            
-               <Spacing size={1} />
-               <Card styles={{ width: "100%", padding: "25px" }}>
-                  <div className="text-sm bold-600 full mb-05">iPhone?</div>
-                  <div className="text-xxs full mb-15">Install the Grxnd App by following these simple steps</div>
-                  <button className="xxs pd-11 full" onClick={() => router.push("/install-ios")}>
-                     Install <Download size={17} />
-                  </button>
-               </Card>
+               <Spacing size={7} />
             </>)}
-            <Spacing size={5} />
          </div>
       </AppWrapper>
    )

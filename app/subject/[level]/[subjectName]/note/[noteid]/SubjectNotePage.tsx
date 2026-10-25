@@ -8,6 +8,7 @@ import { ArrowLeft, BookCheck, ChevronDown, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
+import { getSubjectPageUrl } from "../../helper"
 import AwaitButton from "@/components/AwaitButton/AwaitButton"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import NoteViewer from "@/components/NoteViewer/NoteViewer"
@@ -16,14 +17,13 @@ import Spacing from "@/components/Spacing/Spacing"
 import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
 import DeleteNote from "@/modal-forms/DeleteNote"
 
-export default function NotebookPage ({ note }: { note: Note }) {
+export default function SubjectNotePage ({ note, subject, subjectLevel }: { note: Note, subjectLevel: string, subject: string }) {
    const router = useRouter();
    const { showModal } = useModal();
+   const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
 
    function handleCreateQuiz () {
-      showModal({
-         content: <CreateQuizModal note={note} />
-      })
+      router.push(`${subjectPageUrl}/start-quiz?noteId=${encodeURIComponent(note.noteid)}`)
    }
    
    function handleDeleteNote () {
@@ -39,12 +39,15 @@ export default function NotebookPage ({ note }: { note: Note }) {
       <AppWrapper>
          <div className="box w-full h-full pd-1">
             <div className="box full pd-1 dfb align-center gap-10">
-               <button className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40" onClick={() => router.push("/notebooks")}>
+               <button 
+                  className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40" 
+                  onClick={() => router.push(`${subjectPageUrl}/notes`)}
+               >
                   <ArrowLeft size={16} />
                </button>
                <div className="box full dfb align-center justify-end">
                   <MultiActionDropdown
-                     className="xxxs pd-11 pdx-2 outline-black no-shadow"
+                     className="xxxs pd-11 pdx-2 outline-black no-shadow radius-20"
                      actions={[
                         {
                            label: <><BookCheck size={17} /> Create Quiz</>,
@@ -86,7 +89,7 @@ function CreateQuizModal ({ note }: { note: Note }) {
          return;
       }
       console.log(data.quiz);
-      const createdTempQuizId = await createTempQuiz(JSON.parse(note.noteJson).title, note.folderCodeName || note.subject, JSON.stringify(data.quiz));
+      const createdTempQuizId = await createTempQuiz(JSON.parse(note.noteJson).title, note.folderCodeName, JSON.stringify(data.quiz));
       if (createdTempQuizId) {
          router.push(`/temp-quiz/${createdTempQuizId}`);
          close();
@@ -102,7 +105,7 @@ function CreateQuizModal ({ note }: { note: Note }) {
          <div className="text-ml bold-600 full accent-color">Create Quiz from Note</div>
          <div className="box full pd-15 dfb column gap-5">
             <div className="text-s bold-500 full">{JSON.parse(note.noteJson).title}</div>
-            <div className="text-xs full">{titleCase(note.folderCodeName ? note.folderCodeName : note.subject)}</div>
+            <div className="text-xs full">{titleCase(note.folderCodeName)}</div>
          </div>
          <div className="box full pd-2 dfb column gap-5">
             <div className="text-s full bold-500">Number of Questions</div>

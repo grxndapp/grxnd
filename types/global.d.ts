@@ -71,7 +71,6 @@ type Note = {
    folderCodeName: string;
    userid: string;
    noteid: string;
-   subject: string;
    noteJson: string;
    createdAt: Date;
 }

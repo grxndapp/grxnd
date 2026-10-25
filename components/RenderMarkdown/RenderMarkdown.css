@@ -19,3 +19,58 @@
   overflow-y: hidden;
   margin: 16px 0;
 }
+
+/* List containers */
+.math-markdown ul, .math-markdown ol {
+  margin: 0;
+  padding: 0;
+  line-height: 1.15;
+  /* list-style-type:none; */
+  padding-left: 20px;
+}
+
+/* Individual list items */
+.math-markdown li {
+  margin: 0 !important;
+  padding: 0;
+  line-height: 1 !important;
+}
+
+.math-markdown ul {
+  margin: 0 !important;
+  padding: 0;
+  gap: 0px;
+  line-height: 0.2 !important;
+}
+
+/* Remove excessive paragraph spacing inside lists */
+.math-markdown li p, span {
+  margin: 0;
+  padding: 0;
+  line-height: 1.8 !important;
+}
+
+/* Spacing between paragraphs within the same list item */
+.math-markdown li p + p {
+  margin: 0;
+  padding: 0;
+  line-height: 1 !important;
+}
+
+.math-markdown ul + p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6 !important;
+}
+
+.math-markdown li + p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6 !important;
+}
+
+/* Prevent KaTeX display math from adding huge gaps */
+.math-markdown li .katex-display {
+  margin: 6px 0;
+  padding: 0;
+}

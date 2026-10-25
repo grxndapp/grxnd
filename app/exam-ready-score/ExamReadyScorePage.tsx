@@ -8,7 +8,7 @@ import ExamReadyRing from "@/components/ExamReadyRing/ExamReadyRing"
 import { pluralSuffixer, titleCase } from "@/lib/str"
 import { ExamDateCardStyles, SubjectIconBubble } from "@/styles-extra/styles"
 import { formatMilliseconds } from "@/utils/date"
-import { fullSubjectBreakDown, subjectIcon, subjectLevels, subjects } from "@/utils/subjects"
+import { customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectIcon, subjectLevels, subjectPastelBgColors, subjects } from "@/utils/subjects"
 import { HTMLMotionProps, motion } from "framer-motion"
 import { ArrowRight, BookOpen, BookText, Calendar, ChartNoAxesColumn, Sparkles, TriangleAlert, Trophy } from "lucide-react"
 import { useRef, useState } from "react"
@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import { RiTargetLine } from "react-icons/ri";
 import { BiSolidZap } from "react-icons/bi";
 import { createExamReadyScore, ExamReadyScore } from "./examReadyScoreCalculator"
+import FrostedCard from "@/components/FrostedCard/FrostedCard"
 type QuestionStages = "subject" | "target-grade" | "exam-date" | "loading" | "show-score"
 type TargetGrades = "A" | "B"
 
@@ -108,15 +109,19 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
       ...SubjectIconBubble, background: "#95f88c", color: "#046d04"
    }
 
+   const fullSubjectInfo = fullSubjectBreakDown(`${subjectLevel} ${subject}`);
+   const isDefaultSubject = isAmongstDefaultSubjects(`${subjectLevel} ${subject}`);
+   const subjectColor = isDefaultSubject ? subjectPastelBgColors[titleCase(fullSubjectInfo.subject)] : customSubjectToPastelColor(titleCase(`${subjectLevel} ${subject}`));
+
    return (
       <AppWrapper>
          <div className="box full h-full pd-1">
             {(questionStage == "show-score" && examReadyScore) ? (<div className="box full dfb column gap-10">
                
-               <div>
+               <FrostedCard>
                   <div className="box full dfb align-center gap-10 pd-05">
                      <div className="box full dfb align-center gap-10">
-                        <div style={SubjectIconBubble}>
+                        <div style={{ ...SubjectIconBubble, background: subjectColor  }}>
                            {subjectIcon[fullSubjectBreakDown(subject).subject]}
                         </div>
                         <div className="box full dfb column">
@@ -135,7 +140,7 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
                   <div className="box full pd-1">
                      <div className="text-xxs full text-center">{examReadyScore.overall.headline}</div>
                   </div>
-               </div>
+               </FrostedCard>
                
                <div className="exam-score-card orange">
                   <div className="box full dfb align-center gap-15">

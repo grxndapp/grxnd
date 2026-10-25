@@ -6,6 +6,7 @@ import { ModalProvider } from "@/components/Modal/ModalContext";
 import { Toaster } from "sonner";
 import SessionWrapper from "@/components/SessionWrapper/SessionWrapper";
 import FontWrapper from "@/components/FontWrapper/FontWrapper";
+import { SplashScreenProvider } from "@/components/SplashScreen/SplashScreenContext";
 
 export const metadata: Metadata = {
   title: "Grxnd | AI Study Helper for Scottish Students | SQA Past Papers & Revision",
@@ -68,13 +69,20 @@ export default function RootLayout({
             <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
             <link rel="manifest" href="/manifest.json" />
             <link rel="apple-touch-icon" href="/favicon.ico" />
-            <script defer data-web-identifier="ayom" data-party="visora" data-website-id="a1367ce6-4581-4686-a061-eae57659d191" src="https://visora.vercel.app/cdn/track.js"></script>
+            <script 
+              defer data-web-identifier="ayom" 
+              data-party="visora" 
+              data-website-id="a1367ce6-4581-4686-a061-eae57659d191" 
+              src="https://visora.vercel.app/cdn/track.js" 
+            />
           </head>
           <body className={MonaSansFont.className}>
-            <FontWrapper font="Mona Sans">
-              <Toaster richColors position="top-center" />
-              {children}
-            </FontWrapper>
+            <SplashScreenProvider>
+              <FontWrapper font="Mona Sans">
+                <Toaster richColors position="top-center" />
+                {children}
+              </FontWrapper>
+            </SplashScreenProvider>
           </body>
         </html>
       </ModalProvider>

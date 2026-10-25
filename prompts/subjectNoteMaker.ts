@@ -44,55 +44,144 @@ export function subjectNoteMakerPrompt({
 
 ## Data type rules (CRITICAL)
 
-The note is rendered directly by an application that expects plain strings. A single object, nested array, or non-string value will break it.
+The note is rendered directly by an application. A wrong type or an extra key will break it.
 
 1. "title" and "overview" are plain strings.
-2. "key_concepts", "rules", "examples", "common_mistakes", "questions", and "summary" are each a flat array of strings. "visuals" is always an empty array.
-3. Every entry in those arrays must be ONE string. Never an object, never an array, never a number, boolean, or null.
-4. Never use sub-keys such as "question", "answer", "mistake", "fix", "situation", "working", "steps", "term", or "definition" anywhere in the JSON. The only keys allowed are the ones in the output format below.
-5. When an entry has several parts (a worked example with situation, working, and answer; a question with its answer; a mistake with its fix; a rule with its symbols and cue), put all the parts inside the same single string and let Markdown do the structuring: **bold** labels, numbered or "-" lists, and \`\\n\\n\` paragraph breaks.
-6. Never split one example, question, or mistake across several array entries, and never merge several of them into one entry. One array entry equals one complete item.
+2. "key_concepts", "visuals" and "summary" are flat arrays of strings.
+3. "rules" and "common_mistakes" are arrays of objects. Every field in them is a string.
+4. "examples" and "questions" are arrays of objects. In each object, "question" is a string and "solution" is a flat array of strings, with one string per line of working.
+5. Use only the keys shown in the output format below. Never add keys such as "answer", "steps", "term", "definition" or "situation".
+6. Never use null, numbers, booleans or nested arrays. An array of strings is allowed only where this section says so.
+7. One object equals one complete item. Never split one example, question or mistake across several objects, and never merge several into one.
 
-Wrong (objects, never do this):
+Wrong (solution as one string):
 
-"questions": [
-  { "question": "What is 2 + 2?", "answer": "4" }
-]
+"solution": "1. Add the numbers.\n2. Answer: 4"
 
-Right (one Markdown string per item):
+Right (solution as an array, one line per entry):
 
-"questions": [
-  "What is 2 + 2?\\n\\n**Answer:** 4"
-]
+"solution": ["Add the two numbers together.", "$$2 + 2 = 4$$", "The result is $4$."]
 
-## Output format (MANDATORY)
+## OUTPUT FORMAT (STRICT JSON)
+Respond with ONE valid JSON object and nothing else. No text before or after it, no markdown code fences, no comments.
 
-Return ONLY a valid JSON object in exactly this structure:
+Use exactly this structure and exactly these keys, in this order:
 
 {
   "note": {
     "title": "TITLE OF THE NOTE",
     "overview": "A SHORT PLAIN-LANGUAGE DEFINITION AND SUMMARY OF THE TOPIC",
     "key_concepts": ["ONE STRING PER TERM AND ITS MEANING"],
-    "rules": ["ONE STRING PER RULE, LAW, METHOD OR FORMULA"],
-    "examples": ["ONE STRING PER WORKED EXAMPLE"],
-    "visuals": [],
-    "common_mistakes": ["ONE STRING PER MISTAKE, INCLUDING ITS FIX"],
-    "questions": ["ONE STRING PER PRACTICE QUESTION, INCLUDING ITS ANSWER"],
+    "rules": [
+      {
+        "title": "A SHORT NAME FOR THE RULE",
+        "rule": "THE ACTUAL RULE, FORMULA, METHODOLOGY OR LAW",
+        "use": "WHAT EACH SYMBOL MEANS, WHEN TO USE THE RULE, AND HOW TO UNDERSTAND IT"
+      }
+    ],
+    "examples": [
+      {
+        "question": "THE QUESTION OF THE WORKED EXAMPLE",
+        "solution": ["LINE 1 OF THE WORKING", "LINE 2 OF THE WORKING", "FINAL LINE GIVING THE ANSWER WITH ITS UNIT"]
+      }
+    ],
+    "visuals": ["https://www.youtube.com/watch?v=VIDEO_ID"],
+    "common_mistakes": [
+      {
+        "mistake": "EXPLAIN THE MISTAKE - ONE STRING",
+        "fix": "THE WAY TO FIX IT - ONE STRING"
+      }
+    ],
+    "questions": [
+      {
+        "question": "THE PRACTICE QUESTION FOR THE STUDENT",
+        "solution": ["LINE 1 OF THE SOLUTION", "LINE 2 OF THE SOLUTION", "FINAL LINE GIVING THE ANSWER WITH ITS UNIT"]
+      }
+    ],
     "summary": ["ONE STRING PER KEY TAKEAWAY"]
   }
 }
 
-Field rules (every value is a Markdown string):
-- "title": a clear, specific title of at most 10 words that names the topic and suits the level. Plain text only, with no Markdown or LaTeX.
-- "overview": 2-3 short sentences. Sentence 1 defines the topic in simple terms. The remaining sentences say why it matters or what the learner will be able to do after studying it.
-- "key_concepts": 4-8 strings, each formatted as "**Term**: simple definition in one or two short sentences." Order them so earlier terms support later ones.
-- "rules": 3-7 strings. Each states one rule, law, formula, or method clearly. For formulas, give the formula, then define every symbol with its unit as a short "-" list, then add a line starting "**Use it when:**". For processes, give the numbered steps in order. All of this lives inside the one string.
-- "examples": 2-4 strings, ordered from easiest to hardest. Each string must follow this layout: "**Situation:** all values and units\\n\\n**Working:**\\n\\n1. step\\n2. step\\n\\n**Answer:** final result". For non-numerical subjects, use "**Situation:**", then "**Application:**", then "**Why it works:**" in the same way.
-- "visuals": always return an empty array []. Never invent or guess image links.
-- "common_mistakes": 3-5 strings, each formatted as "**Mistake:** what learners get wrong.\\n\\n**Fix:** the correct idea, in one or two sentences." Base them on genuine, frequent errors for this level.
-- "questions": 3-5 strings, ordered from easiest to hardest, each testing a distinct skill. Each string must contain the question, then a blank line, then "**Answer:**" followed by a brief worked answer or model response. All data needed to answer must be included in the question.
-- "summary": 3-5 strings, each a single memorable sentence covering one key takeaway. Together they must cover the essentials of the whole note.
+### STRUCTURE RULES
+1. Output only the keys shown above. Never add, rename, reorder or remove keys.
+2. Every string must be non-empty. Every "solution" array must contain at least 3 strings and no empty strings.
+3. rules, examples and common_mistakes must each contain at least 3 objects, and each object must contain all of its keys.
+4. Never put labels inside the strings. Do not write "Mistake:", "Fix:", "Situation:", "Working:", "Solution:", "Answer:" or "Use it when:". The field names already provide those labels, and the app styles the last solution line as the answer.
+5. Never put a raw double quote character inside a string. Use single quotes or rephrase.
+6. Never use real line breaks inside a string. The app handles ALL spacing between sections, entries and lines, so never add spacing of your own:
+   - Never start or end any string with \n.
+   - Never use \n or \n\n to separate array entries, sections or paragraphs.
+   - Never use more than one blank line (\n\n) anywhere.
+   - The only places \n is allowed are the ones named in the field content rules below.
+7. Never use bullet points or numbered lists unless a field content rule below explicitly asks for one. Write ideas as sentences instead.
+8. A $$...$$ block that is a whole array entry needs no blank lines before or after it. The blank-line maths rule applies only to $$...$$ blocks inside a longer string.
+9. No trailing commas. All brackets and braces must be closed.
+
+### FIELD CONTENT RULES
+- title: short and specific, plain text, no maths unless essential.
+- overview: 2 to 4 sentences in one paragraph, plain language, at the level of the qualification. No line breaks and no lists.
+- key_concepts: each string is the term in bold followed by its meaning in one or two sentences, e.g. "**Phasor**: meaning here." One line, no list. Bold uses ** outside any maths.
+- rules[].title: a short name for the rule, e.g. "Ohm's Law for AC Circuits".
+- rules[].rule: ONLY the formula, law or method, with no intro text.
+  - Formula: each equation is its own $$...$$ block. If there are several, separate them with exactly one \n\n between blocks, and nothing before the first or after the last.
+  - Non-maths method: one short sentence per step. Use single \n between steps, and number them only if there are 3 or more.
+- rules[].use:
+  - If the rule has two or more symbols, start with a bullet list defining each symbol, one per line, in the form "- $\\,V$: meaning (unit)", with a single \n between lines. Then add \n\n and one or two sentences on when to use the rule and how to understand it.
+  - If the rule has fewer than two symbols, write only the one or two sentences, with no list and no \n.
+- examples[].question: the full question including all given values with units, as one paragraph. No working, no answer and no line breaks.
+- examples[].solution: an array with one string per line of working, in this order: what is being done, the calculation, and the final answer. Each entry is EITHER one short sentence (inline maths allowed) OR one single $$...$$ equation that is the whole entry with no other text. No numbering, no "-" bullets, no \n inside entries. The last entry states the final answer with its unit. Aim for 4 to 8 entries. Every calculation line must be complete and closed.
+- common_mistakes[].mistake: one sentence describing the wrong idea or wrong step.
+- common_mistakes[].fix: one or two sentences giving the correct method, with a short correct example only if useful. No list.
+- questions[].question: the practice question with all given values and units, as one paragraph. No working and no answer.
+- questions[].solution: same format and rules as examples[].solution. The last entry is the final answer with its unit.
+- summary: 4 to 6 short takeaway strings, one sentence each.
+
+### VISUALS RULES (YOUTUBE LINKS)
+- visuals is an array of 2 or 3 strings. Each string is ONE YouTube URL and nothing else: no title, no label, no extra text.
+- Every URL must start with https://www.youtube.com/ and contain no spaces, no quotes and no backslashes.
+- If you have a web search tool, search for real videos and use ONLY a video URL that appeared in your search results, in the form https://www.youtube.com/watch?v=VIDEO_ID.
+- If you do NOT have a web search tool, or you are not 100 percent certain a video exists, NEVER invent or guess a VIDEO_ID. Use a YouTube search URL instead, in the form https://www.youtube.com/results?search_query=KEYWORDS, with words joined by + signs, e.g. https://www.youtube.com/results?search_query=phasors+and+complex+impedance+explained
+- Choose videos or searches that explain the concept of the note at SQA level, from reputable education channels, and suitable for school students.
+
+### ALL MATHS RULES ABOVE APPLY INSIDE EVERY FIELD
+Every KaTeX rule, the exactly-two-backslashes rule, and the final check apply inside every string of every field, including inside the objects in rules, examples and common_mistakes.
+
+## OUTPUT EXAMPLE (copy this structure and style exactly)
+{
+  "note": {
+    "title": "AC Circuit Analysis with Complex Numbers",
+    "overview": "Complex numbers let us describe the amplitude and phase of AC voltages, currents and impedances together, which makes circuit calculations much simpler.",
+    "key_concepts": [
+      "**Impedance ($\\,Z$)**: The total opposition to current in an AC circuit, measured in ohms ($\\Omega$)."
+    ],
+    "rules": [
+      {
+        "title": "Ohm's Law for AC Circuits (Complex Form)",
+        "rule": "$$V = IZ$$",
+        "use": "- $\\,V$: complex voltage ($\\mathrm{V}$)\n- $\\,I$: complex current ($\\mathrm{A}$)\n- $\\,Z$: complex impedance ($\\Omega$)\n\nUse it when you need voltage, current or impedance in an AC circuit where phase matters."
+      }
+    ],
+    "examples": [
+      {
+        "question": "A current phasor $I_1 = 1\\angle0^\\circ\\,\\mathrm{A}$ flows through an impedance $Z = 0.5\\angle90^\\circ\\,\\Omega$. Calculate the voltage $V_1$ across the impedance.",
+        "solution": "1. Use Ohm's Law for AC circuits: $V_1 = I_1 Z$.\n2. Multiply the magnitudes and add the angles:\n\n$$V_1 = (1 \\times 0.5)\\angle(0^\\circ + 90^\\circ)$$\n\n3. Answer: $V_1 = 0.5\\angle90^\\circ\\,\\mathrm{V}$"
+      }
+    ],
+    "visuals": [],
+    "common_mistakes": [
+      {
+        "mistake": "Confusing angular frequency ($\\omega$) with frequency ($\\,f$) when using a formula.",
+        "fix": "Remember that $\\omega = 2\\pi f$. Check which one the formula needs and convert first, using $\\mathrm{rad\\,s^{-1}}$ for $\\omega$ and $\\mathrm{Hz}$ for $\\,f$."
+      }
+    ],
+    "questions": [
+      "1. A capacitor has $C = 20\\,\\mu\\mathrm{F}$ and is connected to a $50\\,\\mathrm{Hz}$ supply. Calculate its impedance.\n\n**Answer:** $\\omega = 2\\pi f = 100\\pi\\,\\mathrm{rad\\,s^{-1}}$ and $Z_C = \\frac{-j}{\\omega C} \\approx -j159.15\\,\\Omega$."
+    ],
+    "summary": [
+      "Complex numbers describe both amplitude and phase in AC circuits."
+    ]
+  }
+}
 
 ## Mathematical formatting rules
 
@@ -139,7 +228,9 @@ Field rules (every value is a Markdown string):
 - Output ONLY the JSON object.
 - Do not include any introductory text, trailing commentary, or Markdown code fences around the JSON.
 
-Generate the study note now.`;
+Generate the study note now.
+
+Reminder before you answer: do not use \\begin, \\end, \\hline, \\cline or \\multicolumn anywhere. No tables and no matrix or aligned environments. Show multi-line working as separate array entries or separate $$...$$ blocks, and keep every backslash command at exactly two backslashes.`;
 }
 
 export interface FileNotePromptParams {
@@ -217,57 +308,144 @@ Do not guess from the file name or fall back on general knowledge to produce a n
 
 ## Data type rules (CRITICAL)
 
-The note is rendered directly by an application that expects plain strings. A single object, nested array, or non-string value will break it.
+The note is rendered directly by an application. A wrong type or an extra key will break it.
 
-1. "title", "subject", and "overview" are plain strings.
-2. "key_concepts", "rules", "examples", "common_mistakes", "questions", and "summary" are each a flat array of strings. "visuals" is always an empty array.
-3. Every entry in those arrays must be ONE string. Never an object, never an array, never a number, boolean, or null.
-4. Never use sub-keys such as "question", "answer", "mistake", "fix", "situation", "working", "steps", "term", or "definition" anywhere in the JSON. The only keys allowed are the ones in the output format below.
-5. When an entry has several parts (a worked example with situation, working, and answer; a question with its answer; a mistake with its fix; a rule with its symbols and cue), put all the parts inside the same single string and let Markdown do the structuring: **bold** labels, numbered or "-" lists, and \`\\n\\n\` paragraph breaks.
-6. Never split one example, question, or mistake across several array entries, and never merge several of them into one entry. One array entry equals one complete item.
+1. "title" and "overview" are plain strings.
+2. "key_concepts", "visuals" and "summary" are flat arrays of strings.
+3. "rules" and "common_mistakes" are arrays of objects. Every field in them is a string.
+4. "examples" and "questions" are arrays of objects. In each object, "question" is a string and "solution" is a flat array of strings, with one string per line of working.
+5. Use only the keys shown in the output format below. Never add keys such as "answer", "steps", "term", "definition" or "situation".
+6. Never use null, numbers, booleans or nested arrays. An array of strings is allowed only where this section says so.
+7. One object equals one complete item. Never split one example, question or mistake across several objects, and never merge several into one.
 
-Wrong (objects, never do this):
+Wrong (solution as one string):
 
-"questions": [
-  { "question": "What is 2 + 2?", "answer": "4" }
-]
+"solution": "1. Add the numbers.\n2. Answer: 4"
 
-Right (one Markdown string per item):
+Right (solution as an array, one line per entry):
 
-"questions": [
-  "What is 2 + 2?\\n\\n**Answer:** 4"
-]
+"solution": ["Add the two numbers together.", "$$2 + 2 = 4$$", "The result is $4$."]
 
-## Output format (MANDATORY)
+## OUTPUT FORMAT (STRICT JSON)
+Respond with ONE valid JSON object and nothing else. No text before or after it, no markdown code fences, no comments.
 
-Return ONLY a valid JSON object in exactly this structure:
+Use exactly this structure and exactly these keys, in this order:
 
 {
   "note": {
     "title": "TITLE OF THE NOTE",
-    "subject": "ONE OF: math, english, physics, biology, chemistry, computer science, administration",
     "overview": "A SHORT PLAIN-LANGUAGE DEFINITION AND SUMMARY OF THE TOPIC",
     "key_concepts": ["ONE STRING PER TERM AND ITS MEANING"],
-    "rules": ["ONE STRING PER RULE, LAW, METHOD OR FORMULA"],
-    "examples": ["ONE STRING PER WORKED EXAMPLE"],
-    "visuals": [],
-    "common_mistakes": ["ONE STRING PER MISTAKE, INCLUDING ITS FIX"],
-    "questions": ["ONE STRING PER PRACTICE QUESTION, INCLUDING ITS ANSWER"],
+    "rules": [
+      {
+        "title": "A SHORT NAME FOR THE RULE",
+        "rule": "THE ACTUAL RULE, FORMULA, METHODOLOGY OR LAW",
+        "use": "WHAT EACH SYMBOL MEANS, WHEN TO USE THE RULE, AND HOW TO UNDERSTAND IT"
+      }
+    ],
+    "examples": [
+      {
+        "question": "THE QUESTION OF THE WORKED EXAMPLE",
+        "solution": ["LINE 1 OF THE WORKING", "LINE 2 OF THE WORKING", "FINAL LINE GIVING THE ANSWER WITH ITS UNIT"]
+      }
+    ],
+    "visuals": ["https://www.youtube.com/watch?v=VIDEO_ID"],
+    "common_mistakes": [
+      {
+        "mistake": "EXPLAIN THE MISTAKE - ONE STRING",
+        "fix": "THE WAY TO FIX IT - ONE STRING"
+      }
+    ],
+    "questions": [
+      {
+        "question": "THE PRACTICE QUESTION FOR THE STUDENT",
+        "solution": ["LINE 1 OF THE SOLUTION", "LINE 2 OF THE SOLUTION", "FINAL LINE GIVING THE ANSWER WITH ITS UNIT"]
+      }
+    ],
     "summary": ["ONE STRING PER KEY TAKEAWAY"]
   }
 }
 
-Field rules (every value is a Markdown string, except "subject" and "title", which are plain text):
-- "title": a clear, specific title of at most 10 words that names the topic, based on the file's content. Plain text only, with no Markdown or LaTeX.
-- "subject": exactly one of "math", "english", "physics", "biology", "chemistry", "computer science", or "administration", chosen as the best fit for the note. Plain lowercase text only, following the subject classification rules above.
-- "overview": 2-3 short sentences. Sentence 1 defines the topic in simple terms. The remaining sentences say why it matters or what the learner will be able to do after studying it.
-- "key_concepts": 4-8 strings, each formatted as "**Term**: simple definition in one or two short sentences." Order them so earlier terms support later ones.
-- "rules": 3-7 strings. Each states one rule, law, formula, or method clearly. For formulas, give the formula, then define every symbol with its unit as a short "-" list, then add a line starting "**Use it when:**". For processes, give the numbered steps in order. All of this lives inside the one string.
-- "examples": 2-4 strings, ordered from easiest to hardest. Each string must follow this layout: "**Situation:** all values and units\\n\\n**Working:**\\n\\n1. step\\n2. step\\n\\n**Answer:** final result". For non-numerical subjects, use "**Situation:**", then "**Application:**", then "**Why it works:**" in the same way.
-- "visuals": always return an empty array []. Never invent or guess image links.
-- "common_mistakes": 3-5 strings, each formatted as "**Mistake:** what learners get wrong.\\n\\n**Fix:** the correct idea, in one or two sentences." Base them on genuine, frequent errors that follow from the file's content, and do not introduce unrelated topics.
-- "questions": 3-5 strings, ordered from easiest to hardest, each testing a distinct skill from the file. Each string must contain the question, then a blank line, then "**Answer:**" followed by a brief worked answer or model response. All data needed to answer must be included in the question.
-- "summary": 3-5 strings, each a single memorable sentence covering one key takeaway. Together they must cover the essentials of the whole note.
+### STRUCTURE RULES
+1. Output only the keys shown above. Never add, rename, reorder or remove keys.
+2. Every string must be non-empty. Every "solution" array must contain at least 3 strings and no empty strings.
+3. rules, examples and common_mistakes must each contain at least 3 objects, and each object must contain all of its keys.
+4. Never put labels inside the strings. Do not write "Mistake:", "Fix:", "Situation:", "Working:", "Solution:", "Answer:" or "Use it when:". The field names already provide those labels, and the app styles the last solution line as the answer.
+5. Never put a raw double quote character inside a string. Use single quotes or rephrase.
+6. Never use real line breaks inside a string. The app handles ALL spacing between sections, entries and lines, so never add spacing of your own:
+   - Never start or end any string with \n.
+   - Never use \n or \n\n to separate array entries, sections or paragraphs.
+   - Never use more than one blank line (\n\n) anywhere.
+   - The only places \n is allowed are the ones named in the field content rules below.
+7. Never use bullet points or numbered lists unless a field content rule below explicitly asks for one. Write ideas as sentences instead.
+8. A $$...$$ block that is a whole array entry needs no blank lines before or after it. The blank-line maths rule applies only to $$...$$ blocks inside a longer string.
+9. No trailing commas. All brackets and braces must be closed.
+
+### FIELD CONTENT RULES
+- title: short and specific, plain text, no maths unless essential.
+- overview: 2 to 4 sentences in one paragraph, plain language, at the level of the qualification. No line breaks and no lists.
+- key_concepts: each string is the term in bold followed by its meaning in one or two sentences, e.g. "**Phasor**: meaning here." One line, no list. Bold uses ** outside any maths.
+- rules[].title: a short name for the rule, e.g. "Ohm's Law for AC Circuits".
+- rules[].rule: ONLY the formula, law or method, with no intro text.
+  - Formula: each equation is its own $$...$$ block. If there are several, separate them with exactly one \n\n between blocks, and nothing before the first or after the last.
+  - Non-maths method: one short sentence per step. Use single \n between steps, and number them only if there are 3 or more.
+- rules[].use:
+  - If the rule has two or more symbols, start with a bullet list defining each symbol, one per line, in the form "- $\\,V$: meaning (unit)", with a single \n between lines. Then add \n\n and one or two sentences on when to use the rule and how to understand it.
+  - If the rule has fewer than two symbols, write only the one or two sentences, with no list and no \n.
+- examples[].question: the full question including all given values with units, as one paragraph. No working, no answer and no line breaks.
+- examples[].solution: an array with one string per line of working, in this order: what is being done, the calculation, and the final answer. Each entry is EITHER one short sentence (inline maths allowed) OR one single $$...$$ equation that is the whole entry with no other text. No numbering, no "-" bullets, no \n inside entries. The last entry states the final answer with its unit. Aim for 4 to 8 entries. Every calculation line must be complete and closed.
+- common_mistakes[].mistake: one sentence describing the wrong idea or wrong step.
+- common_mistakes[].fix: one or two sentences giving the correct method, with a short correct example only if useful. No list.
+- questions[].question: the practice question with all given values and units, as one paragraph. No working and no answer.
+- questions[].solution: same format and rules as examples[].solution. The last entry is the final answer with its unit.
+- summary: 4 to 6 short takeaway strings, one sentence each.
+
+### VISUALS RULES (YOUTUBE LINKS)
+- visuals is an array of 2 or 3 strings. Each string is ONE YouTube URL and nothing else: no title, no label, no extra text.
+- Every URL must start with https://www.youtube.com/ and contain no spaces, no quotes and no backslashes.
+- If you have a web search tool, search for real videos and use ONLY a video URL that appeared in your search results, in the form https://www.youtube.com/watch?v=VIDEO_ID.
+- If you do NOT have a web search tool, or you are not 100 percent certain a video exists, NEVER invent or guess a VIDEO_ID. Use a YouTube search URL instead, in the form https://www.youtube.com/results?search_query=KEYWORDS, with words joined by + signs, e.g. https://www.youtube.com/results?search_query=phasors+and+complex+impedance+explained
+- Choose videos or searches that explain the concept of the note at SQA level, from reputable education channels, and suitable for school students.
+
+### ALL MATHS RULES ABOVE APPLY INSIDE EVERY FIELD
+Every KaTeX rule, the exactly-two-backslashes rule, and the final check apply inside every string of every field, including inside the objects in rules, examples and common_mistakes.
+
+## OUTPUT EXAMPLE (copy this structure and style exactly)
+{
+  "note": {
+    "title": "AC Circuit Analysis with Complex Numbers",
+    "overview": "Complex numbers let us describe the amplitude and phase of AC voltages, currents and impedances together, which makes circuit calculations much simpler.",
+    "key_concepts": [
+      "**Impedance ($\\,Z$)**: The total opposition to current in an AC circuit, measured in ohms ($\\Omega$)."
+    ],
+    "rules": [
+      {
+        "title": "Ohm's Law for AC Circuits (Complex Form)",
+        "rule": "$$V = IZ$$",
+        "use": "- $\\,V$: complex voltage ($\\mathrm{V}$)\n- $\\,I$: complex current ($\\mathrm{A}$)\n- $\\,Z$: complex impedance ($\\Omega$)\n\nUse it when you need voltage, current or impedance in an AC circuit where phase matters."
+      }
+    ],
+    "examples": [
+      {
+        "question": "A current phasor $I_1 = 1\\angle0^\\circ\\,\\mathrm{A}$ flows through an impedance $Z = 0.5\\angle90^\\circ\\,\\Omega$. Calculate the voltage $V_1$ across the impedance.",
+        "solution": "1. Use Ohm's Law for AC circuits: $V_1 = I_1 Z$.\n2. Multiply the magnitudes and add the angles:\n\n$$V_1 = (1 \\times 0.5)\\angle(0^\\circ + 90^\\circ)$$\n\n3. Answer: $V_1 = 0.5\\angle90^\\circ\\,\\mathrm{V}$"
+      }
+    ],
+    "visuals": [],
+    "common_mistakes": [
+      {
+        "mistake": "Confusing angular frequency ($\\omega$) with frequency ($\\,f$) when using a formula.",
+        "fix": "Remember that $\\omega = 2\\pi f$. Check which one the formula needs and convert first, using $\\mathrm{rad\\,s^{-1}}$ for $\\omega$ and $\\mathrm{Hz}$ for $\\,f$."
+      }
+    ],
+    "questions": [
+      "1. A capacitor has $C = 20\\,\\mu\\mathrm{F}$ and is connected to a $50\\,\\mathrm{Hz}$ supply. Calculate its impedance.\n\n**Answer:** $\\omega = 2\\pi f = 100\\pi\\,\\mathrm{rad\\,s^{-1}}$ and $Z_C = \\frac{-j}{\\omega C} \\approx -j159.15\\,\\Omega$."
+    ],
+    "summary": [
+      "Complex numbers describe both amplitude and phase in AC circuits."
+    ]
+  }
+}
 
 ## Mathematical formatting rules
 
@@ -319,5 +497,7 @@ Field rules (every value is a Markdown string, except "subject" and "title", whi
 - Output ONLY the JSON object.
 - Do not include any introductory text, trailing commentary, or Markdown code fences around the JSON.
 
-Generate the study note from the uploaded file now.`;
+Generate the study note from the uploaded file now.
+
+Reminder before you answer: do not use \\begin, \\end, \\hline, \\cline or \\multicolumn anywhere. No tables and no matrix or aligned environments. Show multi-line working as separate array entries or separate $$...$$ blocks, and keep every backslash command at exactly two backslashes.`;
 }

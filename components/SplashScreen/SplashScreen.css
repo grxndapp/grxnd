@@ -1,0 +1,66 @@
+.splash-screen-container {
+   width: 100vw;
+   height: 100vh;
+   position: fixed;
+   z-index: 99999;
+   background: linear-gradient(to bottom, #eff0ff, #d0d3ff);
+}
+
+.splash-screen {
+   width: 100%;
+   height: 100%;
+   max-height: 70vh;
+   display: flex;
+   gap: 5px;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+
+.splash-screen .splash-screen-icon {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.splash-screen .splash-screen-title {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 10px 0;
+}
+
+.splash-screen .splash-screen-description {
+   width: 100%;
+   max-width: 600px;
+}
+
+.splash-screen .splash-screen-title.normal-title {
+   background: linear-gradient(to bottom, var(--accent-color-70), var(--accent-color));
+   background-clip: text;
+   color: transparent;
+}
+
+.splash-screen .splash-screen-title.loading-title {
+   background: linear-gradient(to bottom, #ff9e4f, #e08700);
+   background-clip: text;
+   color: transparent;
+}
+
+.splash-screen .splash-screen-title.error-title {
+   background: linear-gradient(to bottom, #ff3131, #af0303);
+   background-clip: text;
+   color: transparent;
+}
+
+.splash-screen .splash-screen-actions {
+   width: 100%;
+   padding: 35px 0;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 10px;
+}

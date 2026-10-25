@@ -87,3 +87,9 @@ export const ChooseFolderSaveBtnSelectedStyles: React.CSSProperties = {
    width: "100%", borderRadius: "15px", background: "var(--accent-color-30)",
    padding: "15px", cursor: "pointer", border: "1px solid #c4cdff9a", fontWeight: "600"
 }
+
+export const YoutubeSearchCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid #f3f3f3",
+   padding: "20px 25px", borderRadius: "30px", cursor: "pointer",
+   width: "100%", maxWidth: "500px", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)"
+}

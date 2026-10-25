@@ -106,36 +106,40 @@ function findBalancedEnd(text: string, start: number): number {
 }
 
 export function extractJson<T = any>(response: string): T {
-   const text = response.replace(/^\uFEFF/, "").trim();
-
-   // 1. Whole response
-   const whole = tryParse(text);
-   if (whole) return whole.value as T;
-
-   // 2. Markdown code fences (```json ... ```), including an unclosed final fence
-   const fenceRe = /```(?:json|JSON)?\s*\n?([\s\S]*?)(?:```|$)/g;
-   for (const match of text.matchAll(fenceRe)) {
-      const body = match[1].trim();
-      if (!body) continue;
-
-      const direct = tryParse(body);
-      if (direct) return direct.value as T;
+   try {
+      const text = response.replace(/^\uFEFF/, "").trim();
+   
+      // 1. Whole response
+      const whole = tryParse(text);
+      if (whole) return whole.value as T;
+   
+      // 2. Markdown code fences (```json ... ```), including an unclosed final fence
+      const fenceRe = /```(?:json|JSON)?\s*\n?([\s\S]*?)(?:```|$)/g;
+      for (const match of text.matchAll(fenceRe)) {
+         const body = match[1].trim();
+         if (!body) continue;
+   
+         const direct = tryParse(body);
+         if (direct) return direct.value as T;
+      }
+   
+      // 3. Scan for balanced {...} / [...] blocks anywhere in the text
+      for (let i = 0; i < text.length; i++) {
+         if (text[i] !== "{" && text[i] !== "[") continue;
+   
+         const end = findBalancedEnd(text, i);
+         if (end === -1) continue;
+   
+         const parsed = tryParse(text.slice(i, end + 1));
+         if (parsed) return parsed.value as T;
+   
+         i = end; // skip past this failed block rather than returning a fragment of it
+      }
+   
+      throw new Error("No valid JSON found in response");
+   } catch (err) {
+      return "No valid JSON found in response" as T;
    }
-
-   // 3. Scan for balanced {...} / [...] blocks anywhere in the text
-   for (let i = 0; i < text.length; i++) {
-      if (text[i] !== "{" && text[i] !== "[") continue;
-
-      const end = findBalancedEnd(text, i);
-      if (end === -1) continue;
-
-      const parsed = tryParse(text.slice(i, end + 1));
-      if (parsed) return parsed.value as T;
-
-      i = end; // skip past this failed block rather than returning a fragment of it
-   }
-
-   throw new Error("No valid JSON found in response");
 }
 
 export function sanitise (object: any) {

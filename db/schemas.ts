@@ -47,7 +47,6 @@ export const notesTable = pgTable("notes", {
    userid: text("userid"),
    folderCodeName: text("folder_code_name").notNull().default(""),
    noteid: text("noteid"),
-   subject: text("subject").default(""),
    noteJson: text("note_json"),
    createdAt: timestamp("created_at").defaultNow(),
 });

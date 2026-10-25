@@ -113,3 +113,13 @@
       z-index: 3;
    }
 }
+
+.accent-color-gradient-text {
+   background: linear-gradient(to bottom, var(--accent-color-70), var(--accent-color));
+   background-clip: text;
+   color: transparent;
+}
+
+button.apple-special {
+   background: linear-gradient(60deg, var(--accent-color-50), #ee0672c7);
+}

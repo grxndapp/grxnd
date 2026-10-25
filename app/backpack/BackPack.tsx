@@ -2,47 +2,20 @@
 import { useRouter } from "next/navigation";
 import { CustomIcon } from "@/components/Icons/Icon";
 import { StaticImageData } from "next/image";
-import { BackpackOpenIconBubble, ExamReadyScoreCtaCardStyles } from "@/styles-extra/styles";
-import { ChevronRight, ArrowRight } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { BackpackOpenIconBubble } from "@/styles-extra/styles";
+import { ArrowRight } from "lucide-react";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Card from "@/components/Card/Card";
 import TimeTableIcon from "@/public/timetable.png"
-import NoteBookIcon from "@/public/notebook.png"
-import QuizIcon from "@/public/quiz.png"
-import ToolsIcon from "@/public/tools.png"
 import ExamReadyScoreIcon from "@/public/exam-ready-score.png"
 import Spacing from "@/components/Spacing/Spacing";
-import userDefaultImage from "@/public/user-def.png"
 
 export default function BackPackPage () {
-   const { data: session } = useSession();
-   const router = useRouter();
-   
    return (
       <AppWrapper>
          <div className="box full h-full pd-1">
             <div className="box full pd-05 dfb column">
                <div className="text-xl bold-700 full">Your Backpack</div>
-            </div>
-            <div className="box full dfb wrap gap-15 pd-1">
-               <BackPackTool 
-                  style="wide" icon={NoteBookIcon}
-                  label="Your Notebooks" description="Open all your notes"
-                  href="/notebooks"
-               />
-            </div>
-            <div className="box full dfb align-center gap-10 pd-1">
-               <BackPackTool 
-                  style="slim" icon={ToolsIcon}
-                  label="Tools" description="Make quizzes, notes and more"
-                  href="/tools"
-               />
-               <BackPackTool 
-                  style="slim" icon={QuizIcon}
-                  label="Quizzes" description="View past quizzes and revise"
-                  href="/quizzes"
-               />
             </div>
             <div className="box full pd-1">
                <BackPackTool 
@@ -51,24 +24,6 @@ export default function BackPackPage () {
                   href="/exam-ready-score"
                />
             </div>
-            {/* <div className="box full">
-               <div className="box full pd-05 dfb align-center justify-center">
-                  <Card styles={ExamReadyScoreCtaCardStyles} onClick={() => router.push("/exam-ready-score")}>
-                     <div className="box text-xxs full pd-05 dfb align-center wrap gap-5">
-                        <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={20} round />
-                        {session?.user?.name}
-                     </div>
-                     <div className="box full dfb align-center gap-5">
-                        <div className="text-xs bold-600 full accent-color dfb align-center gap-5">
-                           how prepared are you?
-                        </div>
-                        <div className="box fit dfb align-center accent-color">
-                           <ChevronRight size={20} />
-                        </div>
-                     </div>
-                  </Card>
-               </div>
-            </div> */}
             <div className="box full pd-1">
                <BackPackTool 
                   style="wide" icon={TimeTableIcon}
@@ -76,7 +31,6 @@ export default function BackPackPage () {
                   href="/backpack" comingSoon
                />
             </div>
-
             <Spacing size={4} />
          </div>
       </AppWrapper>

@@ -6,16 +6,37 @@ type EssayGradeReport = {
    improvements: string[];
 }
 
+type NoteMakerExample = {
+   question: string;
+   solution: string[] | string;
+} | string
+
+type NoteMakerRule = {
+   title: string;
+   rule: string;
+   use: string;
+} | string
+
+type NoteMakerCommonMistake = {
+   mistake: string;
+   fix: string;
+} | string
+
+type NoteMakerPracticeQuestion = {
+   question: string;
+   solution: string[] | string;
+} | string
+
 type NoteMaker = {
    title: string;
    subject?: string;
    overview: string;
    key_concepts: string[];
-   rules: string[];
-   examples: string[];
+   rules: NoteMakerRule[];
+   examples: NoteMakerExample[];
    visuals: string[];
-   common_mistakes: string[];
-   questions: string[];
+   common_mistakes: NoteMakerCommonMistake[];
+   questions: NoteMakerPracticeQuestion[];
    summary: string[];
 }
 

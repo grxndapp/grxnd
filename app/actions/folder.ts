@@ -8,7 +8,6 @@ export async function createSubjectFolder (folderName: string) {
    try {
       const created = await dalRequireSubscribedAuth(async user => 
          await dalDbOperation(async () => {
-            const folderCodeName = folderName.toLowerCase().replaceAll(" ", "-");
             const res = await db.insert(subjectFoldersTable).values({
                userid: user.userid!, name: folderName
             });

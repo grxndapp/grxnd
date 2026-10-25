@@ -1,3 +1,4 @@
+import { titleCase } from "@/lib/str"
 import { Dna, FlaskConical, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
 
 export const subjectLevels = [
@@ -579,6 +580,12 @@ export const subjectPastelBgColors: Record<string, string> = {
 	"Administration": "#e3eef8"
 }
 
+export function isAmongstDefaultSubjects (text: string) {
+	const defaultSubjects = [ "Math", "Physics", "Biology", "Chemistry", "English", "Computer Science", "Administration" ]
+	const fullSubjectInfo = fullSubjectBreakDown(text);
+	return (defaultSubjects.includes(fullSubjectInfo.subject));
+}
+
 export function retrieveSubjectTopic (subjectLevel: string, subject: string) {
 	const subjectTopicsList = subjectTopics[subject.toLowerCase().replaceAll(" ", "_")];
 	if (subjectLevel == "National 5") return subjectTopicsList.national5;
@@ -586,7 +593,8 @@ export function retrieveSubjectTopic (subjectLevel: string, subject: string) {
 	if (subjectLevel == "Advanced Higher") return subjectTopicsList.advancedHigher;
 }
 
-export function fullSubjectBreakDown (subjectInfo: string) {
+export function fullSubjectBreakDown (rawSubjectInfo: string) {
+	const subjectInfo = titleCase(rawSubjectInfo);
 	if (subjectInfo.startsWith("Advanced Higher")) {
 		return {
 			subjectLevel: "Advanced Higher",
@@ -635,6 +643,29 @@ export function customSubjectToPastelColor (str: string): string {
 	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
+
+function hslToHex(h: number, s: number, l: number): string {
+	s /= 100;
+	l /= 100;
+
+	const a = s * Math.min(l, 1 - l);
+
+	const f = (n: number): string => {
+		const k = (n + h / 30) % 12;
+		const color = l - a * Math.max(
+			Math.min(k - 3, 9 - k, 1),
+			-1
+		);
+
+		return Math.round(255 * color)
+			.toString(16)
+			.padStart(2, "0");
+	};
+
+	return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+
 export function customSubjectToBoldColor (str: string): string {
 	let hash = 0;
 
@@ -647,5 +678,5 @@ export function customSubjectToBoldColor (str: string): string {
 	const saturation = 85 + ((hash >>> 8) % 16); // 85–100%
 	const lightness = 35 + ((hash >>> 16) % 16); // 35–50%
 
-	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+	return hslToHex(hue, saturation, lightness);
 }

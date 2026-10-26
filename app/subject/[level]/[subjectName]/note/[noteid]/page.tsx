@@ -2,9 +2,9 @@ import { dalDbOperation, dalRequireSubscribedAuth, dalRequireSubscriber } from "
 import { db } from "@/db";
 import { notesTable } from "@/db/schemas";
 import { and, eq } from "drizzle-orm";
+import { titleCase } from "@/lib/str";
 import SubjectNotePage from "./SubjectNotePage";
 import LoadingPage from "./loading";
-import { titleCase } from "@/lib/str";
 
 type NoteBookProps = {
    params: Promise<{
@@ -13,6 +13,8 @@ type NoteBookProps = {
       subjectName: string;
    }>
 }
+
+export const dynamic = "force-dynamic";
 
 export default async function NoteBook ({ params }: NoteBookProps) {
    await dalRequireSubscriber();

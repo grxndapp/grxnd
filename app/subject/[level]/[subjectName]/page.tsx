@@ -14,6 +14,8 @@ type SubjectStatProps = {
    }>
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function SubjectStat ({ params }: SubjectStatProps) {
    const { subjectName, level } = await params;
    const actualLevel = level == "none" ? "" : level;

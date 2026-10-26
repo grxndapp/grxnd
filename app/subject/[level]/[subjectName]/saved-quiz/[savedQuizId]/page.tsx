@@ -1,10 +1,10 @@
 import { dalDbOperation, dalRequireAuth, dalRequireSubscriber } from "@/dal/helpers";
 import { db } from "@/db";
 import { and, eq } from "drizzle-orm";
+import { titleCase } from "@/lib/str";
 import { savedQuizzesTable } from "@/db/schemas";
 import LoadingPage from "./loading";
 import SavedQuizPage from "./SavedQuizPage";
-import { titleCase } from "@/lib/str";
 
 type SavedQuizProps = {
    params: Promise<{
@@ -13,6 +13,8 @@ type SavedQuizProps = {
       subjectName: string;
    }>
 }
+
+export const dynamic = "force-dynamic";
 
 export default async function SavedQuiz ({ params }: SavedQuizProps) {   
    await dalRequireSubscriber();

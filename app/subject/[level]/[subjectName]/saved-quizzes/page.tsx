@@ -13,6 +13,8 @@ type SubjectStatProps = {
    }>
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function SubjectSavedQuizzes ({ params }: SubjectStatProps) {
    await dalRequireSubscriber();
 

@@ -46,7 +46,7 @@ export default function SplashScreen ({ title, description, style, actions, back
                <div className="text-xl fit bold-700 dfb align-center justify-center wrap gap-10">{title}</div>
             </div>
             <div className="splash-screen-description">
-               <div className="text-xs fit text-center">{description}</div>
+               <div className="text-xs full text-center">{description}</div>
             </div>
             <div className="splash-screen-actions">
                {actions.map((action, index) => (

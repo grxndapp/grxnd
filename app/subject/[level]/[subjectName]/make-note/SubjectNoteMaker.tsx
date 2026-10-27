@@ -211,8 +211,8 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 				note={noteFromAI}
 				saveToSubjectFolder={{
 					folderName: isDefaultSubject 
-						? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ")
-						: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`
+						? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim()
+						: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`.trim()
 				}}
 			/>
          <Spacing size={4} />

@@ -245,7 +245,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 
 	function handleLoadingCreateNote () {
 		openSplash({
-			title: <>Creating Quiz <CustomSpinner color="#000" size={20} /></>,
+			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
 			description: <>Please wait while I creating a note for you from file; <b>{fileInfo?.filename}</b>...</>,
 			style: "loading",
 			actions: []

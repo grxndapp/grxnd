@@ -4,26 +4,24 @@ import { useSession } from "next-auth/react";
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NormalCardStyles, SubjectIconBubble, SubjectProgressCardStyles } from "@/styles-extra/styles";
-import { pluralSuffixer } from "@/lib/str";
+import { SubjectIconBubble, SubjectProgressCardStyles } from "@/styles-extra/styles";
+import { pluralSuffixer, titleCase } from "@/lib/str";
 import { CustomRawIcon } from "@/components/Icons/Icon";
+import { CustomIconUrls } from "@/lib/icons";
+import { BiLogoApple } from "react-icons/bi";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
-import OverallProgress from "@/components/OverallProgress/OverallProgress";
-import { CustomIconUrls } from "@/lib/icons";
-import { BiLogoApple } from "react-icons/bi";
 
 type HomePageProps = {
    quizzes: QuizT[];
-   score: number;
+   notes: Note[];
    welcomeString: string;
-   overallPercentage: number;
 }
 
 
-export default function HomePage ({ quizzes, overallPercentage, score, welcomeString }: HomePageProps) {
+export default function HomePage ({ quizzes, notes, welcomeString }: HomePageProps) {
    const router = useRouter();
    const { data: session } = useSession();
    const [iPhoneOrIpadUser, setIPhoneOrIpadUser] = useState(false);
@@ -42,7 +40,6 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
 
 
       const subjectKey = `${quiz.subjectLevel} ${quiz.subject}`;
-
       if (!agg[subjectKey]) {
          agg[subjectKey] = [];
 
@@ -66,6 +63,19 @@ export default function HomePage ({ quizzes, overallPercentage, score, welcomeSt
 
       return agg;
    }, {})
+
+   notes.forEach(note => {
+      const subjectInfo = fullSubjectBreakDown(note.folderCodeName);
+      const subjectKeys = Object.keys(subjectProgressQuizzes);
+      const subjectKey = titleCase(`${subjectInfo.subjectLevel} ${subjectInfo.subject}`.trim())
+
+      if (!subjectKeys.includes(subjectKey)) {
+         const subjectTopic = JSON.parse(note.noteJson).title;
+         subjectProgressQuizzes[subjectKey] = [
+            { [subjectTopic]: 0 }
+         ];
+      }
+   })
 
    function isIphoneOrIpad(): boolean {
       const ua = navigator.userAgent || navigator.vendor || (window as any).opera;

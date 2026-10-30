@@ -10,6 +10,7 @@ export async function addQuizScore (subjectLevel: string, subject: string, subje
          const [newQuiz] = await db.insert(quizzesTable).values({
             userid: user.userid,
             subjectLevel, subject, score,
+            scorePoints: pointsGained,
             topic: subjectTopic
          })
          .returning({ id: quizzesTable.userid });

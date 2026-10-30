@@ -104,7 +104,7 @@ export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt'
       const res = await db.insert(usersTable).values({
          userid,
          name: user.name,
-         email: user.email,
+         email: user.email.toLowerCase(),
          password: hashPwd(user.password),
          oauth_provider: "nv-credentials",
          user_role: "user",
@@ -204,7 +204,7 @@ export async function deleteUserAccount () {
 
 export async function checkForNoExistingUser (email: string): Promise<boolean | 'google-auth'> {
    try {
-      const users = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+      const users = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase())).limit(1);
       if (users.length < 1) {
          return true;
       } else {

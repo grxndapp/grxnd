@@ -11,6 +11,7 @@ import ProgressRing from '@/components/ProgressRing/ProgressRing';
 import Spacing from '@/components/Spacing/Spacing';
 import RenderMarkdown from '@/components/RenderMarkdown/RenderMarkdown';
 import AwaitButton from '@/components/AwaitButton/AwaitButton';
+import { fullSubjectBreakDown, isAmongstDefaultSubjects } from '@/utils/subjects';
 
 const decideColor = (score: number) => {
    if (score < 40) {
@@ -61,10 +62,14 @@ type QuizViewerProps = {
    subjectLevel: string;
    subject: string;
    subjectTopic: string;
-   makeNewQuiz: () => void;
+   makeNewQuiz?: () => void;
+   backButton?: {
+      label: React.ReactNode | string;
+      href: string;
+   }
 }
 
-export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic, makeNewQuiz }: QuizViewerProps) {
+export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic, makeNewQuiz, backButton }: QuizViewerProps) {
    const router = useRouter();
 
    // quiz functionality
@@ -110,7 +115,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
       if (questionIndex+1 >= quizQuestions.length) {
          setQuizFormDisplay('end');
          if (!retake) {
-            await addQuizScore(subjectLevel, subject, subjectTopic, ((score/quizQuestions.length)*100), (score*5));
+            await addQuizScore(titleCase(subjectLevel), titleCase(subject), titleCase(subjectTopic), ((score/quizQuestions.length)*100), (score*5));
          }
       } else {
          setOptionChosen(undefined);
@@ -119,17 +124,19 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
       }
    }
 
+   const subjectIcon = isAmongstDefaultSubjects(`${subjectLevel} ${subject}`)
+
    return <div className='quiz-container'>
       <div className="qc-container">
          {(quizFormDisplay == "start") ? <>
             {/* The start of the quiz */}
             <div className="quiz-start-box">
                <CustomIcon 
-                  url={`/subjects/${subject.toLowerCase().replaceAll(" ", "-")}.png`}
+                  url={`/subjects/${subjectIcon ? subject.toLowerCase().replaceAll(" ", "-") : 'any'}.png`}
                   size={140}
                />
                <div className='text-l bold-700 text-center'>{subjectTopic}</div>
-               <div className='text-s bold-500 text-center'>{subjectLevel} {subject}</div>
+               <div className='text-s bold-500 text-center'>{titleCase(subjectLevel)} {titleCase(subject)}</div>
                <div className="text-xs grey pd-1 text-center">
                   Once you begin this quiz, you can't go back and you must complete it.
                </div>
@@ -216,10 +223,18 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                <button className='xs full mw-400 pd-12 tiny-shadow' onClick={retakeQuiz}>
                   <RotateCcw size={17} /> Retake Quiz
                </button>
-               <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
-               <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push("/home")}>
-                  <Home size={17} /> Back to Home
-               </button>
+               {makeNewQuiz && (
+                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
+               )}
+               {backButton ? (<>
+                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push(backButton.href)}>
+                     {backButton.label}
+                  </button>
+               </>) : (<>
+                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push("/home")}>
+                     <Home size={17} /> Back to Home
+                  </button>
+               </>)}
             </div>
          </>}
 

@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
             await db.insert(usersTable).values({
                userid,
                name: user.name,
-               email: user.email,
+               email: user.email?.toLowerCase(),
                oauth_provider: "google",
                password: hashPwd(`${user.name}${user.email}${Date.now()}`),
                user_role: "user",

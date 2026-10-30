@@ -2,10 +2,11 @@ import { redirect } from "next/navigation";
 import { dalCheckUserSubscription, dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
-import { quizzesTable, scoresTable } from "@/db/schemas";
+import { notesTable, quizzesTable, subjectFoldersTable } from "@/db/schemas";
 import HomePage from "./HomePage";
 import LoadingPage from "./loading";
 import NonSubHomePage from "./NonSubHomePage";
+import { sanitise } from "@/utils/extractJson";
 
 export default async function Home () {
    const subscriptionStatus = await dalCheckUserSubscription();
@@ -16,25 +17,18 @@ export default async function Home () {
 
    const dataReq = await dalRequireSubscribedAuth(user => 
       dalDbOperation(async () => {
-         const quizzes = await db
-            .select()
-            .from(quizzesTable)
-            .where(eq(quizzesTable.userid, user.userid!))
-
-         const scores = await db
-            .select()
-            .from(scoresTable)
-            .where(eq(scoresTable.userid, user.userid!))
-            .limit(1);
+         const quizzes = await db.select().from(quizzesTable)
+            .where(eq(quizzesTable.userid, user.userid!));
+            
+         const notes = await db.select().from(notesTable)
+            .where(eq(notesTable.userid, user.userid!))
          
-         const allUsersScores = await db.select({ score: scoresTable.score }).from(scoresTable);
-         
-         return { quizzes, score: scores[0].score, allUsersScores: allUsersScores.map(s => s.score) }
+         return { quizzes, notes }
       })
    );
 
    if (dataReq.success) {
-      const { quizzes, score, allUsersScores } = dataReq.data;
+      const { quizzes, notes } = dataReq.data;
       const welcomeQuestions = [
          "Ready to study today?",
          "One hour of study keeps the F away.",
@@ -53,14 +47,10 @@ export default async function Home () {
       const randomItem = welcomeQuestions[Math.floor(Math.random() * welcomeQuestions.length)];
 
 
-      const usersBehind = allUsersScores?.filter(s => s! < score!);
-      const overallPercentage = (usersBehind.length / allUsersScores.length) * 100;
-
       return <HomePage 
-         quizzes={quizzes as any}
-         score={score as any}
+         quizzes={sanitise(quizzes)}
+         notes={sanitise(notes)}
          welcomeString={randomItem}
-         overallPercentage={overallPercentage}
       />;
    } else {
       return <LoadingPage />;

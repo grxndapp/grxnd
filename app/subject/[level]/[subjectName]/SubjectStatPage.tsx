@@ -13,7 +13,7 @@ import Card from "@/components/Card/Card"
 import QuizBarChart from "@/components/QuizBarChart/QuizBarChart"
 
 export default function SubjectStatPage ({ quizzes, subject, subjectLevel }: { quizzes: QuizT[], subject: string, subjectLevel: string }) {
-   const [showQuiHistory, setShowQuizHistory] = useState(false);
+   const [showQuizHistory, setShowQuizHistory] = useState(false);
    const router = useRouter();
    const contentRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,7 +50,7 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel }: { q
    return (
       <AppWrapper contentRef={contentRef}>
          <div className="box w-full h-full pd-2 no-trans">
-            {showQuiHistory ? (<>
+            {showQuizHistory ? (<>
                <div className="box full dfb align-center gap-10">
                   <button className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40 no-trans" onClick={() => setShowQuizHistory(false)}>
                      <ArrowLeft size={16} />
@@ -68,6 +68,9 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel }: { q
                <Spacing />
                
                <div className="text-s bold-700 full mb-15">Quiz History</div>
+               {quizzes.length == 0 && (
+                  <div className="text-xs full grey-5">No quizzes taken</div>
+               )}
                <div className="box full dfb column gap-15">
                   {newQuizArray.toReversed().map((quizInfo: any, index: number) => (
                      <Card key={index} styles={NormalCardStyles}>
@@ -85,26 +88,28 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel }: { q
                <Spacing size={5} />
             </>) : (<>
                <div className="text-xl bold-700 full mb-1 pd-1 text-center no-trans" style={{ color: subjectColor }}>
-                  {subjectLevel} {titleCase(subject)} Quizzes
+                  {titleCase(subjectLevel)} {titleCase(subject)}
                </div>
-               
-               <div className="box full dfb wrap justify-center gap-20">
-                  <div className="box full mw-500 dfb column gap-5 align-center justify-center">
-                     <div className="text-xxb fit bold-700" style={{ color: subjectColor }}>
-                        {Math.round(averagePercentage)}%
-                     </div>
-                     <div className="text-xs fit bold-600 text-center">Average {subjectLevel} {titleCase(subject)} Score</div>
-                     <div className="text-xxs fit text-center">You have taken {newQuizArray.length} {subject} quizzes</div>
-                  </div>
 
-                  <div className="box full mw-500 dfb column gap-10">
-                     <QuizBarChart
-                        color={subjectColor}
-                        percentages={newQuizArray.map((q: any) => q.score).toReversed().slice(0,7).toReversed()}
-                     />
+               {quizzes.length > 0 && (<>
+                  <div className="box full dfb wrap justify-center gap-20">
+                     <div className="box full mw-500 dfb column gap-5 align-center justify-center">
+                        <div className="text-xxb fit bold-700" style={{ color: subjectColor }}>
+                           {Math.round(averagePercentage)}%
+                        </div>
+                        <div className="text-xs fit bold-600 text-center">Average {subjectLevel} {titleCase(subject)} Score</div>
+                        <div className="text-xxs fit text-center">You have taken {newQuizArray.length} {subject} quizzes</div>
+                     </div>
+
+                     <div className="box full mw-500 dfb column gap-10">
+                        <QuizBarChart
+                           color={subjectColor}
+                           percentages={newQuizArray.map((q: any) => q.score).toReversed().slice(0,7).toReversed()}
+                        />
+                     </div>
                   </div>
-               </div>
-               <Spacing size={3} />
+                  <Spacing size={3} />
+               </>)}
 
                <div className="box full dfb justify-center wrap gap-10">
                   <Card styles={NotebookCardStyles} onClick={() => router.push(`${subjectPageUrl}/notes`)}>

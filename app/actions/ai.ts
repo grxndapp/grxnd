@@ -160,6 +160,7 @@ export async function generateUsingAi ({ prompt, file, responseFormat }: Generat
       });
 
       const response = await openRouterResponse.json();
+      console.log(response)
       const result = response.choices[0].message.content;
 
       if (!result) return {

@@ -15,11 +15,11 @@ export const usersTable = pgTable("users", {
 export const quizzesTable = pgTable("quizzes", {
    id: serial("id").primaryKey(),
    userid: text("userid"),
-   folderId: text("folder_id").notNull().default(""),
    subjectLevel: text("subjectLevel"),
    subject: text("subject"),
    topic: text("topic"),
-   score: integer("score"),
+   score: integer("score_percentage"),
+   scorePoints: integer("actual_score_points").default(0),
    createdAt: timestamp("created_at").defaultNow(),
 });
 

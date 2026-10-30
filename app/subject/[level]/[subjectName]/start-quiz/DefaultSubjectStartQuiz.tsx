@@ -1,22 +1,19 @@
 'use client'
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
-import Card from "@/components/Card/Card";
 import FullSelect from "@/components/FullSelect/FullSelect";
 import Spacing from "@/components/Spacing/Spacing";
+import AwaitButton from "@/components/AwaitButton/AwaitButton";
+import QuizViewer from "@/app/quiz-maker/QuizViewer";
 import { generateUsingAi } from "@/app/actions/ai";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { titleCase } from "@/lib/str";
-import { buildNoteQuizPrompt, quizMakerPrompt } from "@/prompts/quizMaker";
+import { buildNoteQuizPrompt } from "@/prompts/quizMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
-import { NotebookCardStyles, SubjectIconBubble } from "@/styles-extra/styles";
-import { formatMilliseconds } from "@/utils/date";
-import { customSubjectToBoldColor, customSubjectToPastelColor, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
-import { ArrowLeft, BookCheck, GraduationCap, RotateCcw } from "lucide-react"
+import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects";
+import { ArrowLeft, BookCheck, RotateCcw } from "lucide-react"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import QuizViewer from "@/app/quiz-maker/QuizViewer";
+import { useState } from "react";
 import { toast } from "sonner";
 import { getSubjectPageUrl } from "../helper";
 
@@ -41,7 +38,7 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
    function handleLoadingCreateQuiz () {
       openSplash({
          title: <>Creating Quiz <CustomSpinner color="#000" size={20} /></>,
-         description: `Please wait while I create your quiz for ${subjectLevel} ${subject}...`,
+         description: <>Please wait while I create your quiz for {titleCase(subjectLevel)} {titleCase(subject)}...</>,
          style: "loading",
          actions: []
       })

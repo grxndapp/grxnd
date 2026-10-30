@@ -16,11 +16,13 @@ import Select from "@/components/Select/Select"
 import Spacing from "@/components/Spacing/Spacing"
 import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
 import DeleteNote from "@/modal-forms/DeleteNote"
+import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects"
 
 export default function SubjectNotePage ({ note, subject, subjectLevel }: { note: Note, subjectLevel: string, subject: string }) {
    const router = useRouter();
    const { showModal } = useModal();
    const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
+   const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
 
    function handleCreateQuiz () {
       router.push(`${subjectPageUrl}/start-quiz?noteId=${encodeURIComponent(note.noteid)}`)

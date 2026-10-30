@@ -38,7 +38,7 @@ export default function SubjectNotesPage ({ notes, subject, subjectLevel }: { no
 
             <div className="box full">
                <div className="text-xl bold-700 full text-center pd-1 no-trans" style={{ color: subjectColor }}>
-                  {subjectLevel} {titleCase(subject)} Notes
+                  {titleCase(subjectLevel)} {titleCase(subject)} Notes
                </div>
             </div>
 

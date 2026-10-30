@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
 import { db } from "@/db";
 import { quizzesTable } from "@/db/schemas";
@@ -23,8 +22,7 @@ export default async function SubjectStat ({ params }: SubjectStatProps) {
    const quizzes = await dalRequireSubscribedAuth(user =>
       dalDbOperation(async () => {
          return await db
-            .select()
-            .from(quizzesTable)
+            .select().from(quizzesTable)
             .where(and(
                eq(quizzesTable.userid, user.userid!),
                or(
@@ -42,12 +40,11 @@ export default async function SubjectStat ({ params }: SubjectStatProps) {
    )
 
    if (quizzes.success) {
-      if (quizzes.data.length < 1) redirect("/home");
       return (
          <SubjectStatPage 
+            subjectLevel={titleCase(actualLevel.replaceAll("-"," "))}
             subject={subjectName.replaceAll("-"," ")} 
             quizzes={quizzes.data as any}
-            subjectLevel={titleCase(actualLevel.replaceAll("-"," "))}
          />
       );
    } else {

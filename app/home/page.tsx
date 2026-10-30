@@ -11,6 +11,8 @@ import { sanitise } from "@/utils/extractJson";
 export default async function Home () {
    const subscriptionStatus = await dalCheckUserSubscription();
 
+   if (subscriptionStatus == "session-no-user") redirect("/logout");
+   
    if (subscriptionStatus == "no-user") redirect("/sign-in");
 
    if (subscriptionStatus == "not-subscribed") return <NonSubHomePage />;

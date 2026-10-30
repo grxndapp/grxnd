@@ -67,7 +67,7 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
                   </MultiActionDropdown>
                </div>
             </div>
-            
+
             <NoteViewer note={JSON.parse(note.noteJson)} noButtons noSubject />
             <Spacing size={4} />
          </div>

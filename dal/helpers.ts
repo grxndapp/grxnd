@@ -9,6 +9,8 @@ import {
 import { usersTable } from "@/db/schemas"
 import { getCurrentUser } from "@/app/actions/user"
 import { DrizzleQueryError } from "drizzle-orm"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/authOptions"
 
 
 export async function dalRequireAuthRedirect() {
@@ -26,13 +28,17 @@ export async function dalRequireAuthRedirect() {
 }
 
 export async function dalRequireSubscriber() {
+   const session = await getServerSession(authOptions);
    const user = await getCurrentUser();
+   if (user == null && session?.user) redirect("/logout");
    if (user == null) redirect("/sign-in");
    if (!user.is_subscribed) redirect("/pricing");
 }
 
 export async function dalRequireAdmin() {
+   const session = await getServerSession(authOptions);
    const user = await getCurrentUser();
+   if (user == null && session?.user) redirect("/logout");
    if (user == null) redirect("/sign-in");
    if (user.user_role == "user") redirect("/home");
 }
@@ -48,8 +54,10 @@ export async function dalRequireAdminAuth<T, E extends DalError>(
    return await operation(user);
 }
 
-export async function dalCheckUserSubscription(): Promise<"no-user" | "not-subscribed" | "subscribed"> {
+export async function dalCheckUserSubscription(): Promise<"session-no-user" | "no-user" | "not-subscribed" | "subscribed"> {
+   const session = await getServerSession(authOptions);
    const user = await getCurrentUser();
+   if (user == null && session?.user) return "session-no-user";
    if (user == null) return "no-user";
    if (!user.is_subscribed) return "not-subscribed";
    return "subscribed"

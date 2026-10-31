@@ -1,7 +1,7 @@
 "use server"
 import { dalDbOperation, dalRequireAdminAuth, dalRequireAuth } from "@/dal/helpers";
 import { db } from "@/db";
-import { forgotPasswordTable, notesTable, quizzesTable, savedQuizzesTable, scoresTable, usersTable } from "@/db/schemas";
+import { forgotPasswordTable, notesTable, quizzesTable, savedQuizzesTable, scoresTable, subjectFoldersTable, usersTable } from "@/db/schemas";
 import { authOptions } from "@/lib/authOptions"
 import { hashPwd, uuid } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
@@ -20,6 +20,25 @@ export async function getCurrentUser (): Promise<User | null> {
       if (!session.user) return null;
 
       const [user] = await db.select().from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
+      
+      return (user ?? null) as any;
+   } catch (err) {
+      return null;
+   }
+}
+
+export async function getUserClient (): Promise<ClientUser | null> {
+   try {
+      const session = await getServerSession(authOptions);
+
+      if (!session) return null;
+      if (!session.user) return null;
+
+      const [user] = await db.select({
+         userid: usersTable.userid,
+         name: usersTable.name,
+         is_subscribed: usersTable.is_subscribed,
+      }).from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
       
       return (user ?? null) as any;
    } catch (err) {
@@ -190,7 +209,8 @@ export async function deleteUserAccount () {
 
             await db.delete(quizzesTable).where(eq(quizzesTable.userid, user.userid!))
             await db.delete(notesTable).where(eq(notesTable.userid, user.userid!))
-            await db.delete(savedQuizzesTable).where(eq(savedQuizzesTable.userid, user.userid!))
+            await db.delete(subjectFoldersTable).where(eq(subjectFoldersTable.userid, user.userid!))
+            await db.delete(forgotPasswordTable).where(eq(forgotPasswordTable.userid, user.userid!))
 
             return (result.rowCount === 1 && result2.rowCount === 1);
          })

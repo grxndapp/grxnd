@@ -47,7 +47,7 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
                            backgroundClip: "text", color: "transparent"
                         }}
                      >
-                        {formatNumber(score, { showShortHand: true, useShorthand: true })}
+                        {formatNumber(score, { useCommas: true })}
                      </div>
                      <div 
                         className="text-xxs fit visible-link accent-color dfb align-center"

@@ -11,11 +11,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getSubjectPageUrl } from "../helper";
+import { QuizStyle } from "@/prompts/promptExtras";
+import { quizStyleIntensityOptions } from "@/utils/intensityOptions";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import FullSelect from "@/components/FullSelect/FullSelect";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import QuizViewer from "@/app/quiz-maker/QuizViewer";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 
 type SubjectStartQuizProps = {
    notes: Note[];
@@ -32,6 +35,7 @@ export default function SubjectStartQuiz ({ notes, noteSelected, subject, subjec
    const [stepSections, setStepSections] = useState<StepSection>("number");
    const [numQuestions, setNumQuestions] = useState<string>('5');
    const [quizNoteSelected, setQuizNoteSelected] = useState<Note | undefined>(noteSelected);
+   const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 
    const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
 
@@ -57,7 +61,7 @@ export default function SubjectStartQuiz ({ notes, noteSelected, subject, subjec
       }
       handleLoadingCreateQuiz();
       const data = await generateUsingAi({
-         prompt: buildNoteQuizPrompt({ note: quizNoteSelected.noteJson, numberOfQuestions: parseInt(numQuestions) }),
+         prompt: buildNoteQuizPrompt({ note: quizNoteSelected.noteJson, numberOfQuestions: parseInt(numQuestions), style: quizStyle }),
          responseFormat: ResponseFormats.QuizMaker
       });
 
@@ -142,6 +146,13 @@ export default function SubjectStartQuiz ({ notes, noteSelected, subject, subjec
                               <div className="text-xxs grey-5 full">Note Chosen</div>
                               <div className="text-s bold-600 full">{JSON.parse(quizNoteSelected?.noteJson!).title}</div>
                            </div>
+                           <Spacing />
+                           <IntensityChooser
+                              title="Question Style"
+                              options={quizStyleIntensityOptions}
+                              onChange={name => setQuizStyle(name)}
+					               defaultOption={0}
+                           />
                            <Spacing size={2} />
                            <div className="box full dfb column align-center gap-15">
                               <button 

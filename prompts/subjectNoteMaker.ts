@@ -1,8 +1,11 @@
+import { getNoteIntensitySnippet, NoteIntensity } from "./promptExtras";
+
 export interface StudyNotePromptParams {
    subjectLevel: string;
    subject: string;
    subjectTopic?: string;
    detailedTopic?: string;
+   intensity?: NoteIntensity;
 }
 
 export function subjectNoteMakerPrompt({
@@ -10,6 +13,7 @@ export function subjectNoteMakerPrompt({
   subject,
   subjectTopic,
   detailedTopic,
+  intensity
 }: StudyNotePromptParams): string {
    const topic = subjectTopic?.trim() || "None";
    const detailed = detailedTopic?.trim() || "None";
@@ -32,6 +36,8 @@ export function subjectNoteMakerPrompt({
 5. If the Subject Level is an SQA level (such as National 5, Higher, or Advanced Higher), align the content, terminology, and command words with the SQA course specification for that level. Use Scottish contexts for examples where they fit naturally.
 6. Use only well-established, standard content. Never invent facts, data, laws, formulas, or definitions, and avoid obscure or disputed claims.
 7. Do not repeat the same idea in different sections, except in the summary, where brief repetition is intended.
+
+${getNoteIntensitySnippet(intensity)}
 
 ## Teaching principles (apply to every section)
 
@@ -236,9 +242,10 @@ Reminder before you answer: do not use \\begin, \\end, \\hline, \\cline or \\mul
 export interface FileNotePromptParams {
   /** Optional original file name. Used only as a weak hint, since file names can be irrelevant. */
   fileName?: string;
+  intensity?: NoteIntensity;
 }
 
-export function buildFileNotePrompt({ fileName }: FileNotePromptParams = {}): string {
+export function buildFileNotePrompt({ fileName, intensity }: FileNotePromptParams = {}): string {
   const file = fileName?.trim() || "Not provided";
 
   return `You are an expert teacher and educational content designer for an AI-powered study application. The learner has uploaded a file. Turn its content into a study note that is so clear, simple, and well structured that the learner can understand the material quickly, remember it, and apply it correctly. The note must be minimal but high-value: every sentence must earn its place.
@@ -268,6 +275,8 @@ The file name is only a weak hint and may be irrelevant, generic, misleading, or
 5. If the file covers several topics, organise the note in a logical order and give each topic a fair share.
 6. If the file is long, prioritise the most important, most examinable, and most foundational ideas, and leave out minor detail. If it is short, do not pad the note beyond what the file supports.
 7. Do not repeat the same idea in different sections, except in the summary, where brief repetition is intended.
+
+${getNoteIntensitySnippet(intensity)}
 
 ## Subject classification rules (CRITICAL)
 

@@ -9,9 +9,12 @@ import { ResponseFormats } from "@/prompts/responseFormats";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { fullSubjectBreakDown, isAmongstDefaultSubjects, retrieveSubjectTopic } from "@/utils/subjects";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
+import { NoteIntensity } from "@/prompts/promptExtras";
+import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 
 type FileInfo = {
    filename: string;
@@ -213,7 +216,9 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
    const [inputFileValue, setInputFileValue] = useState<any | null>('');
    const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
    const [documentFile, setDocumentFile] = useState<File | null>(null);
+	const [intensity, setIntensity] = useState<NoteIntensity>("high-school");
    const [noteFromAI, setNoteFromAI] = useState<NoteMaker | null>(null);
+	const [explanationStyle, setExplanationStyle] = useState(50);
 
 	const fullSubjectInfo = fullSubjectBreakDown(subjectFullName);
 	const isDefaultSubject = isAmongstDefaultSubjects(`${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`);
@@ -260,7 +265,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
       }
 		handleLoadingCreateNote();
       const data = await generateUsingAi({
-         prompt: buildFileNotePrompt({ fileName: fileInfo?.filename }),
+         prompt: buildFileNotePrompt({ fileName: fileInfo?.filename, intensity }),
          responseFormat: ResponseFormats.NoteMaker,
          file: documentFile
       })
@@ -330,6 +335,14 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
                <button onClick={attachNewDocument}><X size={17} /></button>
             </div>
          </div>
+			<div className="box full pd-2">
+				<IntensityChooser
+					title="Explanation Type"
+					options={noteExplanationTypeIntensityOptions}
+					onChange={name => setIntensity(name)}
+					defaultOption={2}
+				/>
+			</div>
 			<div className="box full dfb justify-center pd-1">
 				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400" onClick={createNoteAI}>
 					<NotebookPen size={17} /> Generate Note

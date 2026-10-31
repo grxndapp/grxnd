@@ -1,0 +1,35 @@
+.intensity-chooser {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+}
+
+.intensity-chooser .intensity-chooser-items {
+   width: 100%;
+   background-color: white;
+   padding: 10px;
+   border-radius: 20px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   box-shadow: rgba(0, 0, 0, 0.1) -4px 9px 25px -6px;
+}
+
+.intensity-chooser .intensity-chooser-items .intensity-option {
+   width: 100%;
+   padding: 10px;
+   border-radius: 10px;
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   color: black;
+}
+
+.intensity-chooser .intensity-chooser-items .intensity-option.selected {
+   background: linear-gradient(to bottom, var(--accent-color-70), var(--accent-color));
+   color: white;
+}

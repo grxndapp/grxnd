@@ -1,12 +1,15 @@
+import { getQuizStyleSnippet } from "./promptExtras";
+
 export interface QuizPromptParams {
-   subjectLevel: string;
-   subject: string;
-   subjectTopic?: string;
-   detailedTopic?: string;
-   numberOfQuestions: number;
+  subjectLevel: string;
+  subject: string;
+  subjectTopic?: string;
+  detailedTopic?: string;
+  style?: any;
+  numberOfQuestions: number;
 }
 
-export function quizMakerPrompt({ subjectLevel, subject, subjectTopic, detailedTopic, numberOfQuestions }: QuizPromptParams): string {
+export function quizMakerPrompt({ subjectLevel, subject, subjectTopic, detailedTopic, numberOfQuestions, style }: QuizPromptParams): string {
    const topic = subjectTopic?.trim() || "None";
    const detailed = detailedTopic?.trim() || "None";
    return `You are an expert educational content generator for an AI-powered study application. Generate accurate, educationally useful multiple-choice quiz questions for the learner described below.
@@ -46,6 +49,8 @@ Right (raw JSON only):
 4. Pitch every question at the specified Subject Level in terminology, depth, and expected prior knowledge. Do not use content that belongs to a clearly higher or lower level.
 5. Rely only on well-established, standard content for the level and subject. Do not invent facts, data, theorems, or definitions, and do not rely on obscure or disputed claims.
 6. Avoid repeating the same concept across questions. Each question should test a distinct idea or skill.
+
+${getQuizStyleSnippet(style)}
 
 ## Output format (MANDATORY)
 
@@ -144,10 +149,11 @@ export interface NoteQuizPromptParams {
   /** The note JSON returned by the note generator. Pass the parsed object or the raw JSON string. */
   note: unknown;
   numberOfQuestions: number;
+  style?: any;
 }
 
 export function buildNoteQuizPrompt({
-  note,
+  note, style,
   numberOfQuestions,
 }: NoteQuizPromptParams): string {
   const noteJson =
@@ -204,6 +210,8 @@ ${noteJson}
 5. Use the note's "key_concepts" for definition and recognition questions, phrased so they test understanding and not word-for-word memory.
 6. Do not copy the note's own practice "questions" word for word. You may adapt them by changing the values, scenario, or wording, and you may test the same skills.
 7. Test understanding, application, and reasoning rather than simple repetition of sentences from the note, except for "3" questions where recall is acceptable.
+
+${getQuizStyleSnippet(style)}
 
 ## Output format (MANDATORY)
 

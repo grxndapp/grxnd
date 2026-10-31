@@ -7,10 +7,13 @@ import { subjectNoteMakerPrompt } from "@/prompts/subjectNoteMaker";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { ResponseFormats } from "@/prompts/responseFormats";
+import { NoteIntensity } from "@/prompts/promptExtras";
+import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 import Spacing from "@/components/Spacing/Spacing"
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import FullSelect from "@/components/FullSelect/FullSelect";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 
 
 const upgradedTestNote = {
@@ -159,6 +162,7 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 	const [stepSections, setStepSections] = useState<StepSection>("topic");
 	const [topicSelected, setTopicSelected] = useState<string>('');
    const [detailedTopic, setDetailedTopic] = useState('');
+	const [intensity, setIntensity] = useState<NoteIntensity>("high-school");
    const [noteFromAI, setNoteFromAI] = useState<any | null>(null);
 
 	const fullSubjectInfo = fullSubjectBreakDown(subjectFullName);
@@ -177,7 +181,12 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
    const createNoteAI = async (callback: Function) => {
       handleLoadingCreateNote();
       const data = await generateUsingAi({
-         prompt: subjectNoteMakerPrompt({ subjectLevel: fullSubjectInfo.subjectLevel, subject: fullSubjectInfo.subject, subjectTopic: topicSelected, detailedTopic }),
+         prompt: subjectNoteMakerPrompt({
+				subjectLevel: fullSubjectInfo.subjectLevel, 
+				subject: fullSubjectInfo.subject, 
+				subjectTopic: topicSelected, 
+				detailedTopic, intensity
+			}),
          responseFormat: ResponseFormats.NoteMaker
       })
 
@@ -238,6 +247,15 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 						className="xxs pd-15 pdx-2 full radius-20"
 						value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
 					/>
+					<Spacing />
+					<div className="box full pd-2">
+						<IntensityChooser
+							title="Explanation Type"
+							options={noteExplanationTypeIntensityOptions}
+							onChange={name => setIntensity(name)}
+							defaultOption={2}
+						/>
+					</div>
 					<Spacing />
 					<AwaitButton className="xxs full pd-15 tiny-shadow" onClick={createNoteAI}>
 						<NotebookPen size={17} /> Generate Note

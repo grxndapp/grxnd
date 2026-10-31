@@ -20,6 +20,12 @@ type User = {
    createdAt: Date;
 }
 
+type ClientUser = {
+   userid: string;
+   name: string;
+   is_subscribed: boolean;
+}
+
 type UserGraphDetails = {
    name: string;
    oauth_provider: string;

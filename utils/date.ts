@@ -46,3 +46,20 @@ export function formatMilliseconds(ms: number, withoutTime?: boolean): string {
     ? `${day} ${month} ${year}`
     : `${day} ${month} ${year}, ${hours}:${formattedMinutes} ${timePeriod}`
 }
+
+export function getWeekRange(date?: Date) {
+  const start = new Date(date ?? new Date());
+  const day = start.getDay();
+
+  // Monday as the first day of the week
+  const diff = (day + 6) % 7;
+
+  start.setDate(start.getDate() - diff);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  end.setHours(23, 59, 59, 999);
+
+  return { start, end };
+}

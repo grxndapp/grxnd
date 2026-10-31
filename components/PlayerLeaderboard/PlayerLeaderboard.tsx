@@ -1,80 +1,87 @@
 'use client'
+import "./PlayerLeaderboard.css";
 import Card from "../Card/Card";
 import { useSession } from "next-auth/react";
 import { Medal } from "lucide-react";
 import { CSSProperties } from "react";
 import { CustomIcon } from "../Icons/Icon";
+import { Crown, Trophy } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
+
+type LeaderboardPlayerInfo = {
+   userid: string;
+   name: string;
+   score: number;
+}
 
 type PlayerLeaderboardProps = {
-   players: any[];
-   playerNameKey?: string;
+   players: LeaderboardPlayerInfo[];
    noImage?: boolean;
 }
 
-export default function PlayerLeaderboard ({ players, playerNameKey, noImage }: PlayerLeaderboardProps) {
-   const { data: session } = useSession();
-   
-   const positionBadges = (position: number) => {
-      const styles: CSSProperties = {
-         width: "fit-content", height: "fit-content", aspectRatio: 1,
-         display: "flex", alignItems: "center",
-         justifyContent: "center", borderRadius: "100%",
-         position: "absolute", top: "20px", right: "20px",
-         padding: "5px"
-      }
-      const medalIconSize = 20;
-      if (position === 1) {
-         return (<div style={{
-            ...styles, backgroundColor: "#ffae00", color: "black"
-         }}><Medal size={medalIconSize} /></div>)
-      } else if (position === 2) {
-         return (<div style={{
-            ...styles, backgroundColor: "#C0C0C0", color: "black"
-         }}><Medal size={medalIconSize} /></div>)
-      } else if (position === 3) {
-         return (<div style={{
-            ...styles, backgroundColor: "#8f5216", color: "white"
-         }}><Medal size={medalIconSize} /></div>)
-      }
-      return null;
-   }
+export default function PlayerLeaderboard ({ players, noImage }: PlayerLeaderboardProps) {
+   const { user } = useUser();
 
-   const validateCurrentPlayer = (player: any) => {
-      if (noImage) {
-         return (player[playerNameKey || 'name'] == session?.user?.name!)
-            ? "2px solid #1131ff"
-            : ""
-      } else {
-         return (player[playerNameKey || 'name'] == session?.user?.name! && player.image == session?.user?.image)
-            ? "2px solid #1131ff"
-            : ""
-      }
+   const formatScore = (score: LeaderboardPlayerInfo["score"]) => new Intl.NumberFormat("en-GB").format(Number(score ?? 0));
+
+   function getSubtitle(rank: number): string {
+      if (rank === 1) return "Leading this week";
+      if (rank === 2) return "2nd on the leaderboard";
+      if (rank === 3) return "3rd on the leaderboard";
+      return "Weekly challenger";
    }
 
    return (
-      <div className="box full dfb column gap-20">
-         {players.map((player: any, index: number) => (
-            <Card key={index} styles={{
-               width: "100%", padding: "15px",
-               display: "flex", flexDirection: "column",
-               position: "relative",
-               border: validateCurrentPlayer(player)
-            }}>
-               {positionBadges(index+1)}
-               <div className="text-xs bold-600 full mb-1 accent-color">#{index+1} place</div>
-               <div className="box full dfb align-center gap-10">
-                  {(!noImage) && (<div className="box fit h-full">
-                     <CustomIcon size={50} url={player.image} round />
-                  </div>)}
-                  <div className="box full dfb column">
-                     <div className="text-xs bold-600 full dfb align-center gap-10">
-                        {player[playerNameKey || 'name']}
+      <section className="leaderboard">
+         {players.slice(0, 10).map((player, index) => {
+            const rank = index + 1;
+            const isFirst = rank === 1;
+            const isSecond = rank === 2;
+            const isThird = rank === 3;
+
+            const isCurrentUser = user?.userid == player.userid;
+
+            const tier = isFirst
+               ? "first"
+               : isSecond
+                  ? "second"
+                  : isThird
+                     ? "third"
+                     : "standard";
+
+            return (
+               <article key={index} className={`weekly-board__player weekly-board__player--${tier}`}>
+                  <span className="weekly-board__rank">{String(rank).padStart(2, "0")}</span>
+
+                  <div className="weekly-board__identity">
+                     <div className="weekly-board__name-row">
+                        <span className="weekly-board__name text-xs bold-700">{player.name}</span>
+                        {isCurrentUser && (<span className="weekly-board__you">YOU</span>)}
                      </div>
-                     <div className="text-xxs accent-color full">{player.score} points</div>
+                     <span className="weekly-board__subtitle text-t">{getSubtitle(rank)}</span>
                   </div>
-               </div>
-            </Card>
-         ))}
-      </div>
+
+                  <div className="weekly-board__score">
+                     <strong>{formatScore(player.score)}</strong>
+                     <span>POINTS</span>
+                  </div>
+
+                  {(isFirst || isSecond || isThird) && (
+                     <div
+                        className="weekly-board__award"
+                        aria-label={`${rank}${rank === 1 ? "st" : rank === 2 ? "nd" : "rd"} place`}
+                     >
+                        {isFirst ? (
+                        <Crown size={21} strokeWidth={2} />
+                        ) : (
+                        <Medal size={21} strokeWidth={2} />
+                        )}
+                     </div>
+                  )}
+               </article>
+            );
+         })}
+      </section>
    )
 }

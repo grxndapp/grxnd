@@ -8,11 +8,14 @@ import { quizMakerPrompt } from "@/prompts/quizMaker";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
+import { QuizStyle } from "@/prompts/promptExtras";
+import { quizStyleIntensityOptions } from "@/utils/intensityOptions";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import Spacing from "@/components/Spacing/Spacing"
 import QuizViewer from "./QuizViewer";
 import FullSelect from "@/components/FullSelect/FullSelect";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 
 
 const quiz = [
@@ -94,6 +97,7 @@ export default function QuizMakerPage () {
    const [canGenerateQuiz, setCanGenerateQuiz] = useState<boolean>(false);
    const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
    const [detailedTopic, setDetailedTopic] = useState('');
+   const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 
    const { showModal, close } = useModal();
    const { openSplash, closeSplash } = useSplashScreen();
@@ -118,7 +122,7 @@ export default function QuizMakerPage () {
    const createQuizAI = async (callback: Function) => {
       handleLoadingCreateQuiz();
       const data = await generateUsingAi({
-         prompt: quizMakerPrompt({ subjectLevel, subject, subjectTopic: topic, numberOfQuestions: parseInt(numQuestions) }),
+         prompt: quizMakerPrompt({ subjectLevel, subject, subjectTopic: topic, numberOfQuestions: parseInt(numQuestions), style: quizStyle }),
          responseFormat: ResponseFormats.QuizMaker
       })
       if (data.success == false) {
@@ -210,6 +214,13 @@ export default function QuizMakerPage () {
                            value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
                         />
                      </div>
+                     <Spacing />
+                     <IntensityChooser
+                        title="Question Style"
+                        options={quizStyleIntensityOptions}
+                        onChange={name => setQuizStyle(name)}
+					         defaultOption={0}
+                     />
                      <Spacing size={3} />
                      {(canGenerateQuiz) && <AwaitButton className="xxs full pd-14 tiny-shadow" onClick={createQuizAI}>
                         <BookCheck size={17} /> Create Quiz

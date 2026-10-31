@@ -12,6 +12,10 @@ import Spacing from "@/components/Spacing/Spacing"
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import FullSelect from "@/components/FullSelect/FullSelect";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
+import { toast } from "sonner";
+import { NoteIntensity } from "@/prompts/promptExtras";
+import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 
 
 const upgradedTestNote = {
@@ -162,6 +166,7 @@ export default function SubjectNoteMaker ({ contentRef, defaultSubjectLevel }: {
    const [subject, setSubject] = useState<string>('');
    const [topic, setTopic] = useState<string>('');
    const [detailedTopic, setDetailedTopic] = useState('');
+	const [intensity, setIntensity] = useState<NoteIntensity>("high-school");
 
    const [canGenerateNote, setCanGenerateNote] = useState<boolean>(false);
    const [noteFromAI, setNoteFromAI] = useState<any | null>(null);
@@ -189,7 +194,7 @@ export default function SubjectNoteMaker ({ contentRef, defaultSubjectLevel }: {
    const createNoteAI = async (callback: Function) => {
       handleLoadingCreateNote();
       const data = await generateUsingAi({
-         prompt: subjectNoteMakerPrompt({ subjectLevel, subject, subjectTopic: topic, detailedTopic }),
+         prompt: subjectNoteMakerPrompt({ subjectLevel, subject, subjectTopic: topic, detailedTopic, intensity }),
          responseFormat: ResponseFormats.NoteMaker
       })
 
@@ -282,6 +287,16 @@ export default function SubjectNoteMaker ({ contentRef, defaultSubjectLevel }: {
 					className="xxs pd-15 pdx-2 full mw-600 radius-20"
 					value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
 				/>
+				
+				<Spacing />
+				<div className="box full pd-2">
+					<IntensityChooser
+						title="Explanation Type"
+						options={noteExplanationTypeIntensityOptions}
+						onChange={name => setIntensity(name)}
+						defaultOption={2}
+					/>
+				</div>
 				<Spacing size={2} />
 
 				<div className="box full dfb column align-center gap-10">

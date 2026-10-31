@@ -4,6 +4,7 @@ import FullSelect from "@/components/FullSelect/FullSelect";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import QuizViewer from "@/app/quiz-maker/QuizViewer";
+import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 import { generateUsingAi } from "@/app/actions/ai";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
@@ -16,6 +17,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getSubjectPageUrl } from "../helper";
+import { QuizStyle } from "@/prompts/promptExtras";
+import { quizStyleIntensityOptions } from "@/utils/intensityOptions";
 
 
 type StepSection = "number" | "topic" | "review";
@@ -27,6 +30,7 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
    const [numQuestions, setNumQuestions] = useState<string>('5');
    const [quizNoteSelected, setQuizNoteSelected] = useState<Note | undefined>(noteSelected);
    const [topicSelected, setTopicSelected] = useState<string | null>(null);
+   const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 
    const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
 
@@ -52,7 +56,7 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
       }
       handleLoadingCreateQuiz();
       const data = await generateUsingAi({
-         prompt: buildNoteQuizPrompt({ note: quizNoteSelected.noteJson, numberOfQuestions: parseInt(numQuestions) }),
+         prompt: buildNoteQuizPrompt({ note: quizNoteSelected.noteJson, numberOfQuestions: parseInt(numQuestions), style: quizStyle }),
          responseFormat: ResponseFormats.QuizMaker
       });
 
@@ -144,6 +148,13 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
                                  <div className="text-s bold-600 full">{topicSelected}</div>
                               </div>
                            )}
+                           <Spacing />
+                           <IntensityChooser
+                              title="Question Style"
+                              options={quizStyleIntensityOptions}
+                              onChange={name => setQuizStyle(name)}
+					               defaultOption={0}
+                           />
                            <Spacing size={2} />
                            <div className="box full dfb column align-center gap-15">
                               <button 

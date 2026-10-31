@@ -1,0 +1,247 @@
+.leaderboard {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+}
+
+.weekly-board__player {
+   width: 100%;
+   position: relative;
+   display: flex;
+   align-items: center;
+   gap: clamp(8px, 2.2vw, 17px);
+   min-height: 83px;
+   padding: 17px 19px;
+   border: 1px solid white;
+   border-radius: 19px;
+   background: rgba(255, 255, 255, 0.94);
+   box-shadow: 0 5px 18px #25358a0c;
+   overflow: hidden;
+}
+
+/* Featured 1st place */
+.weekly-board__player--first {
+   min-height: 116px;
+   color: white;
+   border-color: #8994ff44;
+   background: linear-gradient(118deg, #1626cb, #3449f0 58%, #586afc);
+   box-shadow: 0 13px 28px #2945dc38;
+}
+
+.weekly-board__player--second { background: #f5f5f5; }
+.weekly-board__player--third { background: #f7e8dbd2; }
+
+.weekly-board__player--first::before {
+   content: "";
+   position: absolute;
+   right: -20px;
+   top: -125px;
+   width: 220px;
+   height: 220px;
+   border: 44px solid #ffffff10;
+   border-radius: 50%;
+   pointer-events: none;
+}
+
+
+/* Rank */
+.weekly-board__rank {
+   position: relative;
+   z-index: 1;
+   min-width: 34px;
+   color: #617098;
+   font-size: 16px;
+   font-weight: 850;
+   font-variant-numeric: tabular-nums;
+}
+
+.weekly-board__player--first .weekly-board__rank {
+   color: #dce4ff;
+   font-size: 20px;
+}
+
+.weekly-board__identity {
+   position: relative;
+   z-index: 1;
+   flex: 1;
+   min-width: 0;
+}
+
+.weekly-board__name-row {
+   display: flex;
+   align-items: center;
+   gap: 7px;
+   min-width: 0;
+}
+
+.weekly-board__name {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   color: #202a50;
+}
+.weekly-board__player--first .weekly-board__name { color: white;}
+
+.weekly-board__subtitle { color: #97a0bc; }
+.weekly-board__player--first .weekly-board__subtitle { color: #ccd5ff; }
+
+.weekly-board__you {
+   flex-shrink: 0;
+   padding: 3px 6px;
+   border: 1px solid #ffffff33;
+   border-radius: 5px;
+   background: #ffffff33;
+   color: white;
+   font-size: 8px;
+   font-weight: 800;
+   letter-spacing: 1px;
+}
+
+.weekly-board__player:not(.weekly-board__player--first)
+.weekly-board__you {
+   background: #e8ecff;
+   border-color: #dce2ff;
+   color: var(--accent-color);
+}
+
+
+
+.weekly-board__score {
+   position: relative;
+   z-index: 1;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-end;
+   gap: 3px;
+   flex-shrink: 0;
+}
+
+.weekly-board__score strong {
+   color: var(--accent-color);
+   font-size: 20px;
+   font-weight: 850;
+   letter-spacing: -0.8px;
+   line-height: 1.1;
+   font-variant-numeric: tabular-nums;
+}
+
+.weekly-board__score span {
+   color: #a3abc1;
+   font-size: 9px;
+   font-weight: 800;
+   letter-spacing: 1.3px;
+}
+
+.weekly-board__player--first .weekly-board__score strong {
+   color: white;
+   font-size: 27px;
+}
+
+.weekly-board__player--first .weekly-board__score span {
+   color: #d1dcff;
+}
+
+
+.weekly-board__award {
+   position: relative;
+   z-index: 1;
+   display: grid;
+   place-items: center;
+   width: 34px;
+   height: 34px;
+   flex-shrink: 0;
+   border-radius: 11px;
+}
+
+.weekly-board__player--first .weekly-board__award {
+  background: #ffffff27;
+  color: #ffe18c;
+}
+
+.weekly-board__player--second .weekly-board__award {
+  background: #f1f3f8;
+  color: #8f9aaa;
+}
+
+.weekly-board__player--third .weekly-board__award {
+  background: #fff0e3;
+  color: #c17b43;
+}
+
+/* Mobile */
+
+@media (max-width: 520px) {
+  .weekly-board {
+    padding: 16px 12px;
+    border-radius: 20px;
+  }
+
+  .weekly-board__player {
+    min-height: 75px;
+    padding: 13px 12px;
+    gap: 9px;
+    border-radius: 16px;
+  }
+
+  .weekly-board__player--first {
+    min-height: 97px;
+  }
+
+  .weekly-board__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+
+  .weekly-board__player--first .weekly-board__avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+  }
+
+  .weekly-board__rank {
+    min-width: 25px;
+    font-size: 13px;
+  }
+
+  .weekly-board__player--first .weekly-board__rank {
+    font-size: 16px;
+  }
+
+  .weekly-board__score strong {
+    font-size: 17px;
+  }
+
+  .weekly-board__player--first .weekly-board__score strong {
+    font-size: 21px;
+  }
+
+  .weekly-board__award {
+    width: 26px;
+    height: 26px;
+  }
+
+  .weekly-board__award svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .weekly-board__chip {
+    padding: 7px;
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weekly-board__player {
+    transition: none;
+  }
+
+  .weekly-board__player:hover {
+    transform: none;
+  }
+}

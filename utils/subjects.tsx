@@ -1,5 +1,6 @@
 import { titleCase } from "@/lib/str"
 import { Dna, FlaskConical, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
+import { JSX } from "react"
 
 export const subjectLevels = [
 	"National 5", "Higher", "Advanced Higher"
@@ -618,7 +619,7 @@ export function fullSubjectBreakDown (rawSubjectInfo: string) {
 	}
 }
 
-export const subjectIcon: Record<string, any> = {
+export const subjectIcon: Record<string, JSX.Element> = {
 	"Math": <Sigma size={20} />,
 	"Physics": <Orbit size={20} />,
 	"Biology": <Dna size={20} />,

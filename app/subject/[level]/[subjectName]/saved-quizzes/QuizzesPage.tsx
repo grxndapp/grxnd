@@ -35,27 +35,15 @@ export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: Qu
    return (
       <AppWrapper>
          <div className="box full">
-            <div className="box full pd-1 dfb align-center gap-10">
-               <button 
-                  className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40"
-                  onClick={() => router.push(subjectPageUrl)}
-               >
-                  <ArrowLeft size={16} />
-               </button>
-            </div>
-
-            <div className="box full">
-               <div className="text-xl bold-700 full text-center pd-1 no-trans" style={{ color: subjectColor }}>
-                  {subjectLevel} {titleCase(subject)} Saved Quizzes
-               </div>
-            </div>
+            <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(subjectPageUrl)}><ArrowLeft size={16} /> Back</div>
+            <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)} Saved Quizzes</div>
 
             {(savedQuizzes.length < 1) ? (
                <div className="box full">
                   <div className="text-s full pd-1 text-center">Take a quiz, save it and it will appear here.</div>
                </div>
             ) : (<>
-               <div className="box full dfb justify-center pd-1">
+               <div className="box full dfb pd-1">
                   <input 
                      type="text"
                      className="xxs pd-14 pdx-2 full mw-500"
@@ -64,7 +52,7 @@ export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: Qu
                      onChange={(e) => setSearchQuizzes(e.target.value)}
                   />
                </div>
-               <div className="text-xxs grey-5 pd-05 full text-center pdx-1">
+               <div className="text-xxs grey-5 pd-05 full text-left pdx-1">
                   {applyFilters().length} {" "}
                   {pluralSuffixer('quiz', applyFilters().length, 'zes')}
                </div>

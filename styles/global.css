@@ -436,7 +436,7 @@ button.xxxb { font-size: 3.85rem; }
 input {
   width: fit-content;
   padding: 8px 12px;
-  border: 1px solid #ececec;
+  border: 1px solid #d3d3d3;
   border-radius: 14px;
   outline: none;
 }
@@ -512,6 +512,8 @@ textarea.border-radius-25 { border-radius: 25px; }
 textarea.border-radius-30 { border-radius: 30px; }
 
 .no-trans { transition: none; }
+.no-select { user-select: none; }
+.no-drag { -webkit-user-drag: none; }
 
 /** rechart styles  */
 .recharts-tooltip-wrapper > .recharts-default-tooltip {

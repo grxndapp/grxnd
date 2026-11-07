@@ -93,3 +93,10 @@ export const YoutubeSearchCardStyles: React.CSSProperties = {
    padding: "20px 25px", borderRadius: "30px", cursor: "pointer",
    width: "100%", maxWidth: "500px", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)"
 }
+
+export const NoteMakerBackpackCardStyles : React.CSSProperties = {
+   padding: "25px", borderRadius: "30px", width: "100%",
+   maxWidth: "450px", boxShadow: "0 2px 6px 2px rgba(0, 0, 0, 0.04)",
+   display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "start",
+   backgroundColor: "white", cursor: "pointer"
+}

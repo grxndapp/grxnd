@@ -37,6 +37,8 @@ export async function getUserClient (): Promise<ClientUser | null> {
       const [user] = await db.select({
          userid: usersTable.userid,
          name: usersTable.name,
+         email: usersTable.email,
+         user_role: usersTable.user_role,
          is_subscribed: usersTable.is_subscribed,
       }).from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
       

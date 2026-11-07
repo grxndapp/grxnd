@@ -1,97 +1,178 @@
 'use client'
-import { useRouter } from "next/navigation";
-import { CustomIcon } from "@/components/Icons/Icon";
-import { StaticImageData } from "next/image";
-import { BackpackOpenIconBubble } from "@/styles-extra/styles";
-import { ArrowRight } from "lucide-react";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
-import Card from "@/components/Card/Card";
-import TimeTableIcon from "@/public/timetable.png"
-import ExamReadyScoreIcon from "@/public/exam-ready-score.png"
 import Spacing from "@/components/Spacing/Spacing";
+import Card from "@/components/Card/Card";
+import BackpackSubject from "@/components/BackpackSubject/BackpackSubject";
+import { useUser } from "@/hooks/useUser";
+import { titleCase } from "@/lib/str";
+import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectPastelBgColors } from "@/utils/subjects";
+import { NotebookPen } from "lucide-react";
+import { NoteMakerBackpackCardStyles } from "@/styles-extra/styles";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function BackPackPage () {
+type BackPackPageProps = {
+   quizzes: QuizT[];
+   notes: Note[];
+}
+
+export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
+   const { user } = useUser();
+   const router = useRouter();
+   const [searchQuery, setSearchQuery] = useState("");
+
+   const subjectProgressQuizzes = quizzes.reduce((agg: any, quiz) => {
+      if (quiz.topic == '') return agg;
+      if (!quiz.subjectLevel) {
+         const subjectKey = quiz.subject;
+         if (!agg[subjectKey]) {
+            agg[subjectKey] = [ { [quiz.topic]: quiz.score } ];
+            return agg;
+         }
+         agg[subjectKey].push({ [quiz.topic]: quiz.score });
+         return agg;
+      }
+
+
+      const subjectKey = `${quiz.subjectLevel} ${quiz.subject}`;
+      if (!agg[subjectKey]) {
+         agg[subjectKey] = [];
+
+         const subjectTopics = retrieveSubjectTopic(quiz.subjectLevel, quiz.subject);
+         agg[subjectKey] = subjectTopics?.map(subjectTopic => ({
+            [subjectTopic]: (subjectTopic == quiz.topic && quiz.score >= 70) ? true : false
+         }))
+
+         return agg;
+      }
+      
+
+      agg[subjectKey] = agg[subjectKey].map((i: any) => {
+         if (Object.keys(i)[0] == quiz.topic && !i[quiz.topic] && quiz.score >= 70) {
+            return {
+               [quiz.topic]: ((quiz.score >= 70) ? true : false)
+            }
+         }
+         return i;
+      })
+
+      return agg;
+   }, {})
+
+   notes.forEach(note => {
+      const subjectInfo = fullSubjectBreakDown(note.folderCodeName);
+      const subjectKeys = Object.keys(subjectProgressQuizzes);
+      const subjectKey = titleCase(`${subjectInfo.subjectLevel} ${subjectInfo.subject}`.trim())
+
+      if (!subjectKeys.includes(subjectKey)) {
+         const subjectTopic = JSON.parse(note.noteJson).title;
+         subjectProgressQuizzes[subjectKey] = [
+            { [subjectTopic]: 0 }
+         ];
+      }
+   })
+   
    return (
       <AppWrapper>
          <div className="box full h-full pd-1">
             <div className="box full pd-05 dfb column">
                <div className="text-xl bold-700 full">Your Backpack</div>
+               <div className="text-xxs grey-5 full">
+                  {quizzes.length > 1
+                     ? 'Your notes, quizzes, everything you need, right here...'
+                     : `Hey ${user?.name}, you haven't learnt or tested yourself. Let's change that!`
+                  }
+               </div>
             </div>
-            <div className="box full pd-1">
-               <BackPackTool 
-                  style="wide" icon={ExamReadyScoreIcon}
-                  label="Exam Ready Score" description="How ready are you for your next exam"
-                  href="/exam-ready-score"
+            
+            <div className="box full pd-1 dfb column">
+               <input 
+                  type="text" className="xxs pd-15 pdx-2 radius-20 full mw-600" placeholder="Search Subjects..."
+                  value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                />
             </div>
-            <div className="box full pd-1">
-               <BackPackTool 
-                  style="wide" icon={TimeTableIcon}
-                  label="Personal Timetable" description=""
-                  href="/backpack" comingSoon
-               />
-            </div>
+
+            {(quizzes.length < 1) ? (
+               <div className="box full dfb wrap gap-10 pd-2">
+                  <Card styles={NoteMakerBackpackCardStyles} onClick={() => router.push("/note-maker")}>
+                     <div className="box full mt-1 pd-05 accent-color">
+                        <NotebookPen size={30} />
+                     </div>
+                     <div className="text-ml full bold-600 accent-color">Create a Note</div>
+                     <div className="text-xxs full grey-5 mb-15">Use a pdf or any of our subject/topic database to learn something the easiest way</div>
+                  </Card>
+                  <Spacing size={1} />
+               </div>
+            ) : (<>
+               <div className="box full dfb wrap justify-center pd-2" style={{ gap: "10px" }}>
+                  {Object.keys(subjectProgressQuizzes)
+                  .sort((a,b) => a.localeCompare(b))
+                  .filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((subject, index) => {
+                     const subjectFolderName = fullSubjectBreakDown(subject).subject.toLowerCase().replaceAll(" ","-");
+                     const subjectLevel = fullSubjectBreakDown(subject).subjectLevel;
+                     const isCustomSubject = (subjectLevel == '');
+                     const subjectLevelUrlParam = subjectLevel ? `${subjectLevel.replaceAll(" ","-").toLowerCase()}` : 'none';
+                     
+                     const subjectLevelUrlParams = subjectLevel 
+                        ? `${subjectLevel} ${subjectFolderName}`.replaceAll(" ","-").toLowerCase()
+                        : subjectFolderName;
+                     
+                     // Progress
+                     const subjectProgressBg = isCustomSubject ? customSubjectToPastelColor(subject) : subjectPastelBgColors[fullSubjectBreakDown(subject).subject];
+                     const subjectProgressBoldBg = isCustomSubject ? customSubjectToBoldColor(subject) : subjectColors[fullSubjectBreakDown(subject).subject];
+                     const totalTopics = isCustomSubject
+                        ? subjectProgressQuizzes[subject].length
+                        : retrieveSubjectTopic(fullSubjectBreakDown(subject).subjectLevel, fullSubjectBreakDown(subject).subject)?.length;
+                     
+                     const subjectProgressRaw = isCustomSubject
+                        ? subjectProgressQuizzes[subject].map((s: any) => s[Object.keys(s)[0]]).reduce((agg: number, s: any) => agg + s, 0) / subjectProgressQuizzes[subject].length
+                        : (subjectProgressQuizzes[subject].filter((i: any) => i[Object.keys(i)[0]] == true).length / totalTopics!) * 100
+
+                     const subjectProgressRounded = subjectProgressRaw.toFixed(2);
+
+                     return (
+                        <BackpackSubject
+                           key={index}
+                           subject={subject}
+                           subjectLevel={subjectLevel}
+                           isCustomSubject={isCustomSubject}
+                           subjectProgressRounded={subjectProgressRounded}
+                           subjectProgressRaw={subjectProgressRaw}
+                        />
+                     )
+
+                     // return (<Card
+                     //    key={index} 
+                     //    styles={{ ...SubjectProgressCardStyles, background: subjectProgressBg }}
+                     //    className="box dfb column gap-10"
+                     //    onClick={() => router.push(`/subject/${subjectLevelUrlParam}/${subjectFolderName}`)}
+                     // >
+                     //    <div style={SubjectIconBubble}>
+                     //       {isCustomSubject
+                     //          ? <GraduationCap size={20} />
+                     //          : subjectIcon[fullSubjectBreakDown(subject).subject]
+                     //       }
+                     //    </div>
+                     //    <div className="box full dfb column gap-5">
+                     //       <div className="text-s bold-700 full mb-05">{subject}</div>
+                     //       <div className="text-xs full grey-5 bold-500">
+                     //          {totalTopics} {pluralSuffixer('topic', totalTopics!, 's')} {isCustomSubject && 'completed'}
+                     //       </div>
+                     //       <div className="text-xxs full grey-5 mt-05">
+                     //          {subjectProgressRounded}%
+                     //          {isCustomSubject ? ' average score' : ' complete'}
+                     //       </div>
+                     //       <div className="box pd-05 mt-05">
+                     //          <ProgressBar percentage={subjectProgressRaw} color={subjectProgressBoldBg} />
+                     //       </div>
+                     //    </div>
+                     // </Card>)
+                  })}
+               </div>
+            </>)}
             <Spacing size={4} />
          </div>
       </AppWrapper>
    )
-}
-
-type BackPackToolProps = {
-   label: string;
-   href: string;
-   description: string;
-   icon: StaticImageData;
-   style: "wide" | "slim";
-   comingSoon?: boolean;
-}
-
-function BackPackTool ({ label, href, style, description, icon, comingSoon }: BackPackToolProps) {
-   const router = useRouter();
-
-   if (style == "wide") {
-      return (
-         <Card
-            styles={{
-               backgroundColor: "#88a4ff6e", width: "100%", height: "200px",
-               border: "1px solid #e9e9e9", padding: "25px", borderRadius: "30px",
-               cursor: comingSoon ? "default" : "pointer",
-               filter: `saturate(${comingSoon ? 0 : 100}%)`
-            }}
-            onClick={() => router.push(href)}
-         >
-            <div className="box full h-full dfb align-center">
-               <div className="box full dfb column">
-                  <div className="text-ml bold-700 full">{label}</div>
-                  <div className="text-xxs grey-5 full pd-05">{comingSoon ? 'Coming Soon' : description}</div>
-                  {/* <div style={BackpackOpenIconBubble}><ArrowRight size={17} /></div> */}
-               </div>
-               <div className="box fit">
-                  <CustomIcon url={icon.src} size={120} />
-               </div>
-            </div>
-         </Card>
-      )
-   } else {
-      return (
-         <Card
-            styles={{
-               backgroundColor: "#88a4ff6e", width: "100%", height: "fit-content",
-               border: "1px solid #e9e9e9", padding: "15px", borderRadius: "30px",
-               cursor: comingSoon ? "default" : "pointer",
-               filter: `saturate(${comingSoon ? 0 : 100}%)`
-            }}
-            onClick={() => router.push(href)}
-         >
-            <div className="box full dfb column">
-               <div className="box full dfb justify-center"><CustomIcon url={icon.src} size={90} /></div>
-               <div className="text-sm bold-700 full">{label}</div>
-               <div className="text-xxxs grey-5 full pd-05">{comingSoon ? 'Coming Soon' : description}</div>
-               <div className="box full dfb justify-end gap-5">
-                  <div style={BackpackOpenIconBubble}><ArrowRight size={17} /></div>
-               </div>
-            </div>
-         </Card>
-      )
-   }
 }

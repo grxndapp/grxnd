@@ -12,19 +12,13 @@ export default async function Home () {
    const subscriptionStatus = await dalCheckUserSubscription();
 
    if (subscriptionStatus == "session-no-user") redirect("/logout");
-   
    if (subscriptionStatus == "no-user") redirect("/sign-in");
-
    if (subscriptionStatus == "not-subscribed") return <NonSubHomePage />;
 
    const dataReq = await dalRequireSubscribedAuth(user => 
       dalDbOperation(async () => {
-         const quizzes = await db.select().from(quizzesTable)
-            .where(eq(quizzesTable.userid, user.userid!));
-            
-         const notes = await db.select().from(notesTable)
-            .where(eq(notesTable.userid, user.userid!))
-         
+         const quizzes = await db.select().from(quizzesTable).where(eq(quizzesTable.userid, user.userid!));
+         const notes = await db.select().from(notesTable).where(eq(notesTable.userid, user.userid!))
          return { quizzes, notes }
       })
    );

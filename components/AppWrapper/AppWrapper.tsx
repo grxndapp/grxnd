@@ -10,22 +10,36 @@ import { useModal } from "../Modal/ModalContext"
 import { getCurrentUserScore } from "@/app/actions/user"
 import { formatNumber } from "@/utils/num"
 import userDefaultImage from "@/public/user-def.png"
-
+import Sidebar from "../Sidebar/Sidebar"
 
 export default function AppWrapper ({ children, noNavbar, contentRef }: { children: ReactNode, noNavbar?: boolean, contentRef?: RefObject<any | null> }) {
    const router = useRouter();
+   const pathname = usePathname();
    const { data: session } = useSession();
    const { showModal, close } = useModal();
-   const pathname = usePathname();
    const [score, setScore] = useState(0);
+   const [collapsed, setCollapsed] = useState<boolean>(false);
    
    async function getUserScore () {
       const score = await getCurrentUserScore();
       setScore(score ?? 0);
    }
 
+   function updateSetCollapsed (newVal: boolean) {
+      setCollapsed(newVal);
+      window.localStorage.setItem("grxnd-sidebar-collapsed-state", newVal ? '1' : '0');
+   }
+
    useEffect(() => {
-      getUserScore()
+      getUserScore();
+      if ("localStorage" in window) {
+         let sidebarCollapsedState = window.localStorage.getItem("grxnd-sidebar-collapsed-state");
+         if (sidebarCollapsedState) {
+            setCollapsed(sidebarCollapsedState == '1' ? true : false);
+         } else {
+            window.localStorage.setItem("grxnd-sidebar-collapsed-state", "0");
+         }
+      }
    }, [])
    
    function handleNavbarModal () {
@@ -75,34 +89,41 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
 
    return (
       <div className="app">
-         <div className="account-bar-wrapper">
-            <div className="account-bar">
-               {!noNavbar ? (<>
-                  <div className="box full dfb align-center gap-10">
-                     <div className="hamburger-menu-btn" onClick={() => router.push("/home")}>
-                        <House size={23} />
-                     </div>
-                     <div className="hamburger-menu-btn" onClick={() => router.push("/backpack")}>
-                        <Backpack size={23} />
+         <Sidebar collapsed={collapsed} setCollapsed={updateSetCollapsed} />
+         <div className="content-container">
+            <div className="content" ref={contentRef}>
+               <div className="content-header">
+                  <div className="account-bar-wrapper">
+                     <div className="account-bar">
+                        {!noNavbar ? (<>
+                           <div className="box full dfb align-center gap-10 account-bar-mobile-items">
+                              <div className="hamburger-menu-btn" onClick={() => router.push("/home")}>
+                                 <House size={23} />
+                              </div>
+                              <div className="hamburger-menu-btn" onClick={() => router.push("/backpack")}>
+                                 <Backpack size={23} />
+                              </div>
+                           </div>
+                        </>) : (
+                           <div />
+                        )}
+                        <div className="account-image" onClick={handleNavbarModal}>
+                           <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={50} round />
+                        </div>
                      </div>
                   </div>
-               </>) : (
-                  <div />
+               </div>
+               <div className="content-wrapper-container">
+                  <div className="content-wrapper">
+                     {children}
+                  </div>
+               </div>
+               {mobilePagesBackPackAllow.some(p => pathname.startsWith(p)) && (
+                  <div className="mobile-backpack-accessible-btn" onClick={() => router.push("/backpack")}>
+                     <Backpack size={23} />
+                  </div>
                )}
-               <div className="account-image" onClick={handleNavbarModal}>
-                  <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={50} round />
-               </div>
             </div>
-         </div>
-         <div className="content" ref={contentRef}>
-            <div className="content-wrapper">
-               {children}
-            </div>
-            {mobilePagesBackPackAllow.some(p => pathname.startsWith(p)) && (
-               <div className="mobile-backpack-accessible-btn" onClick={() => router.push("/backpack")}>
-                  <Backpack size={23} />
-               </div>
-            )}
          </div>
       </div>
    )

@@ -1,13 +1,7 @@
 'use client'
 import "@/styles/exam-ready-score.css"
-import AppWrapper from "@/components/AppWrapper/AppWrapper"
-import ExamAnalysisLoader from "@/components/ExamAnalysisLoader/ExamAnalysisLoader"
-import ModalSelect from "@/components/ModalSelect/ModalSelect"
-import Spacing from "@/components/Spacing/Spacing"
-import ExamReadyRing from "@/components/ExamReadyRing/ExamReadyRing"
 import { pluralSuffixer, titleCase } from "@/lib/str"
-import { ExamDateCardStyles, SubjectIconBubble } from "@/styles-extra/styles"
-import { formatMilliseconds } from "@/utils/date"
+import { SubjectIconBubble } from "@/styles-extra/styles"
 import { customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectIcon, subjectLevels, subjectPastelBgColors, subjects } from "@/utils/subjects"
 import { HTMLMotionProps, motion } from "framer-motion"
 import { ArrowRight, BookOpen, BookText, Calendar, ChartNoAxesColumn, Sparkles, TriangleAlert, Trophy } from "lucide-react"
@@ -16,7 +10,14 @@ import { toast } from "sonner"
 import { RiTargetLine } from "react-icons/ri";
 import { BiSolidZap } from "react-icons/bi";
 import { createExamReadyScore, ExamReadyScore } from "./examReadyScoreCalculator"
+import AppWrapper from "@/components/AppWrapper/AppWrapper"
+import ExamAnalysisLoader from "@/components/ExamAnalysisLoader/ExamAnalysisLoader"
+import ModalSelect from "@/components/ModalSelect/ModalSelect"
+import Spacing from "@/components/Spacing/Spacing"
+import ExamReadyRing from "@/components/ExamReadyRing/ExamReadyRing"
 import FrostedCard from "@/components/FrostedCard/FrostedCard"
+import ExamReadyScoreIcon from "@/public/exam-ready-score.png";
+import { CustomIcon } from "@/components/Icons/Icon"
 type QuestionStages = "subject" | "target-grade" | "exam-date" | "loading" | "show-score"
 type TargetGrades = "A" | "B"
 
@@ -282,6 +283,11 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
                <Spacing size={4} />
                
             </div>) : (<>
+
+            
+               <div className="box full pd-1 dfb column gap-10">
+                  <div className="box full dfb justify-start no-drag"><CustomIcon url={ExamReadyScoreIcon.src} size={100} /></div>
+               </div>
                <div className="box full pd-1 dfb column gap-10">
                   <div className="text-xxxl bold-700 full accent-color line-height-11">Exam Ready Score</div>
                </div>

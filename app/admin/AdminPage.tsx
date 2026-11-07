@@ -4,18 +4,18 @@ import { chartCurrentMonth, chartGroupByMonth, chartLast7Days, chartTodayHourly,
 import { useSession } from "next-auth/react";
 import { pluralSuffixer } from "@/lib/str";
 import { NormalCardStyles, UserCardStyles } from "@/styles-extra/styles";
+import { adminUpgradeUserSubscription } from "../actions/user";
+import { toast } from "sonner";
+import { useModal } from "@/components/Modal/ModalContext";
+import { formatMilliseconds, timeAgo } from "@/utils/date";
+import { Crown, Delete } from "lucide-react";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
 import Chart from "@/components/Chart/Chart";
 import Selections from "@/components/Selections/Selections";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
-import { adminUpgradeUserSubscription } from "../actions/user";
-import { toast } from "sonner";
-import { useModal } from "@/components/Modal/ModalContext";
-import { formatMilliseconds } from "@/utils/date";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import { Crown, Delete } from "lucide-react";
 
 type AdminPageProps = {
    usersGraph: {
@@ -33,7 +33,7 @@ function UserManageCard ({ usersGraph }: { usersGraph: AdminPageProps['usersGrap
    const [searchUsers, setSearchUsers] = useState("");
 
    function applySearchFilters () {
-      return usersGraph.filter(user => (
+      return usersGraph.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).filter(user => (
          user.name.toLowerCase().includes(searchUsers.toLowerCase()) ||
          user.email.toLowerCase().includes(searchUsers.toLowerCase())
       ))
@@ -80,17 +80,18 @@ function UserManageCard ({ usersGraph }: { usersGraph: AdminPageProps['usersGrap
       <Card styles={{ ...NormalCardStyles, padding: "30px" }}>
          <div className="text-m full bold-600">All Users</div>
          <div className="text-xxs pd-1 full">All the wonderful users of Grxnd</div>
-         <div className="box full pd-15">
+         <div className="box full">
             <input 
                type="text" className="xxs pd-13 pdx-2 full mw-400" placeholder="Search Users"
                value={searchUsers} onChange={e => setSearchUsers(e.target.value)}
             />
          </div>
-         <div className="box full dfb wrap gap-10">
+         <div className="box full dfb wrap gap-10 pd-15">
             {applySearchFilters().map(user => (
                <div key={user.userid} style={UserCardStyles} onClick={() => handleOpenUserDetails(user)}>
                   <div className="text-s bold-600 full accent-color">{user.name}</div>
                   <div className="text-xxs full grey-5">{user.email}</div>
+                  <div className="text-xxs full grey-5">Joined {timeAgo(new Date(user.createdAt).getTime())}</div>
                </div>
             ))}
          </div>

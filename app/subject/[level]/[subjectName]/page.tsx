@@ -1,7 +1,7 @@
 import { dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
 import { db } from "@/db";
-import { quizzesTable } from "@/db/schemas";
-import { and, eq, or } from "drizzle-orm";
+import { notesTable, quizzesTable } from "@/db/schemas";
+import { and, desc, eq, or } from "drizzle-orm";
 import { titleCase } from "@/lib/str";
 import SubjectStatPage from "./SubjectStatPage";
 import LoadingPage from "./loading";
@@ -18,10 +18,11 @@ export const dynamic = "force-dynamic";
 export default async function SubjectStat ({ params }: SubjectStatProps) {
    const { subjectName, level } = await params;
    const actualLevel = level == "none" ? "" : level;
+   const folderCodeName = `${actualLevel ? actualLevel+' ' : ''}${subjectName}`.toLowerCase().replaceAll("-"," ");
 
    const quizzes = await dalRequireSubscribedAuth(user =>
       dalDbOperation(async () => {
-         return await db
+         const quizzes = await db
             .select().from(quizzesTable)
             .where(and(
                eq(quizzesTable.userid, user.userid!),
@@ -36,6 +37,17 @@ export default async function SubjectStat ({ params }: SubjectStatProps) {
                   )
                )
             ))
+         
+         const notes = await db
+            .select()
+            .from(notesTable)
+            .where(and(
+               eq(notesTable.userid, user.userid!),
+               eq(notesTable.folderCodeName, folderCodeName)
+            ))
+            .orderBy(desc(notesTable.createdAt))
+         
+         return { notes, quizzes }
       })
    )
 
@@ -44,7 +56,8 @@ export default async function SubjectStat ({ params }: SubjectStatProps) {
          <SubjectStatPage 
             subjectLevel={titleCase(actualLevel.replaceAll("-"," "))}
             subject={subjectName.replaceAll("-"," ")} 
-            quizzes={quizzes.data as any}
+            quizzes={quizzes.data.quizzes as any}
+            notes={quizzes.data.notes as any}
          />
       );
    } else {

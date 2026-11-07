@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
 import { getSubjectPageUrl } from "../../helper"
+import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects"
 import AwaitButton from "@/components/AwaitButton/AwaitButton"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import NoteViewer from "@/components/NoteViewer/NoteViewer"
@@ -16,7 +17,6 @@ import Select from "@/components/Select/Select"
 import Spacing from "@/components/Spacing/Spacing"
 import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
 import DeleteNote from "@/modal-forms/DeleteNote"
-import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects"
 
 export default function SubjectNotePage ({ note, subject, subjectLevel }: { note: Note, subjectLevel: string, subject: string }) {
    const router = useRouter();
@@ -39,14 +39,15 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
 
    return (
       <AppWrapper>
-         <div className="box w-full h-full pd-1">
+         {/* <div className="box full h-full pd-1"> */}
             <div className="box full pd-1 dfb align-center gap-10">
-               <button 
-                  className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40" 
+               <div 
+                  className="text-xs full visible-link dfb align-center gap-5 line-height-10"
                   onClick={() => router.push(`${subjectPageUrl}/notes`)}
+                  style={{ color: subjectColor }}
                >
-                  <ArrowLeft size={16} />
-               </button>
+                  <ArrowLeft size={16} /> {titleCase(subjectLevel)} {titleCase(subject)}
+               </div>
                <div className="box full dfb align-center justify-end">
                   <MultiActionDropdown
                      className="xxxs pd-11 pdx-2 outline-black no-shadow radius-20"
@@ -70,7 +71,7 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
 
             <NoteViewer note={JSON.parse(note.noteJson)} noButtons noSubject />
             <Spacing size={4} />
-         </div>
+         {/* </div> */}
       </AppWrapper>
    )
 }

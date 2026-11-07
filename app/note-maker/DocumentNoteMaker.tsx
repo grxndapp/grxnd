@@ -6,16 +6,17 @@ import { NotebookPen, RotateCcw, X } from "lucide-react";
 import { generateUsingAi } from "../actions/ai";
 import { buildFileNotePrompt } from "@/prompts/subjectNoteMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
-import { useModal } from "@/components/Modal/ModalContext";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { titleCase } from "@/lib/str";
+import { NoteIntensity } from "@/prompts/promptExtras";
+import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
+import { uploadPresigned } from "@vercel/blob/client";
+import { useUser } from "@/hooks/useUser";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
 import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
-import { NoteIntensity } from "@/prompts/promptExtras";
-import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 
 type FileInfo = {
    filename: string;
@@ -213,7 +214,7 @@ const upgradedTestNote = {
 }
 
 export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFolderName: string }) {
-   const { showModal, close } = useModal();
+	const { user } = useUser();
    const { openSplash, closeSplash } = useSplashScreen();
    const [inputFileValue, setInputFileValue] = useState<any | null>('');
    const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
@@ -255,37 +256,77 @@ export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFol
 	}
 
    const createNoteAI = async (callback: Function) => {
+      if (!user) {
+         toast.error("No user found")
+         callback()
+         return;
+      }
       if (!documentFile) {
          toast.error("Please choose a file")
          callback()
          return;
       }
 		handleLoadingCreateNote();
-      const data = await generateUsingAi({
-         prompt: buildFileNotePrompt({ fileName: fileInfo?.filename, intensity }),
-         responseFormat: ResponseFormats.NoteMaker,
-         file: documentFile
-      })
-      if (data.success == false) {
-         openSplash({
-            title: "Error",
-            description: data.error,
-            style: "error",
-            actions: [
-               {
-                  appearance: "normal",
-                  action: () => closeSplash(),
-                  label: <><RotateCcw size={18} /> Try Again</>
-               }
-            ],
-         })
-         callback()
-         return;
-      }
-      console.log(data)
-      setNoteFromAI(data.data.note);
-      callback()
-		closeSplash();
+
+		try {
+			let uploadedFile;
+			if (documentFile) {
+				const blob = await uploadPresigned(`grxnd-uploads/${user.email}/${documentFile.name}`, documentFile, {
+					access: "private",
+					handleUploadUrl: "/api/file/upload"
+				});
+				uploadedFile = {
+					pathname: blob.pathname,
+					name: documentFile.name
+				};
+			}
+			if (!uploadedFile) {
+				toast.error("Failed to upload your file");
+				setInputFileValue('');
+				callback()
+				return;
+			}
+			const data = await generateUsingAi({
+				prompt: buildFileNotePrompt({ fileName: fileInfo?.filename, intensity }),
+				responseFormat: ResponseFormats.NoteMaker,
+				file: uploadedFile
+			})
+			if (data.success == false) {
+				openSplash({
+					title: "Error",
+					description: data.error,
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				callback()
+				return;
+			}
+			console.log(data)
+			setNoteFromAI(data.data.note);
+			callback()
+			closeSplash();
+		} catch (err) {
+			openSplash({
+				title: "Error",
+				description: "Something happened, an error occurred!",
+				style: "error",
+				actions: [
+					{
+						appearance: "normal",
+						action: () => closeSplash(),
+						label: <><RotateCcw size={18} /> Try Again</>
+					}
+				],
+			})
+			callback()
+			return;
+		}
    }
 
    return (<>

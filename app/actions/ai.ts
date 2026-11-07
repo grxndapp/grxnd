@@ -3,10 +3,16 @@ import { convertPdfFileToBase64 } from "@/utils/aiFileHandling";
 import { extractJson } from "@/utils/extractJson";
 import { normalizeText } from "@/utils/validate";
 import { validateKatex } from "@/utils/validateKatex";
+import { getCurrentUser } from "./user";
+import { get, del } from "@vercel/blob";
 
 type GenerateUsingAiParams = {
    prompt: string;
-   file?: File;
+   // file?: File;
+   file?: {
+      pathname: string;
+      name: string;
+   };
    responseFormat?: object;
 }
 
@@ -125,11 +131,60 @@ If any check fails, fix it before responding.`;
 
 export async function generateUsingAi ({ prompt, file, responseFormat }: GenerateUsingAiParams) {
    try {
+      // Use your existing server-side session helper
+      const user = await getCurrentUser();
+      if (!user) {
+         return {
+            success: false,
+            data: undefined,
+            error: "User not found"
+         }
+      }
+
       let fileData;
       if (file) {
-         const convertedPdf = await convertPdfFileToBase64(file);
-         fileData = convertedPdf;
+         // Verify the file belongs to this user
+         if (!file.pathname.startsWith(`grxnd-uploads/${user.email}/`)) {
+            return {
+               success: false,
+               data: undefined,
+               error: "Invalid file"
+            }
+         }
+
+         // Download the private file from Vercel Blob
+         const blob = await get(file.pathname, { access: "private" });
+         if (!blob || blob.statusCode !== 200 || !blob.stream) {
+            return {
+               success: false,
+               data: undefined,
+               error: "File not found"
+            }
+         }
+
+         // Check the maximum allowed file size
+         if (blob.blob.size === null || blob.blob.size > 20 * 1024 * 1024) {
+            return {
+               success: false,
+               data: undefined,
+               error: "Invalid file size"
+            }
+         }
+         const arrayBuffer = await new Response(blob.stream).arrayBuffer();
+
+         // Convert back into a File object
+         const originalFile = new File([arrayBuffer], file.name, {
+            type: blob.blob.contentType ?? "application/octet-stream"
+         });
+
+         // YOUR EXISTING FUNCTION
+         fileData = await convertPdfFileToBase64(originalFile);
       }
+      // let fileData;
+      // if (file) {
+      //    const convertedPdf = await convertPdfFileToBase64(file);
+      //    fileData = convertedPdf;
+      // }
 
       const content = file
          ? [

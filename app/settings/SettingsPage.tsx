@@ -40,9 +40,6 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
          <div className="text-m bold-500 full pd-05 mt-1">{session?.user?.name}</div>
          <div className="text-xs grey-5 full pd-05">{session?.user?.email}</div>
          <div className="text-xs grey-5 full pd-05 mb-1">Joined <b className="accent-color">Grxnd</b> on {formatMilliseconds(new Date(user.createdAt).getTime(), true)}</div>
-         <button className="xxs full mw-400 grey pd-11 tiny-shadow" onClick={() => signOut()}>
-            <LogOut size={17} /> Log Out   
-         </button>
 
          {(user.user_role == "admin") && (<>
             <Spacing size={3} />
@@ -89,6 +86,9 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
          </div>
          <button className="xxs full delete pd-11 mw-400 tiny-shadow" onClick={() => router.push("/delete-account")}>
             <Trash2 size={17} /> Delete Account
+         </button>
+         <button className="xxs full mw-400 grey pd-11 tiny-shadow" onClick={() => signOut()}>
+            <LogOut size={17} /> Log Out   
          </button>
 
          <Spacing size={5} />

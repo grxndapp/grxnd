@@ -29,21 +29,11 @@ export default function SavedQuizPage ({ subject, subjectLevel, savedQuiz }: { s
    return (
       <AppWrapper>
          <div className="box full pd-3">
-            <div className="box full pd-1 dfb align-center gap-10 mb-1">
-               <button 
-                  className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40"
-                  onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}
-               >
-                  <ArrowLeft size={16} />
-               </button>
-            </div>
-            
-            <div className="text-l bold-700 full text-center" style={{ color: subjectColor }}>
-               {savedQuiz.subjectLevel} {savedQuiz.subject} {savedQuiz.topic}
-            </div>
+            <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}><ArrowLeft size={16} /> Back</div>
+            <div className="text-xl bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>{savedQuiz.subjectLevel} {savedQuiz.subject} {savedQuiz.topic}</div>
 
-            <div className="box full pd-3 dfb column align-center gap-5">
-               <div className="text-s fit bold-500">
+            <div className="box full pd-1 dfb column align-center gap-5 mw-400 mb-1">
+               <div className="text-s full bold-500">
                   You scored {Math.round((savedQuiz.score/JSON.parse(savedQuiz.quizJson).length)*100)}%
                </div>
                <ProgressBar percentage={(savedQuiz.score/JSON.parse(savedQuiz.quizJson).length)*100} color={subjectColor} />

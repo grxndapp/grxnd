@@ -102,3 +102,9 @@
 }
 .navbar .navbar-wrapper .navbar-item .tiny-label { font-size: 0.95rem; }
 .navbar .navbar-wrapper .navbar-item.selected .tiny-label { font-weight: 700; }
+
+@media screen and (min-width: 900px) {
+   .account-bar-mobile-items > .hamburger-menu-btn {
+      display: none !important;
+   }
+}

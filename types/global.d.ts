@@ -23,6 +23,8 @@ type User = {
 type ClientUser = {
    userid: string;
    name: string;
+   email: string;
+   user_role: "user" | "admin";
    is_subscribed: boolean;
 }
 

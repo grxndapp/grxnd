@@ -1,7 +1,7 @@
 'use client'
 import { titleCase } from "@/lib/str";
 import { CustomIcon } from "../Icons/Icon";
-import { Bookmark, NotebookTabs, RotateCcw } from "lucide-react";
+import { Bookmark, NotebookTabs, RotateCcw, SquareArrowUpRight } from "lucide-react";
 import { addNoteToFolder, addNoteToNewFolder } from "@/app/actions/note";
 import { toast } from "sonner";
 import { useModal } from "../Modal/ModalContext";
@@ -318,10 +318,13 @@ export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noS
                   ? (
                      <Card key={index} styles={YoutubeSearchCardStyles} onClick={() => window.open(visual, "_blank")}>
                         <div className="box full dfb column gap-5">
-                           <div className="box text-xs full dfb align-center gap-5 bold-600">
-                              <BiLogoYoutube size={25} color="red" /> {titleCase(new URL(visual).searchParams.get("search_query")?.replaceAll("+"," ")!)}
+                           <BiLogoYoutube size={25} color="red" /> 
+                           <div className="text-xs full dfb align-center gap-5 bold-600">
+                              {titleCase(new URL(visual).searchParams.get("search_query")?.replaceAll("+"," ")!)}
                            </div>
-                           <div className="text-xxxs grey-5 visible-link cursor-pointer">{visual}</div>
+                           <div className="text-xxs dfb align-center gap-5 grey-5 full visible-link cursor-pointer">
+                              Click to view <SquareArrowUpRight size={17} />
+                           </div>
                         </div>
                      </Card>
                   )

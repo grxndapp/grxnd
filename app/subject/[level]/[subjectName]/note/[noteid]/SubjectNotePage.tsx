@@ -43,7 +43,7 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
             <div className="box full pd-1 dfb align-center gap-10">
                <div 
                   className="text-xs full visible-link dfb align-center gap-5 line-height-10"
-                  onClick={() => router.push(`${subjectPageUrl}/notes`)}
+                  onClick={() => router.push(subjectPageUrl)}
                   style={{ color: subjectColor }}
                >
                   <ArrowLeft size={16} /> {titleCase(subjectLevel)} {titleCase(subject)}

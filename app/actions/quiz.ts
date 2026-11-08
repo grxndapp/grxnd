@@ -2,6 +2,7 @@
 import { dalDbOperation, dalRequireAuth } from "@/dal/helpers"
 import { db } from "@/db"
 import { quizzesTable, savedQuizzesTable, scoresTable, tempQuizzesTable } from "@/db/schemas"
+import { titleCase } from "@/lib/str";
 import { eq, sql } from "drizzle-orm";
 
 export async function addQuizScore (subjectLevel: string, subject: string, subjectTopic: string, score: number, pointsGained: number) {
@@ -35,7 +36,7 @@ export async function userSavedQuiz(subjectLevel: string, subject: string, subje
          dalDbOperation(async () => {
             const res = await db.insert(savedQuizzesTable).values({
                userid: user.userid!,
-               subjectLevel, subject,
+               subjectLevel, subject: titleCase(subject),
                topic: subjectTopic,
                score, quizJson
             });

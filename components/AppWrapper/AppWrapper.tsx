@@ -18,28 +18,14 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
    const { data: session } = useSession();
    const { showModal, close } = useModal();
    const [score, setScore] = useState(0);
-   const [collapsed, setCollapsed] = useState<boolean>(false);
-   
+
    async function getUserScore () {
       const score = await getCurrentUserScore();
       setScore(score ?? 0);
    }
 
-   function updateSetCollapsed (newVal: boolean) {
-      setCollapsed(newVal);
-      window.localStorage.setItem("grxnd-sidebar-collapsed-state", newVal ? '1' : '0');
-   }
-
    useEffect(() => {
       getUserScore();
-      if ("localStorage" in window) {
-         let sidebarCollapsedState = window.localStorage.getItem("grxnd-sidebar-collapsed-state");
-         if (sidebarCollapsedState) {
-            setCollapsed(sidebarCollapsedState == '1' ? true : false);
-         } else {
-            window.localStorage.setItem("grxnd-sidebar-collapsed-state", "0");
-         }
-      }
    }, [])
    
    function handleNavbarModal () {
@@ -89,7 +75,7 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
 
    return (
       <div className="app">
-         <Sidebar collapsed={collapsed} setCollapsed={updateSetCollapsed} />
+         <Sidebar />
          <div className="content-container">
             <div className="content" ref={contentRef}>
                <div className="content-header">

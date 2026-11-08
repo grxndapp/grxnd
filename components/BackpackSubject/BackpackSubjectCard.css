@@ -8,12 +8,13 @@
    gap: 15px;
    cursor: pointer;
    border-radius: 20px;
-   background: #e0e2ffbf;
+   background: #ffffff;
+   border: 1px solid var(--accent-color-10);
 }
 
 .backpack-subject-item:hover {
    scale: 1.005;
-   background: #d0d3ffd4;
+   background: #d8d8ffd4;
 }
 
 .backpack-subject-item .backpack-subject-bar {

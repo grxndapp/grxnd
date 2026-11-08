@@ -141,33 +141,6 @@ export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
                            subjectProgressRaw={subjectProgressRaw}
                         />
                      )
-
-                     // return (<Card
-                     //    key={index} 
-                     //    styles={{ ...SubjectProgressCardStyles, background: subjectProgressBg }}
-                     //    className="box dfb column gap-10"
-                     //    onClick={() => router.push(`/subject/${subjectLevelUrlParam}/${subjectFolderName}`)}
-                     // >
-                     //    <div style={SubjectIconBubble}>
-                     //       {isCustomSubject
-                     //          ? <GraduationCap size={20} />
-                     //          : subjectIcon[fullSubjectBreakDown(subject).subject]
-                     //       }
-                     //    </div>
-                     //    <div className="box full dfb column gap-5">
-                     //       <div className="text-s bold-700 full mb-05">{subject}</div>
-                     //       <div className="text-xs full grey-5 bold-500">
-                     //          {totalTopics} {pluralSuffixer('topic', totalTopics!, 's')} {isCustomSubject && 'completed'}
-                     //       </div>
-                     //       <div className="text-xxs full grey-5 mt-05">
-                     //          {subjectProgressRounded}%
-                     //          {isCustomSubject ? ' average score' : ' complete'}
-                     //       </div>
-                     //       <div className="box pd-05 mt-05">
-                     //          <ProgressBar percentage={subjectProgressRaw} color={subjectProgressBoldBg} />
-                     //       </div>
-                     //    </div>
-                     // </Card>)
                   })}
                </div>
             </>)}

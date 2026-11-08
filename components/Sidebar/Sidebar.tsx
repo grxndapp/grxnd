@@ -27,12 +27,10 @@ export const routes = [
 ]
 
 type SidebarProps = {
-   collapsed: boolean;
-   setCollapsed: (newValue: boolean) => void;
    brand?: User;
 }
 
-export default function Sidebar ({ collapsed, setCollapsed, brand }: SidebarProps) {
+export default function Sidebar ({ brand }: SidebarProps) {
    const { data: session, status } = useSession();
    const router = useRouter();
    const pathname = usePathname();
@@ -64,16 +62,11 @@ export default function Sidebar ({ collapsed, setCollapsed, brand }: SidebarProp
    }, [])
 
    return (
-      <div className={`sidebar ${collapsed && 'collapsed'}`}>
+      <div className='sidebar'>
          <div className="sidebar-toggle-icon-bar">
             <div className="text-s full dfb align-center">
-               <button onClick={() => setCollapsed(!collapsed)} className="transparent fit">
-                  <GrxndLogo size={30} />
-               </button>
+               <GrxndLogo size={30} />
             </div>
-            <button onClick={() => setCollapsed(!collapsed)} className="text-xxs transparent fit">
-               <PanelLeftClose strokeWidth={sidebarStrokeWidth} size={22} />
-            </button>
          </div>
 
          <div className="sidebar-nav-container">
@@ -84,7 +77,7 @@ export default function Sidebar ({ collapsed, setCollapsed, brand }: SidebarProp
                         key={index} 
                         icon={route.icon} 
                         label={route.label} 
-                        collapsed={collapsed}
+                        collapsed={false}
                         action={() => router.push(route.href)}
                         selected={pathname === route.href}
                      />
@@ -95,7 +88,7 @@ export default function Sidebar ({ collapsed, setCollapsed, brand }: SidebarProp
                         key={index} 
                         icon={route.icon} 
                         label={route.label} 
-                        collapsed={collapsed} 
+                        collapsed={false}
                         action={() => router.push(route.href)}
                         selected={pathname === route.href}
                      />
@@ -104,7 +97,7 @@ export default function Sidebar ({ collapsed, setCollapsed, brand }: SidebarProp
                      <SidebarItem 
                         icon={<Download size={sidebarIconSize} strokeWidth={sidebarStrokeWidth} />} 
                         label="Install Grxnd" 
-                        collapsed={collapsed} 
+                        collapsed={false}
                         action={() => router.push("/install-ios")}
                         selected={pathname === "/install-ios"}
                      />

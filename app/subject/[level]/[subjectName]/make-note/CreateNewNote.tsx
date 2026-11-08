@@ -32,7 +32,9 @@ export default function CreateNewNote ({ subject, subjectLevel, isDefaultSubject
    return (
       <AppWrapper contentRef={contentRef}>
          <div className="box full">
-            <div className="text-xxs fit visible-link mb-1 accent-color" onClick={() => router.push(subjectPageUrl)}>Backpack</div>
+            <div className="text-xxs fit visible-link mb-1 accent-color dfb align-center" onClick={() => router.push(subjectPageUrl)}>
+               <ArrowLeft size={17} /> Back
+            </div>
             <div className="text-xl bold-700 full no-trans" style={{ color: subjectColor }}>Create Note</div>
             <div className="text-xxs full mb-1 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</div>
             <Spacing />

@@ -1,7 +1,7 @@
 'use client'
 import { titleCase } from "@/lib/str"
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects"
-import { GraduationCap, NotebookPen } from "lucide-react"
+import { GraduationCap, Notebook, NotebookPen, PlusCircle } from "lucide-react"
 import { cloneElement, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getSubjectPageUrl } from "./helper"
@@ -61,9 +61,12 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                      </div>
                      <div className="text-xxs fit text-center">You have taken {newQuizArray.length} {subjectLevel.toLowerCase()} {subject.toLowerCase()} quizzes</div>
                   </div>
-                  <div className="box full pd-1">
+                  <div className="box full pd-1 dfb wrap gap-10">
                      <button className="xxs pd-2 full mw-300" style={{ background: subjectColor }} onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}>
                         <NotebookPen size={17} />Take A Quiz
+                     </button>
+                     <button className="xxs pd-2 full mw-300 outline-black tiny-shadow" onClick={() => router.push(`${subjectPageUrl}/make-note`)}>
+                        <Notebook size={17} /> New Note
                      </button>
                   </div>
                   <div className="text-xxs fit visible-link accent-color" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
@@ -75,7 +78,7 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
 
             <div className="box full">
                <div className="text-l bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>Notes</div>
-               <div className="box full dfb column mb-1">
+               <div className="box full dfb align-center gap-10 pd-1">
                   <input 
                      type="text" className="xxs pd-13 pdx-2 radius-20 full mw-600" placeholder="Search Notes..."
                      value={searchNotesQuery} onChange={e => setSearchNotesQuery(e.target.value)}

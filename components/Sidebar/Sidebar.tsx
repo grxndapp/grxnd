@@ -1,7 +1,7 @@
 'use client'
 import "./Sidebar.css"
 import { ReactNode, useEffect, useState } from "react";
-import { House, PanelLeftClose, Backpack, Home, Download, BookOpenCheck } from "lucide-react";
+import { House, Backpack, Home, Download, BookOpenCheck } from "lucide-react";
 import { GrxndLogo } from "../Icons/Icon";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -26,12 +26,8 @@ export const routes = [
    },
 ]
 
-type SidebarProps = {
-   brand?: User;
-}
-
-export default function Sidebar ({ brand }: SidebarProps) {
-   const { data: session, status } = useSession();
+export default function Sidebar () {
+   const { status } = useSession();
    const router = useRouter();
    const pathname = usePathname();
    const [iPhoneOrIpadUser, setIPhoneOrIpadUser] = useState(false);
@@ -63,13 +59,13 @@ export default function Sidebar ({ brand }: SidebarProps) {
 
    return (
       <div className='sidebar'>
-         <div className="sidebar-toggle-icon-bar">
-            <div className="text-s full dfb align-center">
-               <GrxndLogo size={30} />
-            </div>
-         </div>
-
          <div className="sidebar-nav-container">
+            <div className="sidebar-icon-bar">
+               <div className="text-s fit dfb align-center">
+                  <GrxndLogo size={30} />
+               </div>
+               <div className="text-m bold-800 accent-color-gradient-dark-text">GRXND</div>
+            </div>
             <nav className="sidebar-nav">
                {status == "loading" ? <>
                   {loadingRoutes.map((route, index) => (

@@ -31,7 +31,7 @@
 .app .content > .content-wrapper-container {
    width: 100%;
    height: 100%;
-   padding: 0;
+   padding: 0 40px;
    display: flex;
    align-items: start;
    justify-content: center;
@@ -55,6 +55,7 @@
 
    .app .content > .content-wrapper-container {
       width: 100%;
+      padding: 0 0;
       overflow-y: scroll;
       overflow-x: hidden;
    }
@@ -168,6 +169,12 @@
    color: transparent;
 }
 
+.accent-color-gradient-dark-text {
+   background: linear-gradient(to bottom, var(--accent-color-70), #0c1376);
+   background-clip: text;
+   color: transparent;
+}
+
 button.apple-special {
    background: linear-gradient(60deg, var(--accent-color-50), #ee0672c7);
 }
@@ -221,3 +228,9 @@ button.apple-special {
 
 .backpack-subject-note-item:hover { background-color: var(--accent-color-10); }
 .backpack-subject-note-item:active { background-color: var(--accent-color-30); }
+
+@media screen and (max-width: 900px) {
+   .hide-on-mobile {
+      display: none;
+   }
+}

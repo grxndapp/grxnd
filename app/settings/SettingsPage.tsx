@@ -39,10 +39,10 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
          </div>
          <div className="text-m bold-500 full pd-05 mt-1">{session?.user?.name}</div>
          <div className="text-xs grey-5 full pd-05">{session?.user?.email}</div>
-         <div className="text-xs grey-5 full pd-05 mb-1">Joined <b className="accent-color">Grxnd</b> on {formatMilliseconds(new Date(user.createdAt).getTime(), true)}</div>
+         <div className="text-xs grey-5 full pd-05">Joined <b className="accent-color">Grxnd</b> on {formatMilliseconds(new Date(user.createdAt).getTime(), true)}</div>
 
          {(user.user_role == "admin") && (<>
-            <Spacing size={3} />
+            <Spacing size={2} />
             <div className="text-l bold-700 full gap-7">Admin Panel</div>
             <div className="text-xs full pd-1 mb-1">Click below to see admin dashboard and <b className="accent-color">Grxnd</b> information</div>
             <button className="xxs full mw-400 pd-11 tiny-shadow" onClick={() => router.push("/admin")}><UserRoundCog size={17} /> Admin Dashboard</button>
@@ -87,6 +87,8 @@ export default function SettingsPage ({ user }: SettingsPageProps) {
          <button className="xxs full delete pd-11 mw-400 tiny-shadow" onClick={() => router.push("/delete-account")}>
             <Trash2 size={17} /> Delete Account
          </button>
+         
+         <Spacing size={2} />
          <button className="xxs full mw-400 grey pd-11 tiny-shadow" onClick={() => signOut()}>
             <LogOut size={17} /> Log Out   
          </button>

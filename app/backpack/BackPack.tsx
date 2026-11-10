@@ -6,10 +6,11 @@ import BackpackSubject from "@/components/BackpackSubject/BackpackSubject";
 import { useUser } from "@/hooks/useUser";
 import { titleCase } from "@/lib/str";
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, retrieveSubjectTopic, subjectColors, subjectPastelBgColors } from "@/utils/subjects";
-import { NotebookPen } from "lucide-react";
+import { NotebookPen, Plus } from "lucide-react";
 import { NoteMakerBackpackCardStyles } from "@/styles-extra/styles";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown";
 
 type BackPackPageProps = {
    quizzes: QuizT[];
@@ -85,11 +86,17 @@ export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
                </div>
             </div>
             
-            <div className="box full pd-1 dfb column">
+            <div className="box full dfb align-center gap-10 pd-1">
                <input 
-                  type="text" className="xxs pd-15 pdx-2 radius-20 full mw-600" placeholder="Search Subjects..."
+                  type="text" className="xxs pd-15 pdx-2 radius-20 full" placeholder="Search Subjects..."
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                />
+               <button 
+                  className="xxs pd-15 pdx-2 fit whitespace-nowrap radius-20"
+                  onClick={() => router.push("/note-maker")}
+               >
+                  <Plus size={19} /> <span className="hide-on-mobile">Add Subject</span>
+               </button>
             </div>
 
             {(quizzes.length < 1) ? (

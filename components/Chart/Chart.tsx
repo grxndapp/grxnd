@@ -28,7 +28,7 @@ export default function Chart({ data, yDataKey, xDataKey, xAxisInterval }: Chart
          setWidth(300)
       } else {
          setHeight(250)
-         setWidth(1000)
+         setWidth(1100)
       }
    }, [])
    
@@ -46,7 +46,7 @@ export default function Chart({ data, yDataKey, xDataKey, xAxisInterval }: Chart
             dataKey={yDataKey} 
             stroke="#1131ff" 
             fill="url(#colorUsers)"
-            strokeWidth={2} 
+            strokeWidth={1} 
             dot={false}
          />
 

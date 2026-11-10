@@ -4,7 +4,7 @@ import { createTempQuiz } from "@/app/actions/quiz"
 import { useModal } from "@/components/Modal/ModalContext"
 import { titleCase } from "@/lib/str"
 import { buildNoteQuizPrompt } from "@/prompts/quizMaker"
-import { ArrowLeft, BookCheck, ChevronDown, Trash2 } from "lucide-react"
+import { ArrowLeft, BookCheck, ChevronDown, NotebookPen, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -17,12 +17,15 @@ import Select from "@/components/Select/Select"
 import Spacing from "@/components/Spacing/Spacing"
 import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown"
 import DeleteNote from "@/modal-forms/DeleteNote"
+import RenameNote from "@/modal-forms/RenameNote"
 
 export default function SubjectNotePage ({ note, subject, subjectLevel }: { note: Note, subjectLevel: string, subject: string }) {
    const router = useRouter();
    const { showModal } = useModal();
    const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
    const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
+
+   const [noteName, setNoteName] = useState(note.noteName);
 
    function handleCreateQuiz () {
       router.push(`${subjectPageUrl}/start-quiz?noteId=${encodeURIComponent(note.noteid)}`)
@@ -33,6 +36,15 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
          content: <DeleteNote
             note={note}
             onDeleted={() => router.push("/notebooks")}
+         />
+      })
+   }
+   
+   function handleRenameNote () {
+      showModal({
+         content: <RenameNote
+            note={note}
+            onRenamed={newName => setNoteName(newName)}
          />
       })
    }
@@ -58,6 +70,11 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
                            appearance: "accent"
                         },
                         {
+                           label: <><NotebookPen size={17} /> Rename Note</>,
+                           action: handleRenameNote,
+                           appearance: "accent"
+                        },
+                        {
                            label: <><Trash2 size={17} /> Delete Note</>,
                            action: handleDeleteNote,
                            appearance: "delete"
@@ -69,7 +86,7 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
                </div>
             </div>
 
-            <NoteViewer note={JSON.parse(note.noteJson)} noButtons noSubject />
+            <NoteViewer note={JSON.parse(note.noteJson)} noteName={noteName} noButtons noSubject />
             <Spacing size={4} />
          {/* </div> */}
       </AppWrapper>

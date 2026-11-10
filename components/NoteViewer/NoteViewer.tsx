@@ -15,6 +15,7 @@ import AwaitButton from "../AwaitButton/AwaitButton";
 import Card from "../Card/Card";
 
 type NoteViewerProps = {
+   noteName?: string;
    note: NoteMaker;
    subject?: string;
    makeNewNote?: Function;
@@ -95,7 +96,7 @@ function NoteSaver ({ note, subject }: { note: NoteMaker, subject?: string }) {
    )
 }
 
-export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noSubject, customSubject, saveToSubjectFolder, saveToSubjectFolderNew }: NoteViewerProps) {
+export default function NoteViewer ({ subject, note, noteName, makeNewNote, noButtons, noSubject, customSubject, saveToSubjectFolder, saveToSubjectFolderNew }: NoteViewerProps) {
    const { showModal } = useModal();
    const lineStyles: React.CSSProperties = { whiteSpace: "pre-line" }
 
@@ -169,6 +170,7 @@ export default function NoteViewer ({ subject, note, makeNewNote, noButtons, noS
             </div>)}
          </>)}
 
+         {noteName && <div className="text-m full">{noteName}</div>}
          <div className="text-xl bold-700 mb-05 full">{note.title}</div>
          <div className="text-xxs pd-05 line-height-17" style={lineStyles}>{note.overview}</div>
          <Spacing size={1} />

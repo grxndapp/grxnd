@@ -35,12 +35,14 @@ export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: Qu
    return (
       <AppWrapper>
          <div className="box full">
-            <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(subjectPageUrl)}><ArrowLeft size={16} /> Back</div>
+            <div className="box full pd-1">
+               <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(subjectPageUrl)}><ArrowLeft size={16} /> Back</div>
+            </div>
             <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)} Saved Quizzes</div>
 
             {(savedQuizzes.length < 1) ? (
                <div className="box full">
-                  <div className="text-s full pd-1 text-center">Take a quiz, save it and it will appear here.</div>
+                  <div className="text-s full pd-1 text-left">Take a quiz, save it and it will appear here.</div>
                </div>
             ) : (<>
                <div className="box full dfb pd-1">

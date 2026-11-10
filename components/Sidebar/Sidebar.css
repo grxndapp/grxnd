@@ -16,7 +16,7 @@
 }
 
 .sidebar:not(:has(.collapsed)) {
-   min-width: 200px;
+   min-width: 250px;
 }
 
 .sidebar.collapsed {

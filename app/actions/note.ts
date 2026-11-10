@@ -3,7 +3,7 @@ import { dalDbOperation, dalRequireAuth, dalRequireSubscribedAuth } from "@/dal/
 import { db } from "@/db"
 import { notesTable, subjectFoldersTable } from "@/db/schemas"
 import { uuid } from "@/utils/uuid"
-import { and, eq } from "drizzle-orm"
+import { and, eq, inArray } from "drizzle-orm"
 
 export async function addNoteToBackpack (noteInfo: NoteMaker, subject: string) {
    const result = await dalRequireAuth((user) => 
@@ -69,6 +69,44 @@ export async function deleteSubjectNote (noteId: string) {
          })
       );
       return deleted.success ? deleted.data : false;
+   } catch (err) {
+      console.error(err);
+      return false;
+   }
+}
+
+export async function deleteSubjectNotes (noteIds: string[]) {
+   try {
+      const deleted = await dalRequireSubscribedAuth(async user => 
+         await dalDbOperation(async () => {
+            const res = await db.delete(notesTable).where(and(
+               eq(notesTable.userid, user.userid!),
+               inArray(notesTable.noteid, noteIds),
+            ));
+            return res.rowCount === noteIds.length;
+         })
+      );
+      return deleted.success ? deleted.data : false;
+   } catch (err) {
+      console.error(err);
+      return false;
+   }
+}
+
+export async function renameUserNote (noteId: string, newName: string) {
+   try {
+      const updated = await dalRequireSubscribedAuth(async user => 
+         await dalDbOperation(async () => {
+            const res = await db.update(notesTable)
+               .set({ noteName: newName })
+               .where(and(
+                  eq(notesTable.userid, user.userid!),
+                  eq(notesTable.noteid, noteId),
+               ));
+            return res.rowCount === 1;
+         })
+      );
+      return updated.success ? updated.data : false;
    } catch (err) {
       console.error(err);
       return false;

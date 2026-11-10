@@ -176,6 +176,7 @@ button.apple-special {
    width: 100%;
    height: fit-content;
    background-color: white;
+   border: 1px solid #ececec;
    display: flex;
    align-items: center;
    justify-content: center;
@@ -184,6 +185,23 @@ button.apple-special {
    padding: 20px;
    cursor: pointer;
    box-shadow: rgba(33, 35, 38, 0.1) 0px 8px 10px -10px;
+}
+
+.backpack-subject-note-item > .backpack-subject-note-item-select-box {
+   width: 25px;
+   aspect-ratio: 1;
+   border-radius: 8px;
+   border: 1px solid #636363;
+   background: transparent;
+   color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.backpack-subject-note-item > .backpack-subject-note-item-select-box.selected {
+   background: var(--accent-color);
+   border: 1px solid var(--accent-color);
 }
 
 .backpack-subject-note-item > .backpack-subject-note-item-icon {

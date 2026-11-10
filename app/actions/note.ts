@@ -11,9 +11,12 @@ export async function addNoteToBackpack (noteInfo: NoteMaker, subject: string) {
          const res = await db.insert(notesTable).values({
             userid: user.userid,
             noteid: uuid(),
+            folderCodeName: `${subject.toLowerCase()}`.trim(),
             noteJson: JSON.stringify(noteInfo)
+         }).returning({
+            noteid: notesTable.noteid
          });
-         return res.rowCount === 1;
+         return res[0].noteid!;
       })
    );
 
@@ -27,8 +30,10 @@ export async function addNoteToFolder (noteInfo: NoteMaker, folderCodeName: stri
             userid: user.userid,
             noteid: uuid(), folderCodeName,
             noteJson: JSON.stringify(noteInfo)
+         }).returning({
+            noteid: notesTable.noteid
          });
-         return res.rowCount === 1;
+         return res[0].noteid!;
       })
    );
 
@@ -46,8 +51,10 @@ export async function addNoteToNewFolder (noteInfo: NoteMaker, folderCodeName: s
                userid: user.userid,
                noteid: uuid(), folderCodeName,
                noteJson: JSON.stringify(noteInfo)
+            }).returning({
+               noteid: notesTable.noteid
             });
-            return res.rowCount === 1;
+            return res[0].noteid!;
          } else {
             throw new Error("Couldn't Make a Folder")
          }

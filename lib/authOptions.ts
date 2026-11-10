@@ -1,8 +1,9 @@
 import { db } from "@/db";
-import { scoresTable, usersTable } from "@/db/schemas";
-import { hashPwd, uuid } from "@/utils/uuid";
+import { usersTable } from "@/db/schemas";
+import { hashPwd } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
 import { NextAuthOptions } from "next-auth";
+import { createUserAccountFromGoogleAuth } from "@/app/actions/user";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -47,22 +48,8 @@ export const authOptions: NextAuthOptions = {
    ],
    callbacks: {
       async signIn({ user, account, profile }) {
-         const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, user.email!)).limit(1);
-
-         if (existingUser.length < 1) {
-            const userid = uuid();
-            await db.insert(usersTable).values({
-               userid,
-               name: user.name,
-               email: user.email?.toLowerCase(),
-               oauth_provider: "google",
-               password: hashPwd(`${user.name}${user.email}${Date.now()}`),
-               user_role: "user",
-               is_subscribed: false
-            });
-            await db.insert(scoresTable).values({ userid, score: 0 })
-         }
-         return true; // Allow sign in
+         const googleSignInUserAuth = await createUserAccountFromGoogleAuth({ name: user.name!, email: user.email! })
+         return googleSignInUserAuth; // Allow sign in
       },
       jwt: async ({ user, token, trigger, session }) => {
          if (trigger == "update") {

@@ -7,11 +7,11 @@ import { ArrowRightFromLine, Bookmark, Home, RotateCcw } from 'lucide-react';
 import { CustomIcon } from '@/components/Icons/Icon';
 import { addQuizScore, userSavedQuiz } from '../actions/quiz';
 import { titleCase } from '@/lib/str';
+import { fullSubjectBreakDown, isAmongstDefaultSubjects } from '@/utils/subjects';
 import ProgressRing from '@/components/ProgressRing/ProgressRing';
 import Spacing from '@/components/Spacing/Spacing';
 import RenderMarkdown from '@/components/RenderMarkdown/RenderMarkdown';
 import AwaitButton from '@/components/AwaitButton/AwaitButton';
-import { fullSubjectBreakDown, isAmongstDefaultSubjects } from '@/utils/subjects';
 
 const decideColor = (score: number) => {
    if (score < 40) {
@@ -23,26 +23,30 @@ const decideColor = (score: number) => {
    }
 }
 
-const getProgressMessage = (score: number): { title: string; message: string } => {
+const getProgressMessage = (score: number): { title: string; message: string, advice: string } => {
    if (score < 50) {
       return {
          title: "Keep Going",
          message: "Every bit of effort counts. You're building momentum!",
+         advice: "Try studying the topic again and take another quiz. Save the quiz to see where you went wrong."
       };
    } else if (score < 75) {
       return {
          title: "You're Getting There",
-         message: "Nice progress — stay focused and keep pushing!",
+         message: "Nice progress. Stay focused and keep pushing!",
+         advice: "Good progress but let's refine your grade, do more quizzes."
       };
    } else if (score < 90) {
       return {
          title: "Great Work",
          message: "You're almost at the top. Finish strong!",
+         advice: "You're doing amazing! Keep going, Try harder topics and questions."
       };
    } else {
       return {
          title: "Excellent!",
-         message: "You've crushed it — outstanding commitment!",
+         message: "You've crushed it. Outstanding commitment!",
+         advice: "You're doing amazing! Try harder topics and set the quiz question type to the hardest."
       };
    }
  }
@@ -80,6 +84,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
    const [questionAnswered, setQuestionAnswered] = useState(false);
    const [score, setScore] = useState(0)
    const [retake, setRetake] = useState(false);
+   const [showAnswerExplanation, setShowAnswerExplanation] = useState(false);
 
    const answerQuestion = () => {
       if (!quizQuestions) return;
@@ -112,6 +117,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
 
    const nextQuestionBtn = async () => {
       if (!quizQuestions) return;
+      setShowAnswerExplanation(false);
       if (questionIndex+1 >= quizQuestions.length) {
          setQuizFormDisplay('end');
          if (!retake) {
@@ -124,7 +130,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
       }
    }
 
-   const subjectIcon = isAmongstDefaultSubjects(`${subjectLevel} ${subject}`)
+   const canGetSubjectIcon = isAmongstDefaultSubjects(`${subjectLevel} ${subject}`)
 
    return <div className='quiz-container'>
       <div className="qc-container">
@@ -132,7 +138,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
             {/* The start of the quiz */}
             <div className="quiz-start-box">
                <CustomIcon 
-                  url={`/subjects/${subjectIcon ? subject.toLowerCase().replaceAll(" ", "-") : 'any'}.png`}
+                  url={`/subjects/${canGetSubjectIcon ? subject.toLowerCase().replaceAll(" ", "-") : 'any'}.png`}
                   size={140}
                />
                <div className='text-l bold-700 text-center'>{subjectTopic}</div>
@@ -149,15 +155,24 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
          </> : (quizFormDisplay == "quiz") ? <>
             <div className="quiz-begin">
                <div className="text-ml bold-700 pd-1 mt-05 no-trans">{titleCase(subjectTopic)}</div>
+               <div className="text-xxxs no-trans grey-5">Question {questionIndex+1} of {quizQuestions.length}</div>
                <div className="question text-xs pd-1 no-trans"><RenderMarkdown content={quizQuestions[questionIndex].question} /></div>
-               <div className="text-xs no-trans">{questionTypeFormatting(quizQuestions[questionIndex].questionType)}</div>
+               <div className="text-xxs no-trans">{questionTypeFormatting(quizQuestions[questionIndex].questionType)}</div>
                
                {(questionAnswered) ? <>
                   <div className={`explanation ${optionChosen == quizQuestions[questionIndex].answerIndex ? 'correct' : 'wrong'}`}>
-                     <div className="text-ml pd-1 bold-600">{optionChosen == quizQuestions[questionIndex].answerIndex ? 'Correct' : 'Wrong'}</div>
-                     <div className="text-s" style={{ whiteSpace: "pre-line" }}>
-                        <RenderMarkdown content={quizQuestions[questionIndex].answerExplanation} />
+                     <div className="explanation-title text-ml pd-1 bold-700">{optionChosen == quizQuestions[questionIndex].answerIndex ? 'Correct' : 'Wrong'} Answer</div>
+                     <div className="text-xs full text-left" style={{ whiteSpace: "pre-line" }}>
+                        <RenderMarkdown content={`The right answer is: ${quizQuestions[questionIndex].options[quizQuestions[questionIndex].answerIndex]}`} />
                      </div>
+                     {showAnswerExplanation ? (<>
+                        <div className="text-s no-trans" style={{ whiteSpace: "pre-line" }}>
+                           <RenderMarkdown content={quizQuestions[questionIndex].answerExplanation} />
+                        </div>
+                        <div className="text-xxs fit visible-link accent-color cursor-pointer no-trans" onClick={() => setShowAnswerExplanation(false)}>Hide Explanation</div>
+                     </>) : (<>
+                        <div className="text-xxs fit visible-link accent-color cursor-pointer no-trans" onClick={() => setShowAnswerExplanation(true)}>Show Explanation</div>
+                     </>)}
                   </div>
                </> : <br />}
 
@@ -202,9 +217,9 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
 
          </> : <>
             {/* once the quiz ends */}
-            <div className="text-ml text-center bold-700 pd-1">{subjectTopic}</div>
+            <div className="text-ml text-left bold-700 pd-1">{subjectTopic}</div>
             <br />
-            <div className="box dfb full justify-center">
+            <div className="box dfb full">
                <ProgressRing
                   color={decideColor((score/quizQuestions.length)*100)}
                   progress={(score/quizQuestions.length)*100}
@@ -212,29 +227,45 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
             </div>
             <br />
 
-            <div className="text-sm bold-500 text-center">{getProgressMessage((score/quizQuestions.length)*100).title}</div>
-            <div className="text-xs pd-1 grey text-center">{getProgressMessage((score/quizQuestions.length)*100).message}</div>
+            <div className="text-sm bold-600 text-left">{getProgressMessage((score/quizQuestions.length)*100).title}</div>
+            <div className="text-xs grey text-left pd-05">{getProgressMessage((score/quizQuestions.length)*100).message}</div>
+            <div className="text-xs grey text-left">{getProgressMessage((score/quizQuestions.length)*100).advice}</div>
             <br />
 
             <div className="actions">
-               <AwaitButton className='xs full mw-400 pd-12 tiny-shadow' onClick={handleSaveQuiz}>
-                  <Bookmark size={17} /> Save Quiz
-               </AwaitButton>
-               <button className='xs full mw-400 pd-12 tiny-shadow' onClick={retakeQuiz}>
-                  <RotateCcw size={17} /> Retake Quiz
-               </button>
-               {makeNewQuiz && (
-                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
-               )}
-               {backButton ? (<>
-                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push(backButton.href)}>
-                     {backButton.label}
-                  </button>
-               </>) : (<>
-                  <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push("/home")}>
-                     <Home size={17} /> Back to Home
-                  </button>
-               </>)}
+               <div className="box full pd-1">
+                  <div className="text-m bold-600 full">Save Quiz</div>
+                  <div className="text-xs grey-5 full mb-1">Try the quiz again later, practice and get better!</div>
+                  <AwaitButton className='xs full mw-300 pd-12 pdx-2 tiny-shadow' onClick={handleSaveQuiz}>
+                     <Bookmark size={17} /> Save Quiz
+                  </AwaitButton>
+               </div>
+               
+               <div className="box full pd-1">
+                  <div className="text-m bold-600 full">Reflection</div>
+                  <div className="text-xs grey-5 full mb-1">Retry this quiz to see where you went wrong!</div>
+                  <div className="box full dfb wrap gap-10">
+                     <button className='xs full mw-300 pd-12 tiny-shadow' onClick={retakeQuiz}>
+                        <RotateCcw size={17} /> Retake Quiz
+                     </button>
+                     {makeNewQuiz && (
+                        <button className='xs full mw-300 pd-12 outline-black tiny-shadow' onClick={makeNewQuiz}>Take Another Quiz</button>
+                     )}
+                  </div>
+               </div>
+               
+               <div className="box full pd-1">
+                  <div className="text-m bold-600 full mb-1">Go Back</div>
+                  {backButton ? (<>
+                     <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push(backButton.href)}>
+                        {backButton.label}
+                     </button>
+                  </>) : (<>
+                     <button className='xs full mw-400 pd-12 outline-black tiny-shadow' onClick={() => router.push("/home")}>
+                        <Home size={17} /> Back to Home
+                     </button>
+                  </>)}
+               </div>
             </div>
          </>}
 

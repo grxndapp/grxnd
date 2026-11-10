@@ -95,7 +95,7 @@ export default function QuizMakerPage () {
    const [topic, setTopic] = useState<string>('');
    const [numQuestions, setNumQuestions] = useState<string>('5');
    const [canGenerateQuiz, setCanGenerateQuiz] = useState<boolean>(false);
-   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
+   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(quiz);
    const [detailedTopic, setDetailedTopic] = useState('');
    const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 
@@ -107,7 +107,7 @@ export default function QuizMakerPage () {
    }, [subject, subjectLevel])
 
    useEffect(() => {
-      setTopic('');
+      setTopic('Ruhh');
    }, [subject, subjectLevel])
 
    function handleLoadingCreateQuiz () {
@@ -231,18 +231,21 @@ export default function QuizMakerPage () {
          </>)}
 
          {(aiQuiz !== null && aiQuiz !== undefined) && (<>
-            <QuizViewer 
-               subject={subject}
-               subjectLevel={subjectLevel}
-               subjectTopic={topic}
-               quiz={aiQuiz}
-               makeNewQuiz={() => {
-                  setSubjectLevel("");
-                  setSubject("");
-                  setTopic("");
-                  setAiQuiz(null);
-               }}
-            />
+            <div className="box full h-full">
+               <QuizViewer 
+                  subject={subject}
+                  subjectLevel={subjectLevel}
+                  subjectTopic={topic}
+                  quiz={aiQuiz}
+                  makeNewQuiz={() => {
+                     setSubjectLevel("");
+                     setSubject("");
+                     setTopic("");
+                     setAiQuiz(null);
+                  }}
+               />
+               <Spacing size={6} />
+            </div>
          </>)}
       </AppWrapper>
    )

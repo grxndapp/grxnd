@@ -17,6 +17,7 @@ type User = {
    oauth_provider: string;
    user_role: "user" | "admin";
    is_subscribed: boolean;
+   stripeCustomerId: string;
    createdAt: Date;
 }
 
@@ -88,4 +89,13 @@ type SubjectFolder = {
    folderId: string;
    userid: string;
    name: string;
+}
+
+type Feedback = {
+   feedbackId: string;
+   userid: string;
+   feedback: string;
+   resolved: boolean;
+   votes: number;
+   createdAt: Date;
 }

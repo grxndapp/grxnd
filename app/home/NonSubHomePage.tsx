@@ -8,6 +8,7 @@ import { SubjectIconBubble } from "@/styles-extra/styles";
 import { grxndSubscriptionLink } from "@/lib/stripe";
 import Spacing from '@/components/Spacing/Spacing';
 import Link from "next/link";
+import SubscribeButton from "@/components/SubscribeButton/SubscribeButton";
 
 export default function NonSubHomePage() {
    const router = useRouter();
@@ -65,11 +66,9 @@ export default function NonSubHomePage() {
 
             <div className="box full pd-1 dfb column gap-10">
                <div className="text-xxxs grey-5 line-height-10 full text-center">The price stays £3.99/month, if you unlock now!</div>
-               <Link className="box full" href={`${grxndSubscriptionLink}?prefilled_email=${session?.user?.email}`} target="_blank">
-                  <button className="xxs pd-12 full">
-                     <Crown size={17} /> Unlock Grxnd Pro !
-                  </button>
-               </Link>
+               <SubscribeButton>
+                  <Crown size={17} /> Unlock Grxnd Pro !
+               </SubscribeButton>
             </div>
 
             <Spacing size={7} />

@@ -382,6 +382,10 @@ button.tiny-shadow {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.096);
 }
 
+button.no-shadow {
+  box-shadow: none;
+}
+
 button:hover { scale: 1.03; }
 button:active { scale: 0.94; }
 button:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -389,6 +393,10 @@ button:disabled { opacity: 0.7; cursor: not-allowed; }
 button.green {
   background-color: #00c040;
   color: white;
+}
+
+button.accent-hover:hover {
+  background: #1322ec;
 }
 
 button.unclick { cursor: default !important; }
@@ -413,6 +421,11 @@ button.transparent {
 button.delete {
   background: #e42d2d;
   color: white;
+}
+button.accent-color-50 {
+  background: var(--accent-color-50);
+  color: black;
+  border: none;
 }
 
 button.xxxs { font-size: 0.9rem; }

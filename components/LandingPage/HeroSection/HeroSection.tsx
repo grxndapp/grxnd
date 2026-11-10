@@ -26,7 +26,7 @@ export default function HeroSection () {
             <div className="ct-actions dfb align-center justify-center gap-10 mb-3">
                {session?.user ? <>
                   <button className="xxs pd-13 pdx-3" onClick={() => router.push('/home')}>
-                     <CustomIcon url={session.user.image!} size={17} round /> Continue to App <ArrowRight size={17} />
+                     <CustomIcon url={session.user.image!} size={17} round /> Continue <ArrowRight size={17} />
                   </button>
                </> : <>
                   <button className="xxs pd-13 pdx-3" onClick={() => router.push('/sign-in')}>

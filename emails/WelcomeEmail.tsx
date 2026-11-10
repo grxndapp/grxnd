@@ -17,8 +17,8 @@ const features = [
       description: "Take notes in class without even being there (as long as you get the pdfs)."
    },
    {
-      name: "📝 AI Essay Grader",
-      description: "Get instant feedback, scores, and improvement tips for your essays."
+      name: "📝 Exam Ready Score",
+      description: "See how ready you are for your exams and get a custom study plan."
    },
    {
       name: "⚡ Other Cool Features (There are Easter Eggs)",

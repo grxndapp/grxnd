@@ -1,139 +1,108 @@
-import { getUserByEmail, manageUserSubscription } from '@/app/actions/user';
-import { plans } from '@/lib/stripe';
-import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import CancelledSubscriptionEmail from '@/emails/CancelledSubscriptionEmail';
-import WelcomeToGrxndEmail from '@/emails/WelcomeEmail';
+import { getUserFromStripeCustomerId, setUserAccessById } from '@/app/actions/billing-user';
+import { sendSubscriptionCancellationEmail, sendSubscriptionSuccessEmail } from '@/lib/sendMail';
 import Stripe from 'stripe'
-import sendMail from '@/lib/sendMail';
 
 // Use Stripe secret key from env
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const secretKey = process.env.STRIPE_SECRET_KEY!;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+if (!secretKey || !webhookSecret) {
+   throw new Error('Missing Stripe environment variables');
+}
+
+const stripe = new Stripe(secretKey);
+
+async function getStripeCustomer (customer: string | Stripe.Customer | Stripe.DeletedCustomer | null): Promise<Stripe.Customer> {
+   if (!customer) throw new Error('Event has no Stripe customer');
+   const result = typeof customer === 'string'
+      ? await stripe.customers.retrieve(customer)
+      : customer;
+
+   if (result.deleted) throw new Error(`Stripe customer ${result.id} has been deleted`);
+
+   return result;
+}
+
+async function customerHasAccess(customerId: string): Promise<boolean> {
+   const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: 'active',
+      limit: 1,
+   });
+   return subscriptions.data.length > 0;
+}
 
 export async function POST(req: Request) {
    const body = await req.text();
-   const signature = (await headers()).get('stripe-signature')!;
+   const signature = req.headers.get('stripe-signature');
 
-   let data;
-   let eventType;
+   if (!signature) {
+      return NextResponse.json({ error: 'Missing Stripe signature' }, { status: 400 });
+   }
+
    let event: Stripe.Event;
-
    // verify Stripe event is legit
    try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret) as Stripe.Event;
-   } catch (err: any) {
-      console.error(`Webhook signature verification failed. ${err.message}`);
-      return NextResponse.json({ error: err.message }, { status: 500 });
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+   } catch (error) {
+      console.error('Stripe signature verification failed', error);
+      return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
    }
-
-   data = event.data as any;
-   eventType = event.type;
 
    try {
-      if (eventType == 'checkout.session.completed') {
-         // First payment is successful and a subscription is created 
-         // ✅ Grant access to the product
-         const session = await stripe.checkout.sessions.retrieve(data.object.id, {
-            expand: ['line_items']
-         });
-         const customerId = session?.customer!;
-         const customer = await stripe.customers.retrieve(customerId as string) as Stripe.Customer;
+      let customerReference: | string | Stripe.Customer | Stripe.DeletedCustomer | null;
 
-         const priceId = session.line_items?.data[0].price?.id;
-         const plan = plans.find(p => p.priceId === priceId);
-         if (!plan) {
-            console.error("Invalid Plan - Price Id");
-            return NextResponse.json({ error: "invalid plan" }, { status: 500 })
-         }
-
-         // get user
-         if (!customer.email) {
-            console.error("No User Found");
-            return NextResponse.json({ error: "No User Found" }, { status: 500 });
-         }
-
-         const user = await getUserByEmail(customer.email);
-         if (!user) {
-            console.error("User does not exist");
-            return NextResponse.json({ error: "User does not exist" }, { status: 500 })
-         }
-
-         // give user basic permissions
-         const subscribed = await manageUserSubscription(customer.email, true);
-         if (subscribed) {
-            await sendMail(
-               customer.email, `Your Grxnd Subscription Is Active`,
-               WelcomeToGrxndEmail({ username: customer.name! })
-            );
-            console.log(`${customer.email} Subscribed to Grxnd`);
-         } else {
-            console.error("Failed to Update User Subscription");
-            return NextResponse.json({ error: "Failed to Update User Subscription" }, { status: 500 })
-         }
-
-      } else if (eventType == 'customer.subscription.deleted') {
-         // ❌ Revoke access to the product
-         const session = data.object as Stripe.Subscription;
-         const customerId = session.customer;
-         const customer = await stripe.customers.retrieve(customerId as string) as Stripe.Customer;
-
-         if (!customer.email) {
-            console.error("No User Found");
-            return NextResponse.json({ error: "No User Found" }, { status: 500 });
-         }
-
-         // get user
-         const user = await getUserByEmail(customer.email!);
-         if (!user) {
-            console.error("User does not exist");
-            return NextResponse.json({ error: "User does not exist" }, { status: 500 })
-         }
-
-         // Remove user subscription permission
-         const unsubscribed = await manageUserSubscription(user.email, false);
-         if (unsubscribed) {
-            await sendMail(
-               user.email, `Your Grxnd Subscription Has Been Cancelled`,
-               CancelledSubscriptionEmail({ username: user.name })
-            );
-            console.log(`${user.email} cancelled their subscription`);
-         } else {
-            console.error("Failed to Update User Subscription");
-            return NextResponse.json({ error: "Failed to Update User Subscription" }, { status: 500 })
-         }
-
-      } else if (eventType == 'customer.subscription.updated') {
-         const subscription = data.object as Stripe.Subscription;
-         const previousSubscription: Stripe.Subscription | undefined = data.object.previous_attributes;
-
-         const customerId = subscription.customer;
-         const customer: any = await stripe.customers.retrieve(customerId as string);
-
-         if (!customer.email) {
-            console.error("No User Found");
-            return NextResponse.json({ error: "No User Found" }, { status: 500 });
-         }
-
-         const user = await getUserByEmail(customer.email);
-         if (!user) {
-            console.error("User does not exist");
-            return NextResponse.json({ error: "User does not exist" }, { status: 500 })
-         }
-
-         if (subscription.status === 'active' && subscription.start_date !== (previousSubscription?.start_date || 0)) {
-            const subscribed = await manageUserSubscription(user.email, true);
-            if (subscribed) {
-               console.log(`${user.email} has renewed their subscription`);
-            } else {
-               console.error("Failed to Update User Subscription");
-               return NextResponse.json({ error: "Failed to Update User Subscription" }, { status: 500 })
-            }
-         }
+      if (event.type === 'checkout.session.completed') {
+         const session = event.data.object;
+         if (session.mode !== 'subscription') return NextResponse.json({ received: true, ignored: true });
+         customerReference = session.customer;
+      } else if (event.type === 'customer.subscription.deleted') {
+         const subscription = event.data.object;
+         customerReference = subscription.customer;
+      } else if (event.type === 'customer.subscription.updated') {
+         const subscription = event.data.object;
+         customerReference = subscription.customer;
+      } else {
+         return NextResponse.json({ received: true, ignored: true });
       }
-   } catch (err: any) {
-      return NextResponse.json({ error: "error" }, { status: 500 })
-   }
 
-   return new Response(JSON.stringify({}));
+      const customer = await getStripeCustomer(customerReference);
+      const user = await getUserFromStripeCustomerId(customer.id);
+      if (!user?.userid) throw new Error(`No valid user for customer ${customer.id}`);
+
+      // Use current customer-wide state, not the status of an old event.
+      const hasAccess = await customerHasAccess(customer.id);
+      const previouslyHadAccess = Boolean(user.is_subscribed);
+
+      // Always persist the calculated state.
+      // Your helper must treat "already has this value" as success.
+      const updated = await setUserAccessById(user.userid, hasAccess);
+      if (!updated) throw new Error('Failed to update user subscription access');
+
+      // These helpers catch email failures internally.
+      if (!previouslyHadAccess && hasAccess) {
+         await sendSubscriptionSuccessEmail(user as User);
+      } else if (previouslyHadAccess && !hasAccess && event.type === 'customer.subscription.deleted') {
+         await sendSubscriptionCancellationEmail(user as User);
+      }
+
+      console.info('Stripe access synchronized', {
+         eventId: event.id,
+         eventType: event.type,
+         customerId: customer.id,
+         userId: user.userid,
+         previouslyHadAccess,
+         hasAccess,
+      });
+
+      return NextResponse.json({ received: true });
+   } catch (error: unknown) {
+      console.error('Stripe webhook processing failed', {
+         eventId: event.id,
+         eventType: event.type,
+         message: error instanceof Error ? error.message : 'Unknown error',
+      });
+      return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
+   }
 }

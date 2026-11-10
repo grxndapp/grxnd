@@ -2,7 +2,8 @@
 import "./Footer.css"
 import Spacing from "@/components/Spacing/Spacing";
 import Link from "next/link";
-import { Instagram, Mail, Megaphone } from "lucide-react";
+import { Mail, Megaphone } from "lucide-react";
+import { FaInstagram } from "react-icons/fa6";
 import { CustomRawIcon } from "@/components/Icons/Icon";
 import { ReactNode } from "react";
 
@@ -59,7 +60,7 @@ export default function Footer() {
                   <FooterLink
                      link="https://www.instagram.com/grxndapp/"
                      label="Instagram"
-                     icon={<Instagram color="#ff0062" size={17} />}
+                     icon={<FaInstagram color="#ff0062" size={17} />}
                      instagram
                   />
                </div>
@@ -97,7 +98,7 @@ export default function Footer() {
                      <FooterLink
                         link="https://www.instagram.com/phillyltd/"
                         label="Instagram"
-                        icon={<Instagram color="#ff0062" size={17} />}
+                        icon={<FaInstagram color="#ff0062" size={17} />}
                         instagram
                      />
                   </div>

@@ -100,3 +100,21 @@ export const NoteMakerBackpackCardStyles : React.CSSProperties = {
    display: "flex", flexDirection: "column", alignItems: "start", justifyContent: "start",
    backgroundColor: "white", cursor: "pointer"
 }
+
+export const FeedbackCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid #f3f3f3",
+   padding: "20px 25px", borderRadius: "30px", cursor: "initial",
+   width: "100%", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)",
+}
+
+export const SavedNoteCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid #f3f3f3",
+   padding: "20px 25px", borderRadius: "30px", cursor: "initial",
+   width: "100%", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)",
+}
+
+export const NoteSectionCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid #f3f3f3",
+   padding: "20px 25px", borderRadius: "30px", cursor: "initial",
+   width: "100%", boxShadow: "none",
+}

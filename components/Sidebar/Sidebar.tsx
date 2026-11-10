@@ -1,7 +1,7 @@
 'use client'
 import "./Sidebar.css"
 import { ReactNode, useEffect, useState } from "react";
-import { House, Backpack, Home, Download, BookOpenCheck } from "lucide-react";
+import { House, Backpack, Home, Download, BookOpenCheck, MessagesCircle } from "lucide-react";
 import { GrxndLogo } from "../Icons/Icon";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -23,6 +23,11 @@ export const routes = [
       icon: <BookOpenCheck size={sidebarIconSize} strokeWidth={sidebarStrokeWidth} />,
       label: "Exam Ready Score",
       href: '/exam-ready-score'
+   },
+   {
+      icon: <MessagesCircle size={sidebarIconSize} strokeWidth={sidebarStrokeWidth} />,
+      label: "Feedback",
+      href: '/comms'
    },
 ]
 

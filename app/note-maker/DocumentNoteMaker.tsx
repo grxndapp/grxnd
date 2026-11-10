@@ -238,7 +238,7 @@ export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFol
 
       setInputFileValue(e.target.value);
       setDocumentFile(file);
-      setFileInfo({ filename: file.name.split(".")[0], fileExtension: extension.toUpperCase() });
+      setFileInfo({ filename: file.name.split(`.${extension}`)[0], fileExtension: extension.toUpperCase() });
    }
 
    const attachNewDocument = () => {
@@ -249,7 +249,7 @@ export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFol
 	function handleLoadingCreateNote () {
 		openSplash({
 			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
-			description: <>Please wait while I creating a note for you from file; <b>{fileInfo?.filename}</b>...</>,
+			description: <>Creating your note from <b>{fileInfo?.filename}</b>...</>,
 			style: "loading",
 			actions: []
 		})
@@ -333,7 +333,6 @@ export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFol
       <Spacing size={1} />
       {noteFromAI !== null ? (<>
          <NoteViewer 
-            subject={noteFromAI.subject} 
             note={noteFromAI} 
             customSubject
 				saveToSubjectFolderNew={{ folderName: saveNoteFolderName }}

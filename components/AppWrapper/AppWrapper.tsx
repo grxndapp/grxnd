@@ -36,7 +36,7 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
                   <div className="box full pd-1 mb-1">
                      <CustomIcon url={session?.user?.image! || userDefaultImage.src} size={120} round />
                   </div>
-                  <div className="text-l full dfb wrap gap-5">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+                  <div className="text-l full dfb align-center wrap gap-5">Hello, <span className="text-l bold-600 fit" style={{ wordBreak: "break-all" }}>{session?.user?.name}</span></div>
 
                   <div className="box full dfb column pd-15">
                      <div className="text-xxs grey-5 full">Your Points</div>

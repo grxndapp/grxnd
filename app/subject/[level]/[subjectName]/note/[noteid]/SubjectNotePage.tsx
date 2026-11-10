@@ -25,7 +25,7 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
    const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
    const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
 
-   const [noteName, setNoteName] = useState(note.noteName);
+   const [noteName, setNoteName] = useState(note.noteName ?? '');
 
    function handleCreateQuiz () {
       router.push(`${subjectPageUrl}/start-quiz?noteId=${encodeURIComponent(note.noteid)}`)

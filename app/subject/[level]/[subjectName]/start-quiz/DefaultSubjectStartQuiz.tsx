@@ -42,7 +42,7 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
    function handleLoadingCreateQuiz () {
       openSplash({
          title: <>Creating Quiz <CustomSpinner color="#000" size={20} /></>,
-         description: <>Please wait while I create your quiz for {titleCase(subjectLevel)} {titleCase(subject)}...</>,
+         description: <>Creating your {titleCase(subjectLevel)} {titleCase(subject)} quiz...</>,
          style: "loading",
          actions: []
       })
@@ -87,7 +87,7 @@ export default function DefaultSubjectStartQuiz ({ subjectTopics, noteSelected, 
             <div className="box full pd-1 dfb align-center gap-10">
                <button 
                   className="xxxs pd-13 pdx-15 outline-black no-shadow radius-40"
-                  onClick={() => router.push(subjectPageUrl)}
+                  onClick={() => router.push(noteSelected ? `${subjectPageUrl}/note/${noteSelected.noteid}` : subjectPageUrl)}
                >
                   <ArrowLeft size={16} />
                </button>

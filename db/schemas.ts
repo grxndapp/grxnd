@@ -8,8 +8,24 @@ export const usersTable = pgTable("users", {
    password: text("password"),
    oauth_provider: text("oauth_provider"),
    user_role: text("user_role"),
+   stripeCustomerId: text("stripe_customer_id"),
    is_subscribed: boolean("is_subscribed"),
    createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userSurveyTable = pgTable("user_surveys", {
+   id: serial("id").primaryKey(),
+   userid: text("userid").notNull(),
+   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const feedbackTable = pgTable("feedback", {
+   feedbackId: uuid("feedback_id").defaultRandom().primaryKey(),
+   userid: text("userid").notNull(),
+   feedback: text("feedback").notNull(),
+   votes: integer("votes").default(0),
+   resolved: boolean("resolved").default(false),
+   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const quizzesTable = pgTable("quizzes", {

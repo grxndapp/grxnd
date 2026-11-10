@@ -23,7 +23,7 @@
     "groq-sdk": "^1.6.0",
     "html2canvas": "^1.4.1",
     "katex": "^0.19.0",
-    "lucide-react": "^0.543.0",
+    "lucide-react": "^1.71.0",
     "mdast": "^2.3.2",
     "neon": "^2.0.0",
     "next": "^16.4.2",

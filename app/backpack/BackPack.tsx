@@ -10,7 +10,6 @@ import { NotebookPen, Plus } from "lucide-react";
 import { NoteMakerBackpackCardStyles } from "@/styles-extra/styles";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import MultiActionDropdown from "@/components/MultiActionDropdown/MultiActionDropdown";
 
 type BackPackPageProps = {
    quizzes: QuizT[];
@@ -79,9 +78,9 @@ export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
             <div className="box full pd-05 dfb column">
                <div className="text-xl bold-700 full">Your Backpack</div>
                <div className="text-xxs grey-5 full">
-                  {quizzes.length > 1
+                  {(quizzes.length + notes.length) > 1
                      ? 'Your notes, quizzes, everything you need, right here...'
-                     : `Hey ${user?.name}, you haven't learnt or tested yourself. Let's change that!`
+                     : `Hey ${user?.name ?? 'there'}, you haven't learnt or tested yourself. Let's change that!`
                   }
                </div>
             </div>
@@ -92,7 +91,7 @@ export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                />
                <button 
-                  className="xxs pd-15 pdx-2 fit whitespace-nowrap radius-20"
+                  className="xxs pd-14 pdx-2 fit whitespace-nowrap radius-20"
                   onClick={() => router.push("/note-maker")}
                >
                   <Plus size={19} /> <span className="hide-on-mobile">Add Subject</span>

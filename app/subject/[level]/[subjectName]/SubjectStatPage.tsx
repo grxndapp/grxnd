@@ -55,27 +55,37 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
             <div className="text-xxs fit visible-link accent-color" onClick={() => router.push('/backpack')}>Backpack</div>
             <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</div>
 
-            {quizzes.length > 0 && (
-               <div className="box full dfb column gap-10">
+            <div className="box full dfb column gap-10">
+               {quizzes.length > 0 ? (
                   <div className="box full">
                      <div className="text-xs full text-left">
                         <b style={{ color: subjectColor }}>{Math.round(averagePercentage)}%</b> Average Score
                      </div>
-                     <div className="text-xxs fit text-left">You have taken {newQuizArray.length} {subjectLevel.toLowerCase()} {subject.toLowerCase()} quizzes</div>
+                     <div className="text-xxs fit text-left">
+                        You have taken {newQuizArray.length} {subjectLevel.toLowerCase()} {subject.toLowerCase()} {pluralSuffixer('quiz',newQuizArray.length,'zes')}
+                     </div>
                   </div>
-                  <div className="box full pd-1 dfb wrap gap-10">
-                     <button className="xxs pd-2 full mw-300" style={{ background: subjectColor }} onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}>
-                        <NotebookPen size={17} />Take A Quiz
-                     </button>
-                     <button className="xxs pd-2 full mw-300 outline-black tiny-shadow" onClick={() => router.push(`${subjectPageUrl}/make-note`)}>
-                        <Notebook size={17} /> New Note
-                     </button>
+               ) : (
+                  <div className="box full">
+                     <div className="text-xs full text-left">
+                        You haven't done a quiz yet. Test yourself!
+                     </div>
                   </div>
+               )}
+               <div className="box full pd-1 dfb wrap gap-10">
+                  <button className="xxs pd-2 full mw-300" style={{ background: subjectColor }} onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}>
+                     <NotebookPen size={17} />Take A Quiz
+                  </button>
+                  <button className="xxs pd-2 full mw-300 outline-black tiny-shadow" onClick={() => router.push(`${subjectPageUrl}/make-note`)}>
+                     <Notebook size={17} /> New Note
+                  </button>
+               </div>
+               {quizzes.length > 0 && (
                   <div className="text-xxs fit visible-link accent-color" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
                      View your saved quizzes
                   </div>
-               </div>
-            )}
+               )}
+            </div>
             <Spacing size={2} />
 
             <DisplaySubjectNotes
@@ -201,12 +211,16 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
                         {isDefaultSubject ? cloneElement(SubjectIcon, { size: 25 }) : <GraduationCap size={25} />}
                      </div>
                      <div 
-                        className="backpack-subject-note-item-info"
-                        onClick={() => router.push(`${subjectPageUrl}/note/${note.noteid}`)}
+                        className="backpack-subject-note-item-info-actions"
                      >
-                        <div className="text-xs bold-600 full">{note.noteName ?? JSON.parse(note.noteJson).title}</div>
-                        <div className="text-xxxs grey-5 full">
-                           {formatMilliseconds(new Date(note.createdAt).getTime(), true)}
+                        <div className="backpack-subject-note-item-info" onClick={() => router.push(`${subjectPageUrl}/note/${note.noteid}`)}>
+                           <div className="text-xs bold-600 full">{note.noteName ?? JSON.parse(note.noteJson).title}</div>
+                           <div className="text-xxxs grey-5 full">
+                              {formatMilliseconds(new Date(note.createdAt).getTime(), true)}
+                           </div>
+                        </div>
+                        <div className="backpack-subject-note-item-actions" onClick={() => router.push(`${subjectPageUrl}/start-quiz?noteid=${note.noteid}`)}>
+                           <button className="xxxs pd-11 pdx-2 radius-20 accent-color-50 whitespace-nowrap">Practice Now!</button>
                         </div>
                      </div>
                   </div>

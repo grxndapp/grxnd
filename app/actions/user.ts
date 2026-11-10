@@ -1,7 +1,7 @@
 "use server"
 import { dalDbOperation, dalRequireAdminAuth, dalRequireAuth } from "@/dal/helpers";
 import { db } from "@/db";
-import { forgotPasswordTable, notesTable, quizzesTable, savedQuizzesTable, scoresTable, subjectFoldersTable, usersTable } from "@/db/schemas";
+import { feedbackTable, forgotPasswordTable, notesTable, quizzesTable, scoresTable, subjectFoldersTable, usersTable } from "@/db/schemas";
 import { authOptions } from "@/lib/authOptions"
 import { hashPwd, uuid } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
@@ -11,6 +11,11 @@ import WelcomeToGrxndEmail from "@/emails/WelcomeEmail";
 import sendMail from "@/lib/sendMail";
 import SuccessResetPasswordEmail from "@/emails/SuccessResetPasswordEmail";
 import FreeSubscriptionTestEmail from "@/emails/FreeSubscriptionTestEmail";
+import Stripe from "stripe";
+import CreateAccountWelcomeEmail from "@/emails/CreateAccountWelcome";
+
+// Use Stripe secret key from env
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function getCurrentUser (): Promise<User | null> {
    try {
@@ -21,7 +26,7 @@ export async function getCurrentUser (): Promise<User | null> {
 
       const [user] = await db.select().from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
       
-      return (user ?? null) as any;
+      return (user as User ?? null) as any;
    } catch (err) {
       return null;
    }
@@ -42,7 +47,7 @@ export async function getUserClient (): Promise<ClientUser | null> {
          is_subscribed: usersTable.is_subscribed,
       }).from(usersTable).where(eq(usersTable.email, session.user.email!)).limit(1);
       
-      return (user ?? null) as any;
+      return (user || null) as any;
    } catch (err) {
       return null;
    }
@@ -119,9 +124,19 @@ export async function sendUserForgotPasswordEmail (email: string): Promise<boole
    }
 }
 
-export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt' | 'id' | 'oauth_provider' | 'user_role' | 'is_subscribed'>) {
+export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt' | 'id' | 'oauth_provider' | 'user_role' | 'is_subscribed' | 'stripeCustomerId'>) {
    try {
       const userid = uuid();
+      const customer = await stripe.customers.create({
+         email: user.email,
+         name: user.name,
+      });
+
+      if (!customer) {
+         console.error("Failed to create stripe customer")
+         return false;
+      }
+
       const res = await db.insert(usersTable).values({
          userid,
          name: user.name,
@@ -129,16 +144,51 @@ export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt'
          password: hashPwd(user.password),
          oauth_provider: "nv-credentials",
          user_role: "user",
+         stripeCustomerId: customer.id,
          is_subscribed: false
       });
       const res2 = await db.insert(scoresTable).values({ userid, score: 0 });
 
       if (res.rowCount == 1 && res2.rowCount == 1) {
-         await sendMail(user.email, "Welcome to Grxnd", WelcomeToGrxndEmail({ username: user.name }))
+         await sendMail(user.email, "Welcome to Grxnd", CreateAccountWelcomeEmail({ username: user.name }))
       }
 
       return (res.rowCount == 1 && res2.rowCount == 1);
    } catch (e) {
+      console.log("Failed to create user from credentials ");
+      console.error(e);
+      return false;
+   }
+}
+
+export async function createUserAccountFromGoogleAuth (user: { email: string, name: string }) {
+   try {
+      const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, user.email!)).limit(1);
+      if (existingUser.length < 1) {
+         const userid = uuid();
+         const customer = await stripe.customers.create({
+            email: user.email, name: user.name,
+         });
+   
+         if (!customer) {
+            console.error("Failed to create stripe customer")
+            return false;
+         }
+         await db.insert(usersTable).values({
+            userid,
+            name: user.name,
+            email: user.email?.toLowerCase(),
+            oauth_provider: "google",
+            password: hashPwd(`${user.name}${user.email}${Date.now()}`),
+            user_role: "user",
+            is_subscribed: false
+         });
+         await db.insert(scoresTable).values({ userid, score: 0 })
+      }
+      return true;
+   } catch (e) {
+      console.log("Failed to create user from google");
+      console.error(e);
       return false;
    }
 }
@@ -190,11 +240,9 @@ export async function resetUserPassword (forgotPasswordCode: string, userid: str
 
 export async function deleteUserAccount () {
    try {
-      const user = await getCurrentUser();
-      if (user == null) return false;
-      
-      const res = await dalRequireAuth(user => 
+      const res = await dalRequireAuth(usr => 
          dalDbOperation(async () => {
+            const user = usr;
             const result = await db.delete(usersTable)
                .where(
                   and(
@@ -211,8 +259,13 @@ export async function deleteUserAccount () {
 
             await db.delete(quizzesTable).where(eq(quizzesTable.userid, user.userid!))
             await db.delete(notesTable).where(eq(notesTable.userid, user.userid!))
+            await db.delete(feedbackTable).where(eq(feedbackTable.userid, user.userid!))
             await db.delete(subjectFoldersTable).where(eq(subjectFoldersTable.userid, user.userid!))
             await db.delete(forgotPasswordTable).where(eq(forgotPasswordTable.userid, user.userid!))
+
+            if (user.stripeCustomerId) {
+               await stripe.customers.del(user.stripeCustomerId);
+            }
 
             return (result.rowCount === 1 && result2.rowCount === 1);
          })

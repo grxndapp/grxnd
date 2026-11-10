@@ -167,12 +167,12 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 
 	const fullSubjectInfo = fullSubjectBreakDown(subjectFullName);
 	const isDefaultSubject = isAmongstDefaultSubjects(`${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`)
-	const topicChoices = retrieveSubjectTopic(fullSubjectInfo.subjectLevel, fullSubjectInfo.subject); 
+	const topicChoices = retrieveSubjectTopic(fullSubjectInfo.subjectLevel, fullSubjectInfo.subject);
 
 	function handleLoadingCreateNote () {
 		openSplash({
 			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
-			description: <>Please wait while I creating a note for you about <b>{subjectFullName} {topicSelected}</b>...</>,
+			description: <>Creating your <b>{subjectFullName} {topicSelected}</b> note...</>,
 			style: "loading",
 			actions: []
 		})
@@ -216,13 +216,11 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 
       {(noteFromAI !== null) && (<>
          <NoteViewer 
-				subject={fullSubjectInfo.subject} 
-				note={noteFromAI}
-				saveToSubjectFolder={{
-					folderName: isDefaultSubject 
-						? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim()
-						: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`.trim()
-				}}
+            subject={isDefaultSubject ? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim() : ''} 
+            note={noteFromAI}
+            customSubject={!isDefaultSubject}
+				saveToDefaultFolder
+				saveToSubjectFolder={isDefaultSubject ? undefined : { folderName: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`.trim() }}
 			/>
          <Spacing size={4} />
       </>)}

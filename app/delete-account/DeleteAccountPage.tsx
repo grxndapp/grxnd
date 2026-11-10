@@ -38,7 +38,7 @@ export default function DeleteAccountPage () {
          <Spacing size={1} />
 
          <div className="box full dfb column gap-10 align-center">
-            <button className="xxs full mw-500 pd-11 tiny-shadow" onClick={() => router.push('/home')}>
+            <button className="xxs full mw-500 pd-11 tiny-shadow" onClick={() => router.push('/settings')}>
                <CircleX size={17} /> Cancel
             </button>
 

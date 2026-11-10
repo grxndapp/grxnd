@@ -629,21 +629,6 @@ export const subjectIcon: Record<string, JSX.Element> = {
 	"Administration": <Lock size={20} />,
 }
 
-export function customSubjectToPastelColor (str: string): string {
-	let hash = 0;
-
-	for (let i = 0; i < str.length; i++) {
-		hash = str.charCodeAt(i) + ((hash << 5) - hash);
-		hash |= 0;
-	}
-
-	const hue = (hash >>> 0) % 360;
-	const saturation = 65 + ((hash >>> 8) % 16); // 65–80%
-	const lightness = 82 + ((hash >>> 16) % 9);  // 82–90%
-
-	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
-
 
 function hslToHex(h: number, s: number, l: number): string {
 	s /= 100;
@@ -667,17 +652,58 @@ function hslToHex(h: number, s: number, l: number): string {
 }
 
 
-export function customSubjectToBoldColor (str: string): string {
-	let hash = 0;
+function getSubjectColor(str: string) {
+   let hash = 0;
 
-	for (let i = 0; i < str.length; i++) {
-		hash = str.charCodeAt(i) + ((hash << 5) - hash);
-		hash |= 0;
-	}
+   for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      hash |= 0;
+   }
 
-	const hue = (hash >>> 0) % 360;
-	const saturation = 85 + ((hash >>> 8) % 16); // 85–100%
-	const lightness = 35 + ((hash >>> 16) % 16); // 35–50%
+   return {
+      hue: (hash >>> 0) % 360,
+      saturation: 85 + ((hash >>> 8) % 16),
+      lightness: 35 + ((hash >>> 16) % 16),
+   };
+}
 
-	return hslToHex(hue, saturation, lightness);
+function contrastAgainstWhite(hex: string): number {
+   const rgb = [
+      parseInt(hex.slice(1, 3), 16),
+      parseInt(hex.slice(3, 5), 16),
+      parseInt(hex.slice(5, 7), 16),
+   ];
+
+   const [r, g, b] = rgb.map(channel => {
+      const value = channel / 255;
+
+      return value <= 0.04045
+         ? value / 12.92
+         : ((value + 0.055) / 1.055) ** 2.4;
+   });
+
+   const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+   return 1.05 / (luminance + 0.05);
+}
+
+export function customSubjectToBoldColor(str: string): string {
+   const { hue, saturation, lightness } = getSubjectColor(str);
+
+   // Check the actual output colour, including HEX rounding.
+   for (let light = lightness; light >= 0; light--) {
+      const color = hslToHex(hue, saturation, light);
+
+      if (contrastAgainstWhite(color) >= 4.5) {
+         return color;
+      }
+   }
+
+   return "#000000";
+}
+
+export function customSubjectToPastelColor(str: string): string {
+   const { hue, saturation } = getSubjectColor(str);
+
+   return hslToHex(hue, saturation, 88);
 }

@@ -33,14 +33,13 @@ export default async function PricingPage () {
             <div className="box pd-2 pdx-2 full dfb align-center justify-center gap-30 wrap">
                <Card styles={pricingCardStyles}>
                   <div className="text-s bold-500 full mb-05">Standard</div>
-                  <div className="text-xl bold-800 full">£2.99</div>
+                  <div className="text-xl bold-800 full">£3.99</div>
                   <div className="text-xxxs grey-5 full mb-15">per month</div>
-                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> AI Timetable Maker</div>
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> AI Notes Generator</div>
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> AI Quiz Builder</div>
-                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> AI Essay Grader</div>
-                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> AI Essay Writer</div>
-                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Collaborative Quizzes</div>
+                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Exam Ready Score</div>
+                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Fast Learning Tool</div>
+                  <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Cash Giveaways Every Week</div>
                   <div className="text-xxs full dfb align-center gap-5 pd-1"><Check size={16} color="#1121ff" /> Global Leaderboard Access</div>
                   <br />
                   {session?.user ? (

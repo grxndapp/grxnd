@@ -99,14 +99,8 @@ export default function FeedbackPage () {
             </div>
 
             <div className="box full dfb align-center justify-center">
-               <Link 
-                  className="box fit mb-2"
-                  href={`mailto:grxndapp@gmail.com`} target='_blank'   
-               >
-                  <button className="xxs pd-12 pdx-3" onClick={() => router.push("/sign-in")}>
-                     <Mail size={20} />
-                     Mail Us !
-                  </button>
+               <Link className="box fit mb-2" href={`mailto:grxndapp@gmail.com`} target='_blank'>
+                  <button className="xxs pd-12 pdx-3"><Mail size={20} /> Mail Us !</button>
                </Link>
             </div>
          </div>

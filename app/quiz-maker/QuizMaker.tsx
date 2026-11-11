@@ -95,7 +95,7 @@ export default function QuizMakerPage () {
    const [topic, setTopic] = useState<string>('');
    const [numQuestions, setNumQuestions] = useState<string>('5');
    const [canGenerateQuiz, setCanGenerateQuiz] = useState<boolean>(false);
-   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(quiz);
+   const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
    const [detailedTopic, setDetailedTopic] = useState('');
    const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 

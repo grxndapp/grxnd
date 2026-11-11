@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, CheckCircle, Edit3, FileText, HelpCircle, Trophy, Users } from 'lucide-react';
+import { BicepsFlexed, Calendar, CheckCircle, FileText, HelpCircle, Trophy, Wand } from 'lucide-react';
 
 const tagSize = 15
 const tagStrokeWidth = 3
@@ -10,8 +10,8 @@ const tags = [
    <><FileText size={tagSize} color="#4CAF50" strokeWidth={tagStrokeWidth} /> AI Notes in Seconds</>,
    <><HelpCircle size={tagSize} color="#FFB400" strokeWidth={tagStrokeWidth} /> Smart AI Quiz Maker</>,
    <><CheckCircle size={tagSize} color="#00BFA6" strokeWidth={tagStrokeWidth} /> Instant Essay Grading</>,
-   <><Edit3 size={tagSize} color="#FF69B4" strokeWidth={tagStrokeWidth} /> AI-Powered Human-Like Essays</>,
-   <><Users size={tagSize} color="#9C27B0" strokeWidth={tagStrokeWidth} /> Collaborative Quizzes with Friends</>,
+   <><Wand size={tagSize} color="#FF69B4" strokeWidth={tagStrokeWidth} /> Magic Study Tool</>,
+   <><BicepsFlexed size={tagSize} color="#9C27B0" strokeWidth={tagStrokeWidth} /> Challenge your self</>,
    <><Trophy size={tagSize} color="#FF6B6B" strokeWidth={tagStrokeWidth} /> Compete on the Global Leaderboard</>,
 ];
 

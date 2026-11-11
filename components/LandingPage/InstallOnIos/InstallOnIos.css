@@ -1,36 +1,21 @@
-.ios-install {
+.install-app {
    width: 100%;
+   min-height: 55vh;
    display: flex;
+   height: fit-content;
    align-items: center;
    justify-content: center;
    background-color: white;
    padding: 40px 0;
 }
 
-.ios-install .ios-install-wrapper {
+.install-app .install-wrapper {
    width: 100%;
    max-width: 1200px;
    padding: 20px;
-}
-
-.ios-install .ios-install-wrapper .install-cards {
-   width: 100%;
+   height: 100%;
    display: flex;
+   flex-direction: column;
    align-items: center;
    justify-content: center;
-   flex-wrap: wrap;
-   gap: 20px;
-}
-
-.ios-install .ios-install-wrapper .install-cards .card .install-card-image {
-   width: 100%;
-   border-radius: 15px;
-}
-
-.ios-install .ios-install-wrapper .install-cards .card .install-card-image img {
-   width: 100%;
-   object-fit: contain;
-   object-position: center;
-   border-radius: 15px;
-   -webkit-user-drag: none;
 }

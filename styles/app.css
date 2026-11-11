@@ -183,13 +183,13 @@ button.apple-special {
    width: 100%;
    height: fit-content;
    background-color: white;
-   border: 1px solid #ececec;
+   border: 1px solid var(--accent-color-10);
    display: flex;
    align-items: center;
    justify-content: center;
    gap: 10px;
    border-radius: 20px;
-   padding: 20px;
+   padding: 25px;
    cursor: pointer;
    box-shadow: rgba(33, 35, 38, 0.1) 0px 8px 10px -10px;
 }
@@ -253,3 +253,4 @@ button.apple-special {
       display: none;
    }
 }
+

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { CustomRawIcon } from "@/components/Icons/Icon";
 import { CustomIconUrls } from "@/lib/icons";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
+import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
+import { toast } from "sonner";
 
 type HomePageProps = {
    quizzes: QuizT[];
@@ -15,6 +17,18 @@ type HomePageProps = {
 export default function HomePage ({ quizzes, notes, welcomeString }: HomePageProps) {
    const router = useRouter();
    const { data: session } = useSession();
+   const { openSplash } = useSplashScreen();
+
+   function tresst () {
+      openSplash({
+         style: "normal",
+         title: "Hey",
+         description: "vicksstar",
+         actions: [
+            { label: "hello", action: () => toast("hello"), appearance: "normal" }
+         ]
+      })
+   }
 
    return (
       <AppWrapper>

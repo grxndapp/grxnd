@@ -1,0 +1,41 @@
+.study-method-card {
+   width: 100%;
+   max-width: 320px;
+   border-radius: 23px;
+   border: 1px solid var(--accent-color-10);
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+   padding: 20px;
+   cursor: pointer;
+   user-select: none;
+   background: linear-gradient(150deg, #ffffff, #f4f8ff);
+   backdrop-filter: blur(20px);
+   box-shadow: rgba(0, 10, 155, 0.08) 0px 4px 8px;
+}
+
+.study-method-card:hover {
+   background: linear-gradient(150deg, #eff3ff, #f4f8ff);
+   scale: 1.02;
+}
+
+.study-method-card:active {
+   background: linear-gradient(150deg, #e4e4ff, #d8d8ff);
+   scale: 0.99;
+}
+
+.study-method-card .study-method-icon {
+   width: fit-content;
+   aspect-ratio: 1;
+   padding: 7px;
+   border-radius: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: #d0deff;
+}
+
+.study-method-card .study-method-name {
+   width: 100%;
+   font-weight: 700;
+}

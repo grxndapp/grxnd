@@ -1,7 +1,7 @@
 'use client'
 import { pluralSuffixer, titleCase } from "@/lib/str"
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects"
-import { Check, GraduationCap, Notebook, NotebookPen, Trash2 } from "lucide-react"
+import { Check, GraduationCap, Lightbulb, Notebook, NotebookPen, Trash2, Zap } from "lucide-react"
 import { cloneElement, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getSubjectPageUrl } from "./helper"
@@ -11,6 +11,8 @@ import { DeleteNotes } from "@/modal-forms/DeleteNote"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
 import RenameNote from "@/modal-forms/RenameNote"
+import { FillInTheBlankIllustration, FlashcardsIllustration, NotesIllustration, QuizIllustration, SixtySevenIllustration, StudyPlanIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons"
+import StudyMethodCard from "@/components/StudyMethodCard/StudyMethodCard"
 
 type SubjectStatPageProps = {
    quizzes: QuizT[];
@@ -48,6 +50,7 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
    const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
    const subjectPastelColor = subjectLevel ? subjectPastelBgColors[titleCase(subject)] : customSubjectToPastelColor(titleCase(subject));
    const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
+   const studyMethodIconSize = 26;
 
    return (
       <AppWrapper contentRef={contentRef}>
@@ -61,30 +64,60 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                      <div className="text-xs full text-left">
                         <b style={{ color: subjectColor }}>{Math.round(averagePercentage)}%</b> Average Score
                      </div>
-                     <div className="text-xxs fit text-left">
+                     <div className="text-xs fit text-left">
                         You have taken {newQuizArray.length} {subjectLevel.toLowerCase()} {subject.toLowerCase()} {pluralSuffixer('quiz',newQuizArray.length,'zes')}
+                     </div>
+                     <div className="text-xs fit visible-link accent-color mt-1" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
+                        View your saved quizzes
                      </div>
                   </div>
                ) : (
                   <div className="box full">
-                     <div className="text-xs full text-left">
-                        You haven't done a quiz yet. Test yourself!
-                     </div>
+                     <div className="text-xs full text-left">You haven't done a quiz yet. Test yourself!</div>
                   </div>
                )}
-               <div className="box full pd-1 dfb wrap gap-10">
-                  <button className="xxs pd-2 full mw-300" style={{ background: subjectColor }} onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}>
-                     <NotebookPen size={17} />Take A Quiz
-                  </button>
-                  <button className="xxs pd-2 full mw-300 outline-black tiny-shadow" onClick={() => router.push(`${subjectPageUrl}/make-note`)}>
-                     <Notebook size={17} /> New Note
-                  </button>
+
+               <Spacing />
+               <div className="box full dfb column gap-5">
+                  <div className="text-l bold-700 full no-trans" style={{ color: subjectColor }}>Study Methods</div>
+                  <div className="text-xs">Explore different ways you can study <b style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</b></div>
+                  <div className="box full pd-15 dfb wrap gap-10">
+                     <StudyMethodCard
+                        icon={<QuizIllustration size={studyMethodIconSize} />}
+                        onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}
+                        title="Take A Quiz"
+                     />
+                     <StudyMethodCard
+                        icon={<NotesIllustration size={studyMethodIconSize} />}
+                        onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+                        title="New Note"
+                     />
+                     <StudyMethodCard
+                        icon={<StudyPlanIllustration size={studyMethodIconSize} />}
+                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+                        title="Make Study Plan"
+                        description="Coming Soon"
+                     />
+                     <StudyMethodCard
+                        icon={<FlashcardsIllustration size={studyMethodIconSize} />}
+                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+                        title="Quick Learn"
+                        description="Coming Soon"
+                     />
+                     <StudyMethodCard
+                        icon={<FillInTheBlankIllustration size={studyMethodIconSize} />}
+                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+                        title="Fill in the Blank"
+                        description="Coming Soon"
+                     />
+                     <StudyMethodCard
+                        icon={<SixtySevenIllustration width={studyMethodIconSize} height={studyMethodIconSize} size={studyMethodIconSize} />}
+                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+                        title="67 Way"
+                        description="Coming Soon"
+                     />
+                  </div>
                </div>
-               {quizzes.length > 0 && (
-                  <div className="text-xxs fit visible-link accent-color" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
-                     View your saved quizzes
-                  </div>
-               )}
             </div>
             <Spacing size={2} />
 
@@ -99,7 +132,6 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
       </AppWrapper>
    )
 }
-
 
 type DisplaySubjectNotesProps = {
    notes: Note[];
@@ -161,8 +193,8 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
    }
 
    return (
-      <div className="box full">
-         <div className="text-l bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>Notes</div>
+      <div className="box full no-select">
+         <div className="text-l bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>Your Notes</div>
          <div className="box full dfb align-center gap-10 pd-1">
             <input 
                type="text" className="xxs pd-13 pdx-2 radius-20 full mw-600" placeholder="Search Notes..."

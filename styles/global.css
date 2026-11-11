@@ -427,6 +427,21 @@ button.accent-color-50 {
   color: black;
   border: none;
 }
+button.pastel-pink {
+  background: #ffb6b6;
+  color: black;
+  border: none;
+}
+button.pastel-orange {
+  background: #ffc290;
+  color: black;
+  border: none;
+}
+button.pastel-cyan {
+  background: #c0f1ff;
+  color: black;
+  border: none;
+}
 
 button.xxxs { font-size: 0.9rem; }
 button.xxs { font-size: 1rem; }
@@ -449,7 +464,7 @@ button.xxxb { font-size: 3.85rem; }
 input {
   width: fit-content;
   padding: 8px 12px;
-  border: 1px solid #d3d3d3;
+  border: 1px solid var(--accent-color-30);
   border-radius: 14px;
   outline: none;
 }

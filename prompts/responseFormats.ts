@@ -121,5 +121,55 @@ export const ResponseFormats = {
             additionalProperties: false
          }
       }
+   },
+   FillInTheBlankMaker: {
+      type: "json_schema",
+      json_schema: {
+         name: "fill_in_the_blank_response",
+         strict: true,
+         schema: {
+            type: "object",
+            properties: {
+               questions: {
+                  type: "array",
+                  minItems: 1,
+                  items: {
+                     type: "object",
+                     properties: {
+                        sentences: {
+                           type: "array",
+                           description:
+                              "Ordered text segments surrounding the blanks. Must contain exactly one more item than missingWords. Use an empty string for the first or last segment if the sentence starts or ends with a blank.",
+                           items: { type: "string" },
+                           minItems: 2,
+                           maxItems: 6
+                        },
+                        missingWords: {
+                           type: "array",
+                           description:
+                              "Correct answers in the exact order the blanks appear. Each answer is a word or short phrase. Prefer one single-word blank per question.",
+                           items: {
+                              type: "string",
+                              minLength: 1
+                           },
+                           minItems: 1,
+                           maxItems: 5
+                        },
+                        hint: {
+                           type: "string",
+                           description:
+                              "A short, relevant clue that guides the learner without revealing any missing answer.",
+                           minLength: 1
+                        }
+                     },
+                     required: ["sentences", "missingWords", "hint"],
+                     additionalProperties: false
+                  }
+               }
+            },
+            required: ["questions"],
+            additionalProperties: false
+         }
+      }
    }
 }

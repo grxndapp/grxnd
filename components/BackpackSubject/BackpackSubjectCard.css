@@ -10,6 +10,7 @@
    border-radius: 20px;
    background: #ffffff;
    border: 1px solid var(--accent-color-10);
+   user-select: none;
 }
 
 .backpack-subject-item:hover {

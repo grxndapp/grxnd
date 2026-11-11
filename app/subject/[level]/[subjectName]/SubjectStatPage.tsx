@@ -1,17 +1,17 @@
 'use client'
 import { pluralSuffixer, titleCase } from "@/lib/str"
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects"
-import { Check, GraduationCap, Lightbulb, Notebook, NotebookPen, Trash2, Zap } from "lucide-react"
+import { Check, GraduationCap, NotebookPen, Trash2 } from "lucide-react"
 import { cloneElement, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getSubjectPageUrl } from "./helper"
 import { formatMilliseconds } from "@/utils/date"
 import { useModal } from "@/components/Modal/ModalContext"
 import { DeleteNotes } from "@/modal-forms/DeleteNote"
+import { FillInTheBlankIllustration, FlashcardsIllustration, NotesIllustration, QuizIllustration, SixtySevenIllustration, StudyPlanIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
 import RenameNote from "@/modal-forms/RenameNote"
-import { FillInTheBlankIllustration, FlashcardsIllustration, NotesIllustration, QuizIllustration, SixtySevenIllustration, StudyPlanIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons"
 import StudyMethodCard from "@/components/StudyMethodCard/StudyMethodCard"
 
 type SubjectStatPageProps = {
@@ -86,35 +86,37 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                         icon={<QuizIllustration size={studyMethodIconSize} />}
                         onClick={() => router.push(`${subjectPageUrl}/start-quiz`)}
                         title="Take A Quiz"
+                        description="Good for practising and gaining points"
                      />
                      <StudyMethodCard
                         icon={<NotesIllustration size={studyMethodIconSize} />}
                         onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="New Note"
+                        description="Helps you make structured notes on big files and topics"
+                     />
+                     <StudyMethodCard
+                        icon={<FillInTheBlankIllustration size={studyMethodIconSize} />}
+                        onClick={() => router.push(`${subjectPageUrl}/fill-in-the-blank`)}
+                        title="Fill in the Blank"
+                        description="Perfect for theory and understanding"
                      />
                      <StudyMethodCard
                         icon={<StudyPlanIllustration size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="Make Study Plan"
-                        description="Coming Soon"
+                        description="Coming Soon. Helps you plan your time for studying toward a certain date"
                      />
                      <StudyMethodCard
                         icon={<FlashcardsIllustration size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="Quick Learn"
-                        description="Coming Soon"
-                     />
-                     <StudyMethodCard
-                        icon={<FillInTheBlankIllustration size={studyMethodIconSize} />}
-                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
-                        title="Fill in the Blank"
-                        description="Coming Soon"
+                        description="Coming Soon. Learn a topic very fast with fast (flash) cards"
                      />
                      <StudyMethodCard
                         icon={<SixtySevenIllustration width={studyMethodIconSize} height={studyMethodIconSize} size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="67 Way"
-                        description="Coming Soon"
+                        description="Coming Soon. Secret Sauce Geniuses use"
                      />
                   </div>
                </div>

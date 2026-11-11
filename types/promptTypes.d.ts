@@ -54,3 +54,9 @@ type ImposterGame = {
    word: string;
    hint: string;
 }
+
+type FillInTheBlank = {
+   sentences: string[];
+   missingWords: string[];
+   hint: string;
+}[]

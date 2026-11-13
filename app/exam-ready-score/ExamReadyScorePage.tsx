@@ -289,7 +289,7 @@ export default function ExamReadyScorePage ({ quizzes }: { quizzes: SavedQuiz[] 
                   <div className="box full dfb justify-start no-drag"><CustomIcon url={ExamReadyScoreIcon.src} size={100} /></div>
                </div>
                <div className="box full pd-1 dfb column gap-10">
-                  <div className="text-xxxl bold-700 full accent-color line-height-11">Exam Ready Score</div>
+                  <div className="text-xxxl bold-700 full accent-color-gradient-dark-text line-height-11">Exam Ready Score</div>
                </div>
                <div className="text-s full">See if you are ready for your exams</div>
                <Spacing size={1} />

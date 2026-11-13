@@ -38,7 +38,7 @@ export default function SubjectStartQuiz ({ notes, noteSelected, subject, subjec
    function handleLoadingCreateQuiz () {
       openSplash({
          title: <>Creating Quiz</>,
-         description: `Creating your ${titleCase(subjectLevel)} ${titleCase(subject)} quiz...`,
+         description: <>Creating your <b>{titleCase(subjectLevel)} {titleCase(subject)} {JSON.parse(quizNoteSelected?.noteJson!).title}</b> quiz...</>,
          style: "quiz",
          actions: []
       })

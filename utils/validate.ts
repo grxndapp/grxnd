@@ -15,3 +15,28 @@ export function normalizeText(text: string): string {
       .replace(/\n{3,}/g, "\n")
       .trim();
 }
+
+const FORBIDDEN = /\\(begin|end|hline|cline|multicolumn)\b/;
+
+function isValidCard(card: Flashcard) {
+   const { question, answer } = card;
+
+   return [question, answer].every((text) => {
+      if (!text || !text.trim()) return false;
+      if (FORBIDDEN.test(text)) return false;
+      if (text.startsWith("\n") || text.endsWith("\n")) return false;
+      if (text.includes("\n\n\n")) return false;
+
+      // Dollar signs must pair up (ignoring escaped \$)
+      const dollars = text.replace(/\\\$/g, "").match(/\$/g) || [];
+      return dollars.length % 2 === 0;
+   }) && !question.includes("$$");
+}
+
+function isValidFlashcardSet(data: { flashcards: Flashcard[] }) {
+   return (
+      Array.isArray(data.flashcards) &&
+      data.flashcards.length === 20 &&
+      data.flashcards.every(isValidCard)
+   );
+}

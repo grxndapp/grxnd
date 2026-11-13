@@ -416,5 +416,33 @@ export const ResponseFormats = {
             additionalProperties: false
          }
       }
+   },
+   FlashcardMaker: {
+      type: "json_schema",
+      json_schema: {
+         name: "flashcards_response",
+         strict: true,
+         schema: {
+            type: "object",
+            properties: {
+               flashcards: {
+                  type: "array",
+                  minItems: 20,
+                  maxItems: 20,
+                  items: {
+                     type: "object",
+                     properties: {
+                        question: { type: "string", minLength: 1 },
+                        answer: { type: "string", minLength: 1, maxLength: 100 }
+                     },
+                     required: ["question", "answer"],
+                     additionalProperties: false
+                  }
+               }
+            },
+            required: ["flashcards"],
+            additionalProperties: false
+         }
+      }
    }
 }

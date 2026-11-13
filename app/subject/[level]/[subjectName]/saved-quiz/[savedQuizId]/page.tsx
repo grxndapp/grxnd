@@ -19,7 +19,8 @@ export const dynamic = "force-dynamic";
 export default async function SavedQuiz ({ params }: SavedQuizProps) {   
    await dalRequireSubscriber();
 
-   const { subjectName, level, savedQuizId } = await params;
+   const { subjectName: sn, level, savedQuizId } = await params;
+   const subjectName = sn.replaceAll("-"," ");
    const actualLevel = level == "none" ? "" : level.replaceAll("-"," ");
 
    const savedQuiz = await dalRequireAuth(user => 

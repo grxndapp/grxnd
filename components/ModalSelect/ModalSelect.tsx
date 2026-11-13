@@ -1,7 +1,7 @@
 'use client'
 import './ModalSelect.css'
 import { AnimatePresence, motion } from 'framer-motion';
-import { Check, CircleCheck, CirclePlus, Square, X } from 'lucide-react';
+import { Check, CircleCheck, CirclePlus, Pointer, Square, X } from 'lucide-react';
 import { type CSSProperties, useState } from 'react';
 
 type ModalSelectProps = {
@@ -15,8 +15,8 @@ type ModalSelectProps = {
 
 export default function ModalSelect ({ options, onSelect, title, styles, defaultOption, showDeselect }: ModalSelectProps) {
    const [search, setSearch] = useState('');
-   const [optionChosen, setOptionChosen] = useState<number | null>(defaultOption || null);
-   const [pendingOptionChosen, setPendingOptionChosen] = useState<number | null>(defaultOption || null);
+   const [optionChosen, setOptionChosen] = useState<number | null>(defaultOption !== undefined ? defaultOption : null);
+   const [pendingOptionChosen, setPendingOptionChosen] = useState<number | null>(defaultOption !== undefined ? defaultOption : null);
    const [showModalSelector, setShowModalSelector] = useState(false);
 
    return (
@@ -26,9 +26,10 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
             setShowModalSelector(true);
          }}>
             <div className="content">
-               {(optionChosen == null) ? 'No Option Chosen' : options[optionChosen]}
+               <div className="content-text">{(optionChosen == null) ? 'No Option Chosen' : options[optionChosen]}</div>
+               <div className="text-xxxs full accent-color-gradient-text">Click to Choose</div>
             </div>
-            <div className="arrow"><CirclePlus size={18} /></div>
+            <div className="arrow"><Pointer size={18} /></div>
          </div>
 
          <AnimatePresence>
@@ -88,11 +89,11 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
 
                   <div className="text-s dfb align-center justify-end gap-10 mt-1">
                      <button 
-                        className='xs outline-black tiny-shadow pd-1 pdx-2'
+                        className='xs outline-black tiny-shadow pd-1 pdx-2 radius-20'
                         onClick={() => setShowModalSelector(false)}
                      >Close <X size={17} /></button>
                      {(showDeselect) && (<button 
-                        className='xs outline-black tiny-shadow pd-1 pdx-2'
+                        className='xs outline-black tiny-shadow pd-1 pdx-2 radius-20'
                         onClick={() => {
                            setPendingOptionChosen(null);
                            setOptionChosen(null);
@@ -101,7 +102,7 @@ export default function ModalSelect ({ options, onSelect, title, styles, default
                         }}
                      >Deselect <Square size={17} /></button>)}
                      <button 
-                        className='xs pd-1 pdx-2'
+                        className='xs pd-1 pdx-2 radius-20'
                         onClick={() => {
                            setShowModalSelector(false);
                            onSelect(options[pendingOptionChosen!], pendingOptionChosen!);
@@ -128,8 +129,8 @@ type ModalCustomSelectProps = {
 
 export function ModalCustomSelect ({ options, onSelect, title, styles, defaultOption, showDeselect }: ModalCustomSelectProps) {
    const [search, setSearch] = useState('');
-   const [optionChosen, setOptionChosen] = useState<string | null>(defaultOption ? options[defaultOption!].optionName : null);
-   const [pendingOptionChosen, setPendingOptionChosen] = useState<string | null>(defaultOption ? options[defaultOption!].optionName : null);
+   const [optionChosen, setOptionChosen] = useState<string | null>(defaultOption !== undefined ? options[defaultOption!].optionName : null);
+   const [pendingOptionChosen, setPendingOptionChosen] = useState<string | null>(defaultOption !== undefined ? options[defaultOption!].optionName : null);
    const [showModalSelector, setShowModalSelector] = useState(false);
 
    return (
@@ -139,7 +140,8 @@ export function ModalCustomSelect ({ options, onSelect, title, styles, defaultOp
             setShowModalSelector(true);
          }}>
             <div className="content">
-               {(optionChosen == null) ? 'No Option Chosen' : options.find(o => o.optionName == optionChosen)!.option}
+               <div className="content-text">{(optionChosen == null) ? 'No Option Chosen' : options.find(o => o.optionName == optionChosen)!.option}</div>
+               <div className="text-xxxs full accent-color-gradient-text">Click to Choose</div>
             </div>
             <div className="arrow"><CirclePlus size={18} /></div>
          </div>
@@ -198,11 +200,11 @@ export function ModalCustomSelect ({ options, onSelect, title, styles, defaultOp
 
                   <div className="text-s dfb align-center justify-end gap-10 mt-1">
                      <button 
-                        className='xs outline-black tiny-shadow pd-1 pdx-2'
+                        className='xs outline-black tiny-shadow pd-1 pdx-2 radius-20'
                         onClick={() => setShowModalSelector(false)}
                      >Close <X size={17} /></button>
                      {(showDeselect) && (<button 
-                        className='xs outline-black tiny-shadow pd-1 pdx-2'
+                        className='xs outline-black tiny-shadow pd-1 pdx-2 radius-20'
                         onClick={() => {
                            setPendingOptionChosen(null);
                            setOptionChosen(null);
@@ -211,7 +213,7 @@ export function ModalCustomSelect ({ options, onSelect, title, styles, defaultOp
                         }}
                      >Deselect <Square size={17} /></button>)}
                      <button 
-                        className='xs pd-1 pdx-2'
+                        className='xs pd-1 pdx-2 radius-20'
                         onClick={() => {
                            setShowModalSelector(false);
                            onSelect(options.find(o => o.optionName == pendingOptionChosen)!);

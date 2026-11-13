@@ -18,9 +18,10 @@ export const dynamic = "force-dynamic";
 export default async function SubjectNotes ({ params }: SubjectStatProps) {
    await dalRequireSubscriber();
 
-   const { subjectName, level } = await params;
+   const { subjectName: sn, level } = await params;
    const actualLevel = level == "none" ? "" : level.replaceAll("-"," ");
 
+   const subjectName = sn.replaceAll("-"," ");
    const folderCodeName = `${actualLevel ? actualLevel+' ' : ''}${subjectName}`.toLowerCase().replaceAll("-"," ");
 
    const subjectNotes = await dalRequireAuth(user => 

@@ -4,7 +4,7 @@ type FlashcardMakerParams = {
    topic: string;
 }
 
-export function fitbDefaultSubjectMakerPrompt ({ subject, subjectLevel, topic }: FlashcardMakerParams) {
+export function flashcardSubjectMakerPrompt ({ subject, subjectLevel, topic }: FlashcardMakerParams) {
    return `You are an expert teacher and flashcard designer for an AI-powered study application. Create flashcards that make a learner actively recall one clear idea at a time, so the knowledge sticks and can be applied correctly.
 
 ## Parameters
@@ -40,12 +40,12 @@ Structure rules:
 
 1. One idea per card. If a question needs two unrelated answers, split it into two cards.
 2. The question must be self-contained, clear, and answerable from memory without seeing any other card. Do not include the answer in the question.
-3. The answer must be short and direct: usually one to three sentences, a single formula block, or a short list of up to four items. Aim for under 60 words.
+3. HARD LIMIT: every answer must be 100 characters or fewer, counting every character in the final string, including spaces, markdown symbols (such as ** and $), and LaTeX commands. Aim for under 80 characters to stay safely inside the limit. An answer over 100 characters is a failure. The answer should be only the minimum needed to be correct: a term, a short definition in one clause, a formula, or a final value with its unit.
 4. Keep the learner's thinking active: ask them to define, explain, state, compare, identify the cause or effect, give the rule, or complete a short calculation.
 5. Mix card types across the 20 cards: definitions, key concepts, cause and effect, comparisons, processes in order, rules or formulas (with symbols explained), short worked calculations, and common mistakes to avoid.
 6. For quantitative subjects (maths, physics, chemistry, engineering and similar), make about 8 to 10 of the 20 cards involve a formula or a short calculation. Use clean numbers. For non-quantitative subjects, use no maths at all.
 7. Cover the full breadth of the topic, ordered from foundational ideas to more demanding ones. Do not repeat or closely paraphrase any card.
-8. Use plain language and define technical terms in the answer where they first appear.
+8. Use plain language. Define a technical term in the question only if the learner would otherwise not understand what is being asked.
 9. Pitch every card at the stated Subject Level in vocabulary and depth. Do not include content that belongs to a clearly higher or lower level.
 10. If the Subject Level is an SQA level (such as National 5, Higher, or Advanced Higher), align the content, terminology, and command words with the SQA course specification for that level, and use Scottish contexts for examples where they fit naturally.
 11. Use only well-established, standard content. Never invent facts, laws, data, formulas, or definitions. Verify every fact, formula, and calculation before writing it.
@@ -58,17 +58,17 @@ Maths:
 1. All mathematical expressions, symbols, variables, and numbers with units must be valid LaTeX that works in KaTeX.
 2. Use $...$ for inline maths, including single variables and symbols (for example $v$, $\\theta$, $\\Omega$) and values with units (for example $12\\,\\mathrm{V}$).
 3. Questions use inline maths only. Never use $$...$$ inside a question.
-4. In answers, use $$...$$ for a key formula or a main step of working. Each display equation is its own block, separated from any surrounding text and from other blocks by exactly one blank line (\n\n). Nothing is needed before the first block or after the last.
+4. In answers, prefer inline maths. Use at most ONE $$...$$ block per answer, and only when it is the whole answer or its main part. Remember that all the LaTeX characters count towards the 100 character limit.
 5. Never use custom delimiters, HTML, JSX, or code formatting for maths.
 6. Every LaTeX command must be complete, every brace balanced, and every command supported by KaTeX. Use \\frac{}{} for fractions, \\sqrt{}{} style roots as \\sqrt{}, \\mathrm{} for units, and \\, for thin spaces.
 7. NEVER use \\begin, \\end, \\hline, \\cline, or \\multicolumn. No tables, matrices, or aligned environments. Show multi-line working as separate $$...$$ blocks.
 8. A literal dollar sign for currency must be escaped as \\$.
 
 Markdown:
-1. Markdown is the only formatting allowed. Use **bold** for key terms, "- " lines for short lists, numbered lines for ordered steps of three or more, and \n\n for paragraph breaks.
+1. Markdown is the only formatting allowed. Answers are one line. Use bold only for a key term if it fits the limit. Do not use lists, paragraph breaks, or headings in answers..
 2. Use a single \n between list lines. Never start or end a string with \n. Never use more than one blank line (\n\n) in a row.
 3. Do not use headings, tables, images, links, or HTML inside any string.
-4. Inline code formatting is only for real code or commands, never for maths. For programming subjects, a short snippet may go in a fenced code block, correctly escaped for JSON.
+4. Inline code formatting is for real code, command and maths. For programming subjects, a short snippet may go in a fenced code block, correctly escaped for JSON.
 
 JSON escaping:
 1. Every backslash in LaTeX must be written as exactly two backslashes inside the JSON string (write \\frac{1}{2}, never \frac{1}{2} and never three or four backslashes).
@@ -81,15 +81,19 @@ JSON escaping:
   "flashcards": [
     {
       "question": "What is the difference between **speed** and **velocity**?",
-      "answer": "**Speed** is a scalar quantity: it has size only. **Velocity** is a vector quantity: it has both size and direction."
+      "answer": "**Speed** has size only, while **velocity** has size and direction."
     },
     {
-      "question": "State Ohm's law and say what each symbol means.",
-      "answer": "$$V = IR$$\n\n- $V$: potential difference ($\\mathrm{V}$)\n- $I$: current ($\\mathrm{A}$)\n- $R$: resistance ($\\Omega$)"
+      "question": "State the formula linking potential difference, current and resistance.",
+      "answer": "$$V = IR$$"
     },
     {
-      "question": "A $12\\,\\Omega$ resistor carries a current of $0.5\\,\\mathrm{A}$. Calculate the potential difference across it.",
-      "answer": "Use $V = IR$:\n\n$$V = 0.5 \\times 12$$\n\n$$V = 6\\,\\mathrm{V}$$"
+      "question": "In $V = IR$, what does $R$ represent, and what is its unit?",
+      "answer": "Resistance, measured in ohms ($\\Omega$)."
+    },
+    {
+      "question": "A $12\\,\\Omega$ resistor carries $0.5\\,\\mathrm{A}$. Calculate the potential difference across it.",
+      "answer": "$$V = IR = 0.5 \\times 12 = 6\\,\\mathrm{V}$$"
     }
   ]
 }
@@ -105,6 +109,7 @@ JSON escaping:
 7. No string starts or ends with \n, none contains a raw double quote, and none contains a label such as "Answer:".
 8. Questions contain no $$ blocks.
 9. The JSON is valid, with no trailing commas and no unescaped control characters.
+10. Every answer is 100 characters or fewer, counting all spaces, markdown, and LaTeX characters. Count each answer one by one, and shorten any that exceed the limit by cutting words or splitting the idea into a separate card.
 
 If any check fails, fix it before responding.
 
@@ -122,7 +127,7 @@ type FlashcardMakerNoteParams = {
    note: string;
 }
 
-export function fitbNoteMakerPrompt ({ note }: FlashcardMakerNoteParams) {
+export function flashcardNoteMakerPrompt ({ note }: FlashcardMakerNoteParams) {
    const noteJson = typeof note === "string" ? note.trim() : JSON.stringify(note, null, 2);
    return `You are an expert teacher and flashcard designer for an AI-powered study application. Create flashcards from the learner's own notes that make them actively recall one clear idea at a time, so the knowledge in THEIR notes sticks and can be applied correctly.
 
@@ -171,12 +176,12 @@ Structure rules:
 
 1. One idea per card. If a question needs two unrelated answers, split it into two cards.
 2. The question must be self-contained, clear, and answerable from memory without seeing the notes or any other card. Do not include the answer in the question. Never write phrases such as "according to the notes".
-3. The answer must be short and direct: usually one to three sentences, a single formula block, or a short list of up to four items. Aim for under 60 words.
+3. HARD LIMIT: every answer must be 100 characters or fewer, counting every character in the final string, including spaces, markdown symbols (such as ** and $), and LaTeX commands. Aim for under 80 characters to stay safely inside the limit. An answer over 100 characters is a failure. The answer should be only the minimum needed to be correct: a term, a short definition in one clause, a formula, or a final value with its unit.
 4. Keep the learner's thinking active: ask them to define, explain, state, compare, identify the cause or effect, give the rule, or complete a short calculation.
 5. Mix card types where the notes allow: definitions, key concepts, cause and effect, comparisons, processes in order, rules or formulas (with symbols explained), short worked calculations, and common mistakes.
 6. If the notes contain formulas, worked examples, or calculations, make a good share of the cards test them (about 8 to 10 of the 20 for quantitative notes). Use the values and methods from the notes. If the notes contain no maths, use no maths.
 7. Order cards from foundational ideas to more demanding ones. Do not repeat or closely paraphrase any card.
-8. Use plain language and keep the level of the notes.
+8. Use plain language and keep the level of the notes. Define a technical term in the question only if the learner would otherwise not understand what is being asked.
 9. Never refer to other cards, to the flashcards themselves, or to the learner as "you" in a patronising way. No greetings, filler, or commentary.
 10. Never put labels or numbering inside the strings: no "Q:", "A:", "Answer:", "Question:", and no card numbers.
 11. Do not include URLs, links, or video references from the notes.
@@ -187,17 +192,17 @@ Maths:
 1. All mathematical expressions, symbols, variables, and numbers with units must be valid LaTeX that works in KaTeX. If the notes contain maths that is not valid KaTeX, rewrite it correctly, keeping the same meaning.
 2. Use $...$ for inline maths, including single variables and symbols (for example $v$, $\\theta$, $\\Omega$) and values with units (for example $12\\,\\mathrm{V}$).
 3. Questions use inline maths only. Never use $$...$$ inside a question.
-4. In answers, use $$...$$ for a key formula or a main step of working. Each display equation is its own block, separated from any surrounding text and from other blocks by exactly one blank line (\n\n). Nothing is needed before the first block or after the last.
+4. In answers, prefer inline maths. Use at most ONE $$...$$ block per answer, and only when it is the whole answer or its main part. Remember that all the LaTeX characters count towards the 100 character limit.
 5. Never use custom delimiters, HTML, JSX, or code formatting for maths.
 6. Every LaTeX command must be complete, every brace balanced, and every command supported by KaTeX. Use \\frac{}{} for fractions, \\sqrt{} for roots, \\mathrm{} for units, and \\, for thin spaces.
 7. NEVER use \\begin, \\end, \\hline, \\cline, or \\multicolumn. No tables, matrices, or aligned environments. Show multi-line working as separate $$...$$ blocks.
 8. A literal dollar sign for currency must be escaped as \\$.
 
 Markdown:
-1. Markdown is the only formatting allowed. Use **bold** for key terms, "- " lines for short lists, numbered lines for ordered steps of three or more, and \n\n for paragraph breaks.
+1. Markdown is the only formatting allowed. Answers are one line. Use bold only for a key term if it fits the limit. Do not use lists, paragraph breaks, or headings in answers..
 2. Use a single \n between list lines. Never start or end a string with \n. Never use more than one blank line (\n\n) in a row.
 3. Do not use headings, tables, images, links, or HTML inside any string.
-4. Inline code formatting is only for real code or commands, never for maths. For programming notes, a short snippet may go in a fenced code block, correctly escaped for JSON.
+4. Inline code formatting is for real code, commands and maths. For programming subjects, use short inline code only, and only if the answer fits within 100 characters. Never use fenced code blocks.
 
 JSON escaping:
 1. Every backslash in LaTeX must be written as exactly two backslashes inside the JSON string (write \\frac{1}{2}, never \frac{1}{2} and never three or four backslashes).
@@ -210,15 +215,19 @@ JSON escaping:
   "flashcards": [
     {
       "question": "What is the difference between **speed** and **velocity**?",
-      "answer": "**Speed** is a scalar quantity: it has size only. **Velocity** is a vector quantity: it has both size and direction."
+      "answer": "**Speed** has size only, while **velocity** has size and direction."
     },
     {
-      "question": "State Ohm's law and say what each symbol means.",
-      "answer": "$$V = IR$$\n\n- $V$: potential difference ($\\mathrm{V}$)\n- $I$: current ($\\mathrm{A}$)\n- $R$: resistance ($\\Omega$)"
+      "question": "State the formula linking potential difference, current and resistance.",
+      "answer": "$$V = IR$$"
     },
     {
-      "question": "A $12\\,\\Omega$ resistor carries a current of $0.5\\,\\mathrm{A}$. Calculate the potential difference across it.",
-      "answer": "Use $V = IR$:\n\n$$V = 0.5 \\times 12$$\n\n$$V = 6\\,\\mathrm{V}$$"
+      "question": "In $V = IR$, what does $R$ represent, and what is its unit?",
+      "answer": "Resistance, measured in ohms ($\\Omega$)."
+    },
+    {
+      "question": "A $12\\,\\Omega$ resistor carries $0.5\\,\\mathrm{A}$. Calculate the potential difference across it.",
+      "answer": "$$V = IR = 0.5 \\times 12 = 6\\,\\mathrm{V}$$"
     }
   ]
 }
@@ -234,6 +243,7 @@ JSON escaping:
 7. No string starts or ends with \n, none contains a raw double quote, and none contains a label such as "Answer:".
 8. Questions contain no $$ blocks.
 9. The JSON is valid, with no trailing commas and no unescaped control characters.
+10. Every answer is 100 characters or fewer, counting all spaces, markdown, and LaTeX characters. Count each answer one by one, and shorten any that exceed the limit by cutting words or splitting the idea into a separate card.
 
 If any check fails, fix it before responding.
 

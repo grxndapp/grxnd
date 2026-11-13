@@ -2,7 +2,7 @@
 import { generateUsingAi } from "@/app/actions/ai";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { titleCase } from "@/lib/str";
-import { buildNoteQuizPrompt } from "@/prompts/quizMaker";
+import { quizMakerPrompt } from "@/prompts/quizMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { subjectIcon } from "@/utils/subjects";
 import { BookCheck, RotateCcw } from "lucide-react";
@@ -21,34 +21,34 @@ import ModalSelect from "@/components/ModalSelect/ModalSelect";
 
 export default function DefaultSubjectStartQuiz ({ noteSelected, subject, subjectLevel }: { subjectTopics: string[], noteSelected: Note, subject: string, subjectLevel: string }) {
    const [numQuestions, setNumQuestions] = useState<string>('5');
-   const [quizNoteSelected, setQuizNoteSelected] = useState<Note | undefined>(noteSelected);
    const [topicSelected, setTopicSelected] = useState<string | null>(null);
    const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
-
    const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
 
    const subjectInfo = subjectCombinator(subject, subjectLevel);
-   
    const { openSplash, closeSplash } = useSplashScreen();
 
    function handleLoadingCreateQuiz () {
       openSplash({
          title: <>Creating Quiz</>,
-         description: <>Creating your {titleCase(subjectLevel)} {titleCase(subject)} quiz...</>,
+         description: <>Creating your <b>{titleCase(subjectLevel)} {titleCase(subject)} {topicSelected!}</b> quiz...</>,
          style: subject.toLowerCase().trim(),
          actions: []
       })
    }
 
    const createQuizAI = async (callback: Function) => {
-      if (!quizNoteSelected) {
+      if (!topicSelected) {
          toast.error("Please select a note");
          callback();
          return;
       }
       handleLoadingCreateQuiz();
       const data = await generateUsingAi({
-         prompt: buildNoteQuizPrompt({ note: quizNoteSelected.noteJson, numberOfQuestions: parseInt(numQuestions), style: quizStyle }),
+         prompt: quizMakerPrompt({ 
+            subjectLevel, subject, subjectTopic: topicSelected,
+            numberOfQuestions: parseInt(numQuestions), style: quizStyle
+         }),
          responseFormat: ResponseFormats.QuizMaker
       });
 
@@ -130,7 +130,7 @@ export default function DefaultSubjectStartQuiz ({ noteSelected, subject, subjec
 
                   <Spacing size={2} />
                   <div className="box full dfb column">
-                     <AwaitButton className="xxs pdx-3 mw-500 pd-14 tiny-shadow radius-20" onClick={createQuizAI}>
+                     <AwaitButton className="xxs pdx-3 mw-500 pd-14 tiny-shadow radius-20 accent-hover" onClick={createQuizAI}>
                         <BookCheck size={17} /> Create Quiz
                      </AwaitButton>
                   </div>
@@ -141,10 +141,10 @@ export default function DefaultSubjectStartQuiz ({ noteSelected, subject, subjec
                <QuizViewer 
                   subject={subject}
                   subjectLevel={subjectLevel}
-                  subjectTopic={JSON.parse(quizNoteSelected?.noteJson!).title}
+                  subjectTopic={topicSelected!}
                   quiz={aiQuiz}
                   makeNewQuiz={() => {
-                     setQuizNoteSelected(undefined);
+                     setTopicSelected('');
                      setAiQuiz(null);
                   }}
                />

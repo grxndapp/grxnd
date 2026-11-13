@@ -192,7 +192,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
             </div>
          </div>
       </>) : (<>
-         <div className="text-xs full text-center pd-05 mb-1">
+         <div className="text-xs full text-left pd-05 mb-1">
             Your document has been uploaded.
          </div>
          <div className="document-upload-status">
@@ -212,8 +212,8 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 					defaultOption={2}
 				/>
 			</div>
-			<div className="box full dfb justify-center pd-1">
-				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400" onClick={createNoteAI}>
+			<div className="box full dfb justify-start pd-1">
+				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400 accent-hover" onClick={createNoteAI}>
 					<NotebookPen size={17} /> Generate Note
 				</AwaitButton>
 			</div>

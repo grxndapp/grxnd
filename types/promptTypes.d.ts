@@ -97,3 +97,8 @@ type LabGradeReport = {
       improvement: string;
    }[];
 }
+
+type Flashcard = {
+   question: string;
+   answer: string;
+}

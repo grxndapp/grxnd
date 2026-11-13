@@ -23,7 +23,7 @@ input[type=file][name="attach-file"] { display: none; }
 
 .document-upload-status {
    width: 100%;
-   border: 1px solid #e5e5e5;
+   border: 1px solid var(--accent-color-10);
    border-radius: 15px;
    background-color: white;
    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.056);

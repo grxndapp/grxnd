@@ -105,16 +105,16 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                         description="Perfect for theory and understanding"
                      />
                      <StudyMethodCard
+                        icon={<FlashcardsIllustration size={studyMethodIconSize} />}
+                        onClick={() => router.push(`${subjectPageUrl}/flashcards`)}
+                        title="Quick Learn"
+                        description="Learn a topic very fast with fast (flash) cards"
+                     />
+                     <StudyMethodCard
                         icon={<StudyPlanIllustration size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="Make Study Plan"
                         description="Coming Soon. Helps you plan your time for studying toward a certain date"
-                     />
-                     <StudyMethodCard
-                        icon={<FlashcardsIllustration size={studyMethodIconSize} />}
-                        // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
-                        title="Quick Learn"
-                        description="Coming Soon. Learn a topic very fast with fast (flash) cards"
                      />
                      <StudyMethodCard
                         icon={<SixtySevenIllustration width={studyMethodIconSize} height={studyMethodIconSize} size={studyMethodIconSize} />}
@@ -200,7 +200,7 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
 
    return (
       <div className="box full no-select">
-         <div className="text-l bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>Your Notes</div>
+         <div className="text-l bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>Recent Notes</div>
          <div className="box full dfb align-center gap-10 pd-1">
             <input 
                type="text" className="xxs pd-13 pdx-2 radius-20 full mw-600" placeholder="Search Notes..."
@@ -219,6 +219,13 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
                   <button className="xxxs pd-12 pdx-2 delete" onClick={handleDeleteNotes}>
                      <Trash2 size={18} /> Delete {pluralSuffixer('Note', selectedNotes.length, 's')}
                   </button>
+               </div>
+            </div>
+         )}
+         {applyNoteFilter().length > 0 && (
+            <div className="box full pd-1">
+               <div className="text-xs fit visible-link accent-color mt-1" onClick={() => router.push(`${subjectPageUrl}/notes`)}>
+                  View all notes
                </div>
             </div>
          )}

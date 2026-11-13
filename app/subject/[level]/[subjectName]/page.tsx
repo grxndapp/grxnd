@@ -16,8 +16,9 @@ type SubjectStatProps = {
 export const dynamic = "force-dynamic";
 
 export default async function SubjectStat ({ params }: SubjectStatProps) {
-   const { subjectName, level } = await params;
+   const { subjectName: sn, level } = await params;
    const actualLevel = level == "none" ? "" : level;
+   const subjectName = sn.replaceAll("-"," ");
    const folderCodeName = `${actualLevel ? actualLevel+' ' : ''}${subjectName}`.toLowerCase().replaceAll("-"," ");
 
    const quizzes = await dalRequireSubscribedAuth(user =>
@@ -46,6 +47,7 @@ export default async function SubjectStat ({ params }: SubjectStatProps) {
                eq(notesTable.folderCodeName, folderCodeName)
             ))
             .orderBy(desc(notesTable.createdAt))
+            .limit(3);
          
          return { notes, quizzes }
       })

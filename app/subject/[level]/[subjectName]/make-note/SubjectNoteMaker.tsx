@@ -255,7 +255,7 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 						/>
 					</div>
 					<Spacing />
-					<AwaitButton className="xxs full pd-15 tiny-shadow" onClick={createNoteAI}>
+					<AwaitButton className="xxs full pd-15 tiny-shadow accent-hover" onClick={createNoteAI}>
 						<NotebookPen size={17} /> Generate Note
 					</AwaitButton>
 					<Spacing size={2} />

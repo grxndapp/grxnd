@@ -35,7 +35,7 @@ export default function CustomFitbPage ({ notes, subject, subjectLevel }: Custom
    function handleLoadingCreateFitb () {
       openSplash({
          title: <>Creating Questions</>,
-         description: <>We are getting your fill in the blank {titleCase(subjectLevel)} {titleCase(subject)} questions...</>,
+         description: <>We are getting your fill in the blank <b>{titleCase(subjectLevel)} {titleCase(subject)} {JSON.parse(noteSelected?.noteJson!).title!}</b> questions...</>,
          style: "flashcard",
          actions: []
       })

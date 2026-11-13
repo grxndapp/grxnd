@@ -133,7 +133,7 @@ export default function SubjectStartQuiz ({ notes, noteSelected, subject, subjec
 
                   <Spacing size={2} />
                   <div className="box full dfb column">
-                     <AwaitButton className="xxs pdx-3 mw-500 pd-14 tiny-shadow radius-20" onClick={createQuizAI}>
+                     <AwaitButton className="xxs pdx-3 mw-500 pd-14 tiny-shadow radius-20 accent-hover" onClick={createQuizAI}>
                         <BookCheck size={17} /> Create Quiz
                      </AwaitButton>
                   </div>

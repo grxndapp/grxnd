@@ -61,7 +61,7 @@ export const tempQuizzesTable = pgTable("temp_quizzes", {
 export const notesTable = pgTable("notes", {
    id: serial("id").primaryKey(),
    userid: text("userid"),
-   noteName: text("note_name"),
+   noteName: text("note_name").default(""),
    folderCodeName: text("folder_code_name").notNull().default(""),
    noteid: text("noteid"),
    noteJson: text("note_json"),

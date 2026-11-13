@@ -8,7 +8,7 @@ import { adminUpgradeUserSubscription } from "../actions/user";
 import { toast } from "sonner";
 import { useModal } from "@/components/Modal/ModalContext";
 import { formatMilliseconds, timeAgo } from "@/utils/date";
-import { Crown, Delete } from "lucide-react";
+import { CircleX, Crown, Delete } from "lucide-react";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing";
 import Card from "@/components/Card/Card";
@@ -89,9 +89,15 @@ function UserManageCard ({ usersGraph }: { usersGraph: AdminPageProps['usersGrap
          <div className="box full dfb wrap gap-10 pd-15">
             {applySearchFilters().map(user => (
                <div key={user.userid} style={UserCardStyles} onClick={() => handleOpenUserDetails(user)}>
-                  <div className="text-s bold-600 full accent-color">{user.name}</div>
+                  <div className="text-s bold-700 full accent-color-gradient-dark-text">{user.name}</div>
                   <div className="text-xxs full grey-5">{user.email}</div>
                   <div className="text-xxs full grey-5">Joined {timeAgo(new Date(user.createdAt).getTime())}</div>
+                  <div className={`text-xxs full bold-600 dfb align-center gap-5 ${user.is_subscribed ? "accent-color" : "error-text"}`}>
+                     {user.is_subscribed 
+                        ? <>Subscribed <Crown size={17} /></>
+                        : <>Not Subscribed <CircleX size={17} /></>
+                     }
+                  </div>
                </div>
             ))}
          </div>

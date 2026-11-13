@@ -1,0 +1,28 @@
+.backpack-breadcrumb {
+   width: 100%;
+   margin-bottom: 10px;
+}
+
+.backpack-breadcrumb > .backpack-breadcrumb-container {
+   width: 100%;
+   display: flex;
+   flex-wrap: wrap;
+   gap: 5px;
+   align-items: center;
+   justify-content: start;
+}
+
+.backpack-breadcrumb > .backpack-breadcrumb-container > .breadcrumb-item {
+   width: fit-content;
+   padding: 10px 15px;
+   border-radius: 18px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 5px;
+}
+
+.backpack-breadcrumb > .backpack-breadcrumb-container > .breadcrumb-item:hover {
+   background-color: var(--accent-color-10);
+}

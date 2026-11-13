@@ -1,12 +1,11 @@
 'use client'
 import { createContext, useCallback, useContext, useState } from "react";
-import AppWrapper from "../AppWrapper/AppWrapper";
 import SplashScreen from "./SplashScreen";
 
 type SplashScreenConfig = {
    title: string | React.ReactNode;
    description: string | React.ReactNode;
-   style: "error" | "loading" | "normal";
+   style: string;
    actions: {
       appearance: "delete" | "normal" | "outline-black";
       action: () => void;

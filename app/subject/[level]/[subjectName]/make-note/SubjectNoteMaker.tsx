@@ -4,7 +4,6 @@ import { fullSubjectBreakDown, isAmongstDefaultSubjects, retrieveSubjectTopic } 
 import { RefObject, useState } from "react";
 import { generateUsingAi } from "@/app/actions/ai";
 import { subjectNoteMakerPrompt } from "@/prompts/subjectNoteMaker";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { NoteIntensity } from "@/prompts/promptExtras";
@@ -12,8 +11,8 @@ import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 import Spacing from "@/components/Spacing/Spacing"
 import NoteViewer from "@/components/NoteViewer/NoteViewer";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import FullSelect from "@/components/FullSelect/FullSelect";
 import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
+import ModalSelect from "@/components/ModalSelect/ModalSelect";
 
 
 const upgradedTestNote = {
@@ -171,9 +170,9 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 
 	function handleLoadingCreateNote () {
 		openSplash({
-			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
+			title: <>Creating Note</>,
 			description: <>Creating your <b>{subjectFullName} {topicSelected}</b> note...</>,
-			style: "loading",
+			style: "note",
 			actions: []
 		})
 	}
@@ -212,8 +211,7 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
    }
 
    return (<>
-      <Spacing size={2} />
-
+      <Spacing />
       {(noteFromAI !== null) && (<>
          <NoteViewer 
             subject={isDefaultSubject ? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim() : ''} 
@@ -227,16 +225,18 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 
       {(noteFromAI == null) && (
 			<div className="box full h-full dfb column align-center">
-				{(stepSections == "topic") && (
-					<FullSelect
+				{(stepSections == "topic") && (<>
+					<div className="text-m bold-600 full">Choose Topic</div>
+					<div className="text-xxs full grey-5 mb-2">Choose the topic from the {fullSubjectInfo.subjectLevel} {fullSubjectInfo.subject} topics</div>
+					<ModalSelect
 						title="Choose Topic"
-						options={topicChoices?.map(topic => ({ option: topic, optionName: topic }))!}
-						onSelect={(option) => {
-							setTopicSelected(option.optionName)
+						options={topicChoices!}
+						onSelect={option => {
+							setTopicSelected(option)
 							setStepSections("detailed-create")
 						}}
 					/>
-				)}
+				</>)}
 				
 				{(stepSections == "detailed-create") && (<>
 					<div className="text-sm bold-600 full">Detailed Topic (optional)</div>

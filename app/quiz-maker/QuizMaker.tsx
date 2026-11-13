@@ -5,7 +5,6 @@ import { BookCheck, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { generateUsingAi } from "../actions/ai";
 import { quizMakerPrompt } from "@/prompts/quizMaker";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { QuizStyle } from "@/prompts/promptExtras";
@@ -107,14 +106,14 @@ export default function QuizMakerPage () {
    }, [subject, subjectLevel])
 
    useEffect(() => {
-      setTopic('Ruhh');
+      setTopic('');
    }, [subject, subjectLevel])
 
    function handleLoadingCreateQuiz () {
       openSplash({
-         title: <>Creating Quiz <CustomSpinner color="#000" size={20} /></>,
+         title: <>Creating Quiz</>,
          description: `Please wait while I create your quiz for ${subjectLevel} ${subject}${topic?` ${topic}`:''}...`,
-         style: "loading",
+         style: "quiz",
          actions: []
       })
    }

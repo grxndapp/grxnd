@@ -4,12 +4,12 @@ import Card from "@/components/Card/Card"
 import ProgressBar from "@/components/ProgressBar/ProgressBar"
 import RenderMarkdown from "@/components/RenderMarkdown/RenderMarkdown"
 import Spacing from "@/components/Spacing/Spacing"
+import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcrumb"
 import { titleCase } from "@/lib/str"
 import { QuizQuestionReviewCardStyles } from "@/styles-extra/styles"
-import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects"
-import { ArrowLeft } from "lucide-react"
+import { subjectIcon } from "@/utils/subjects"
 import { useRouter } from "next/navigation"
-import { getSubjectPageUrl } from "../../helper"
+import { subjectCombinator } from "../../clientHelper"
 
 function questionTypeFormatting (type: string) {
    if (type.includes('1')) {
@@ -23,20 +23,31 @@ function questionTypeFormatting (type: string) {
 
 export default function SavedQuizPage ({ subject, subjectLevel, savedQuiz }: { savedQuiz: SavedQuiz, subjectLevel: string, subject: string }) {
    const router = useRouter();
-   const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
-   const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
+   const subjectInfo = subjectCombinator(subject, subjectLevel);
    
    return (
       <AppWrapper>
-         <div className="box full pd-3">
-            <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}><ArrowLeft size={16} /> Back</div>
-            <div className="text-xl bold-700 full pd-05 no-trans" style={{ color: subjectColor }}>{savedQuiz.subjectLevel} {savedQuiz.subject} {savedQuiz.topic}</div>
+         <div className="box full">
+            <BackpackBreadcrumb
+               startingBackpack
+               links={[
+                  {
+                     label: <>{subjectIcon[subjectInfo.subject]} {titleCase(subjectLevel)} {titleCase(subject)}</>,
+                     link: subjectInfo.subjectPageUrl
+                  },
+                  {
+                     label: 'Saved Quizzes',
+                     link: `${subjectInfo.subjectPageUrl}/saved-quizzes`
+                  }
+               ]}
+            />
+            <div className="text-xl bold-700 full pd-05 no-trans" style={{ color: subjectInfo.subjectColor }}>{savedQuiz.subjectLevel} {savedQuiz.subject} {savedQuiz.topic}</div>
 
             <div className="box full pd-1 dfb column align-center gap-5 mw-400 mb-1">
                <div className="text-s full bold-500">
                   You scored {Math.round((savedQuiz.score/JSON.parse(savedQuiz.quizJson).length)*100)}%
                </div>
-               <ProgressBar percentage={(savedQuiz.score/JSON.parse(savedQuiz.quizJson).length)*100} color={subjectColor} />
+               <ProgressBar percentage={(savedQuiz.score/JSON.parse(savedQuiz.quizJson).length)*100} color={subjectInfo.subjectColor} />
             </div>
 
             <div className="box full pd-1 dfb column gap-20">

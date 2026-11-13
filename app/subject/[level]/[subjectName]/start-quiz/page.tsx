@@ -25,9 +25,10 @@ export default async function SubjectNotesStartQuiz ({ params, searchParams }: S
    await dalRequireSubscriber();
 
    const { noteId } = await searchParams;
-   const { subjectName, level } = await params;
+   const { subjectName: sn, level } = await params;
    const actualLevel = level == "none" ? "" : level.replaceAll("-"," ");
 
+   const subjectName = sn.replaceAll("-"," ");
    const folderCodeName = `${actualLevel ? actualLevel+' ' : ''}${subjectName}`.toLowerCase().replaceAll("-"," ");
    const subjectInfo = titleCase(`${actualLevel} ${subjectName}`);
    const fullSubjectInfo = fullSubjectBreakDown(subjectInfo);

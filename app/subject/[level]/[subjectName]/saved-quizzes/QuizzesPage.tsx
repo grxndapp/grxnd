@@ -3,14 +3,15 @@ import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import Card from "@/components/Card/Card";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import Spacing from "@/components/Spacing/Spacing";
+import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcrumb";
 import { pluralSuffixer, titleCase } from "@/lib/str";
 import { NotebookCardStyles, SubjectIconBubble } from "@/styles-extra/styles";
 import { formatMilliseconds } from "@/utils/date";
-import { customSubjectToBoldColor, customSubjectToPastelColor, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
-import { ArrowLeft, GraduationCap, X } from "lucide-react";
+import { anySubjectDefIcon, customSubjectToPastelColor, subjectIcon, subjectPastelBgColors } from "@/utils/subjects";
+import { GraduationCap, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { getSubjectPageUrl } from "../helper";
+import { subjectCombinator } from "../clientHelper";
 
 type QuizzesPageProps = {
    savedQuizzes: SavedQuiz[];
@@ -19,10 +20,8 @@ type QuizzesPageProps = {
 }
 
 export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: QuizzesPageProps) {
-   const router = useRouter();
    const [searchQuizzes, setSearchQuizzes] = useState('');
-   const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
-   const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
+   const subjectInfo = subjectCombinator(subject, subjectLevel);
 
    function applyFilters () {
       return savedQuizzes.filter(savedQuiz => 
@@ -35,10 +34,16 @@ export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: Qu
    return (
       <AppWrapper>
          <div className="box full">
-            <div className="box full pd-1">
-               <div className="text-xxs fit visible-link accent-color dfb align-center gap-5" onClick={() => router.push(subjectPageUrl)}><ArrowLeft size={16} /> Back</div>
-            </div>
-            <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)} Saved Quizzes</div>
+            <BackpackBreadcrumb
+               startingBackpack
+               links={[
+                  {
+                     label: <>{subjectInfo.isDefaultSubject ? subjectIcon[subjectInfo.subject] : anySubjectDefIcon} {titleCase(subjectLevel)} {titleCase(subject)}</>,
+                     link: subjectInfo.subjectPageUrl
+                  }
+               ]}
+            />
+            <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectInfo.subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)} Saved Quizzes</div>
 
             {(savedQuizzes.length < 1) ? (
                <div className="box full">
@@ -64,7 +69,7 @@ export default function QuizzesPage ({ subject, subjectLevel, savedQuizzes }: Qu
                <div className="box full dfb wrap gap-10">
                   {applyFilters().map((savedQuiz, index) => (
                      <QuizCardItem 
-                        key={index} savedQuiz={savedQuiz} subjectPageUrl={subjectPageUrl}
+                        key={index} savedQuiz={savedQuiz} subjectPageUrl={subjectInfo.subjectPageUrl}
                         quizSubjectColor={subjectLevel ? subjectPastelBgColors[titleCase(subject)] : customSubjectToPastelColor(titleCase(subject))}
                      />
                   ))}

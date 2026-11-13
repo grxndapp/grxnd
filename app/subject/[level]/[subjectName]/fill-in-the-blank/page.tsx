@@ -4,7 +4,7 @@ import { notesTable } from "@/db/schemas";
 import { and, desc, eq } from "drizzle-orm";
 import { titleCase } from "@/lib/str";
 import { sanitise } from "@/utils/extractJson";
-import { fullSubjectBreakDown, isAmongstDefaultSubjects, retrieveSubjectTopic } from "@/utils/subjects";
+import { isAmongstDefaultSubjects } from "@/utils/subjects";
 import LoadingPage from "./loading";
 import DefaultFitbPage from "./DefaultFitbPage";
 import CustomFitbPage from "./CustomFitbPage";
@@ -25,12 +25,12 @@ export default async function SubjectFillInTheBlank ({ params, searchParams }: S
    await dalRequireSubscriber();
 
    const { noteId } = await searchParams;
-   const { subjectName, level } = await params;
+   const { subjectName: sn, level } = await params;
    const actualLevel = level == "none" ? "" : level.replaceAll("-"," ");
 
+   const subjectName = sn.replaceAll("-"," ");
    const folderCodeName = `${actualLevel ? actualLevel+' ' : ''}${subjectName}`.toLowerCase().replaceAll("-"," ");
-   const subjectInfo = titleCase(`${actualLevel} ${subjectName}`);
-   const fullSubjectInfo = fullSubjectBreakDown(subjectInfo);
+   const subjectInfo = titleCase(`${actualLevel} ${subjectName}`.trim());
    const isDefaultSubject = isAmongstDefaultSubjects(subjectInfo);
 
    if (isDefaultSubject) {

@@ -13,6 +13,7 @@ import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
 import RenameNote from "@/modal-forms/RenameNote"
 import StudyMethodCard from "@/components/StudyMethodCard/StudyMethodCard"
+import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcrumb"
 
 type SubjectStatPageProps = {
    quizzes: QuizT[];
@@ -54,8 +55,11 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
 
    return (
       <AppWrapper contentRef={contentRef}>
-         <div className="box w-full h-full pd-2 no-trans">
-            <div className="text-xxs fit visible-link accent-color" onClick={() => router.push('/backpack')}>Backpack</div>
+         <div className="box w-full h-full">
+            <BackpackBreadcrumb
+               startingBackpack
+               links={[]}
+            />
             <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</div>
 
             <div className="box full dfb column gap-10">
@@ -248,12 +252,12 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
                         className="backpack-subject-note-item-info-actions"
                      >
                         <div className="backpack-subject-note-item-info" onClick={() => router.push(`${subjectPageUrl}/note/${note.noteid}`)}>
-                           <div className="text-xs bold-600 full">{note.noteName ?? JSON.parse(note.noteJson).title}</div>
+                           <div className="text-xs bold-600 full">{note.noteName || JSON.parse(note.noteJson).title}</div>
                            <div className="text-xxxs grey-5 full">
                               {formatMilliseconds(new Date(note.createdAt).getTime(), true)}
                            </div>
                         </div>
-                        <div className="backpack-subject-note-item-actions" onClick={() => router.push(`${subjectPageUrl}/start-quiz?noteid=${note.noteid}`)}>
+                        <div className="backpack-subject-note-item-actions" onClick={() => router.push(`${subjectPageUrl}/start-quiz?noteId=${note.noteid}`)}>
                            <button className="xxxs pd-11 pdx-2 radius-20 accent-color-50 whitespace-nowrap">Practice Now!</button>
                         </div>
                      </div>

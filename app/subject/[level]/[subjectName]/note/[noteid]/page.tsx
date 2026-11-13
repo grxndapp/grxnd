@@ -31,6 +31,7 @@ export default async function NoteBook ({ params }: NoteBookProps) {
       })
    )
 
+   
    if (notes.success) {
       return <SubjectNotePage 
          subjectLevel={titleCase(actualLevel.replaceAll("-"," "))}

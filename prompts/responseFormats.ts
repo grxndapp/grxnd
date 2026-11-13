@@ -171,5 +171,250 @@ export const ResponseFormats = {
             additionalProperties: false
          }
       }
+   },
+   EssayGrader: {
+      "response_format": {
+         "type": "json_schema",
+         "json_schema": {
+            "name": "essay_grader_report",
+            "strict": true,
+            "schema": {
+            "type": "object",
+            "properties": {
+               "grader_report": {
+                  "type": "object",
+                  "properties": {
+                  "grade": {
+                     "type": "integer",
+                     "minimum": 1,
+                     "maximum": 10
+                  },
+                  "comments": {
+                     "type": "string",
+                     "minLength": 200,
+                     "maxLength": 300
+                  },
+                  "strengths": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     },
+                     "minItems": 4,
+                     "maxItems": 4
+                  },
+                  "weaknesses": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     },
+                     "minItems": 4,
+                     "maxItems": 4
+                  },
+                  "improvements": {
+                     "type": "array",
+                     "minItems": 1,
+                     "items": {
+                        "type": "object",
+                        "properties": {
+                        "quote": {
+                           "type": "string",
+                           "description": "Exact text copied verbatim from the student's essay."
+                        },
+                        "improvement": {
+                           "type": "string",
+                           "description": "Explain how the quoted text can be improved."
+                        },
+                        "possible_replacement": {
+                           "type": "string",
+                           "description": "Replacement text the student can paste into their essay."
+                        }
+                        },
+                        "required": [
+                        "quote",
+                        "improvement",
+                        "possible_replacement"
+                        ],
+                        "additionalProperties": false
+                     }
+                  }
+                  },
+                  "required": [ "grade", "comments", "strengths", "weaknesses", "improvements"],
+                  "additionalProperties": false
+               }
+            },
+            "required": ["grader_report"],
+            "additionalProperties": false
+            }
+         }
+      }
+   },
+   LabGrader: {
+      type: "json_schema",
+      json_schema: {
+         name: "lab_report_grade_response",
+         strict: true,
+         schema: {
+            type: "object",
+            properties: {
+               lab_report_grade: {
+                  type: "object",
+                  properties: {
+                     overall_score: {
+                        type: "integer",
+                        minimum: 0,
+                        maximum: 10
+                     },
+                     grading_basis: {
+                        type: "string",
+                        description:
+                           "The criteria or rubric used to assess the report, adapted to the stated subject and level."
+                     },
+                     criteria: {
+                        type: "object",
+                        properties: {
+                           scientific_understanding: {
+                              type: "object",
+                              properties: {
+                                 score: {
+                                    type: "integer",
+                                    minimum: 0,
+                                    maximum: 10
+                                 },
+                                 reason: {
+                                    type: "string",
+                                    description:
+                                       "Explain the score based on the accuracy of the scientific concepts and their connection to the experiment."
+                                 }
+                              },
+                              required: ["score", "reason"],
+                              additionalProperties: false
+                           },
+                           method: {
+                              type: "object",
+                              properties: {
+                                 score: {
+                                    type: "integer",
+                                    minimum: 0,
+                                    maximum: 10
+                                 },
+                                 reason: {
+                                    type: "string",
+                                    description:
+                                       "Explain the score based on the appropriateness, clarity, and reproducibility of the documented method."
+                                 }
+                              },
+                              required: ["score", "reason"],
+                              additionalProperties: false
+                           },
+                           results_and_analysis: {
+                              type: "object",
+                              properties: {
+                                 score: {
+                                    type: "integer",
+                                    minimum: 0,
+                                    maximum: 10
+                                 },
+                                 reason: {
+                                    type: "string",
+                                    description:
+                                       "Explain the score based on the presentation, processing, and interpretation of results, including units, calculations, and graphs where relevant."
+                                 }
+                              },
+                              required: ["score", "reason"],
+                              additionalProperties: false
+                           },
+                           conclusion: {
+                              type: "object",
+                              properties: {
+                                 score: {
+                                    type: "integer",
+                                    minimum: 0,
+                                    maximum: 10
+                                 },
+                                 reason: {
+                                    type: "string",
+                                    description:
+                                       "Explain the score based on whether the conclusion addresses the aim and is supported by the reported results."
+                                 }
+                              },
+                              required: ["score", "reason"],
+                              additionalProperties: false
+                           },
+                           evaluation: {
+                              type: "object",
+                              properties: {
+                                 score: {
+                                    type: "integer",
+                                    minimum: 0,
+                                    maximum: 10
+                                 },
+                                 reason: {
+                                    type: "string",
+                                    description:
+                                       "Explain the score based on the discussion of limitations, uncertainty, reliability, and relevant improvements to the experiment."
+                                 }
+                              },
+                              required: ["score", "reason"],
+                              additionalProperties: false
+                           }
+                        },
+                        required: [
+                           "scientific_understanding",
+                           "method",
+                           "results_and_analysis",
+                           "conclusion",
+                           "evaluation"
+                        ],
+                        additionalProperties: false
+                     },
+                     comments: {
+                        type: "string",
+                        description:
+                           "Overall feedback summarising the report's quality and the main areas to improve."
+                     },
+                     strengths: {
+                        type: "array",
+                        items: {
+                           type: "string"
+                        },
+                        description:
+                           "Specific strengths supported by the submitted report."
+                     },
+                     improvements: {
+                        type: "array",
+                        items: {
+                           type: "object",
+                           properties: {
+                              title: {
+                                 type: "string",
+                                 description:
+                                    "A short title identifying the improvement."
+                              },
+                              improvement: {
+                                 type: "string",
+                                 description:
+                                    "A clear, specific explanation of what to improve and how to improve it."
+                              }
+                           },
+                           required: ["title", "improvement"],
+                           additionalProperties: false
+                        }
+                     }
+                  },
+                  required: [
+                     "overall_score",
+                     "grading_basis",
+                     "criteria",
+                     "comments",
+                     "strengths",
+                     "improvements"
+                  ],
+                  additionalProperties: false
+               }
+            },
+            required: ["lab_report_grade"],
+            additionalProperties: false
+         }
+      }
    }
 }

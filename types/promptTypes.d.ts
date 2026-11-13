@@ -3,7 +3,11 @@ type EssayGradeReport = {
    comments: string;
    strengths: string[];
    weaknesses: string[];
-   improvements: string[];
+   improvements: {
+      quote: string;
+      improvement: string;
+      possible_replacement: string;
+   }[];
 }
 
 type NoteMakerExample = {
@@ -60,3 +64,36 @@ type FillInTheBlank = {
    missingWords: string[];
    hint: string;
 }[]
+
+type LabGradeReport = {
+   overall_score: number;
+   grading_basis: string;
+   comments: string;
+   strengths: string[];
+   criteria: {
+      scientific_understanding: {
+         score: number;
+         reason: string;
+      },
+      method: {
+         score: number;
+         reason: string;
+      },
+      results_and_analysis: {
+         score: number;
+         reason: string;
+      },
+      conclusion: {
+         score: number;
+         reason: string;
+      },
+      evaluation: {
+         score: number;
+         reason: string;
+      }
+   };
+   improvements: {
+      title: string;
+      improvement: string;
+   }[];
+}

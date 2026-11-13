@@ -4,9 +4,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CustomRawIcon } from "@/components/Icons/Icon";
 import { CustomIconUrls } from "@/lib/icons";
-import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { toast } from "sonner";
+import AppWrapper from "@/components/AppWrapper/AppWrapper";
 
 type HomePageProps = {
    quizzes: QuizT[];

@@ -77,7 +77,7 @@ type TempQuiz = {
 
 type Note = {
    id: number;
-   noteName?: string;
+   noteName: string;
    folderCodeName: string;
    userid: string;
    noteid: string;

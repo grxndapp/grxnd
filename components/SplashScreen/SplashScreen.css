@@ -37,24 +37,6 @@
    max-width: 600px;
 }
 
-.splash-screen .splash-screen-title.normal-title {
-   background: linear-gradient(to bottom, var(--accent-color-70), var(--accent-color));
-   background-clip: text;
-   color: transparent;
-}
-
-.splash-screen .splash-screen-title.loading-title {
-   background: linear-gradient(to bottom, #ff9e4f, #e08700);
-   background-clip: text;
-   color: transparent;
-}
-
-.splash-screen .splash-screen-title.error-title {
-   background: linear-gradient(to bottom, #ff3131, #af0303);
-   background-clip: text;
-   color: transparent;
-}
-
 .splash-screen .splash-screen-actions {
    width: 100%;
    padding: 35px 0;

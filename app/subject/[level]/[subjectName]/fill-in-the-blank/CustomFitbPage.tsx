@@ -1,20 +1,20 @@
 'use client'
-import AppWrapper from "@/components/AppWrapper/AppWrapper";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { titleCase } from "@/lib/str";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { subjectCombinator } from "../clientHelper";
-import { ArrowLeft, Play, RotateCcw } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { generateUsingAi } from "@/app/actions/ai";
 import { fitbNoteMakerPrompt } from "@/prompts/aiFillInTheBlankMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
-import Spacing from "@/components/Spacing/Spacing";
+import { anySubjectDefIcon } from "@/utils/subjects";
+import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import ModalSelect from "@/components/ModalSelect/ModalSelect";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
 import FillInTheBlankCard from "@/components/FillInTheBlankCard/FillInTheBlankCard";
+import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcrumb";
 
 type CustomFitbPageProps = {
    noteSelected: Note;
@@ -34,9 +34,9 @@ export default function CustomFitbPage ({ notes, subject, subjectLevel }: Custom
 
    function handleLoadingCreateFitb () {
       openSplash({
-         title: <>Creating Fill in the Blank Questions <CustomSpinner color="#000" size={20} /></>,
+         title: <>Creating Questions</>,
          description: <>We are getting your fill in the blank {titleCase(subjectLevel)} {titleCase(subject)} questions...</>,
-         style: "loading",
+         style: "flashcard",
          actions: []
       })
    }
@@ -78,61 +78,54 @@ export default function CustomFitbPage ({ notes, subject, subjectLevel }: Custom
 
    return (
       <AppWrapper>
-         {aiFitb ? (<>
-            <div className="box full pd-15">
-               <div 
-                  className="text-xs full visible-link dfb align-center gap-5 line-height-10"
-                  onClick={() => router.push(subInfo.subjectPageUrl)}
-                  style={{ color: subInfo.subjectColor }}
-               >
-                  <ArrowLeft size={16} /> {titleCase(subjectLevel)} {titleCase(subject)}
-               </div>
-            </div>
-            <Spacing size={2} />
-            <FillInTheBlankCard 
-               title={`${subInfo.subjectLevel} ${subInfo.subject}`} questions={aiFitb} subjectInfo={subInfo}
-               onMakeNew={() => setAiFitb(null)} topic={JSON.parse(noteSelected?.noteJson!).title!}
+         <div className="box full">
+            <BackpackBreadcrumb
+               startingBackpack
+               links={[
+                  {
+                     label: <>{anySubjectDefIcon} {titleCase(subjectLevel)} {titleCase(subject)}</>,
+                     link: subInfo.subjectPageUrl
+                  }
+               ]}
             />
-         </>) : (<>
-            <div className="box full pd-15">
-               <div 
-                  className="text-xs full visible-link dfb align-center gap-5 line-height-10"
-                  onClick={() => router.push(subInfo.subjectPageUrl)}
-                  style={{ color: subInfo.subjectColor }}
-               >
-                  <ArrowLeft size={16} /> {titleCase(subjectLevel)} {titleCase(subject)}
+            {aiFitb ? (<>
+               <FillInTheBlankCard 
+                  title={`${subInfo.subjectLevel} ${subInfo.subject} ${JSON.parse(noteSelected?.noteJson!).title!}`} questions={aiFitb} subjectInfo={subInfo}
+                  onMakeNew={() => setAiFitb(null)} topic={JSON.parse(noteSelected?.noteJson!).title!}
+               />
+            </>) : (<>
+               <div className="box full pd-15">
+                  <div className="text-xl full bold-700 accent-color-gradient-dark-text">Fill In The Blank</div>
+                  <div className="text-xs full bold-500" style={{ color: subInfo.subjectColor }}>{subInfo.subjectLevel} {subInfo.subject}</div>
                </div>
-               <Spacing />
-               <div className="text-xl full bold-700 accent-color-gradient-dark-text">Fill In The Blank</div>
-               <div className="text-xs full bold-500" style={{ color: subInfo.subjectColor }}>{subInfo.subjectLevel} {subInfo.subject}</div>
-            </div>
-            <div className="box full pd-1 dfb column gap-15">
-               <div className="box full dfb column gap-5 pd-1">
-                  <div className="text-m full bold-600">Number of Questions</div>
-                  <div className="text-xxs full grey-5">Default number of questions is 5</div>
-                  <ModalSelect
-                     title="Choose Number of Questions"
-                     options={["5","10"]}
-                     onSelect={option => setNumQuestions(option)}
-                     defaultOption={0}
-                  />
+               <div className="box full pd-1 dfb column gap-15">
+                  <div className="box full dfb column gap-10 pd-1">
+                     <div className="text-m full bold-600">Number of Questions</div>
+                     <div className="text-xxs full grey-5">Default number of questions is 5</div>
+                     <ModalSelect
+                        title="Choose Number of Questions"
+                        options={["5","10"]}
+                        onSelect={option => setNumQuestions(option)}
+                        defaultOption={0}
+                     />
+                  </div>
+                  
+                  <div className="box full dfb column gap-10 pd-1">
+                     <div className="text-m full bold-600">Choose Note</div>
+                     <ModalSelect
+                        title="Choose Note"
+                        options={notes.map(n => JSON.parse(n.noteJson).title)}
+                        onSelect={(option, index) => setNoteSelected(notes.find((_,i) => i == index)!)}
+                     />
+                  </div>
                </div>
-               
-               <div className="box full dfb column gap-5 pd-1">
-                  <div className="text-m full bold-600">Choose Note</div>
-                  <ModalSelect
-                     title="Choose Note"
-                     options={notes.map(n => JSON.parse(n.noteJson).title)}
-                     onSelect={(option, index) => setNoteSelected(notes.find((_,i) => i == index)!)}
-                  />
+               <div className="box full pd-1 dfb column gap-15">
+                  <AwaitButton className="xxs pd-15 pdx-3 accent-hover radius-20" onClick={handleCreateFitbQuestionsAI}>
+                     <Play size={18} /> Begin Questions!
+                  </AwaitButton>
                </div>
-            </div>
-            <div className="box full pd-1 dfb column gap-15">
-               <AwaitButton className="xxs pd-15 pdx-3 accent-hover radius-20" onClick={handleCreateFitbQuestionsAI}>
-                  <Play size={18} /> Begin Questions!
-               </AwaitButton>
-            </div>
-         </>)}
+            </>)}
+         </div>
       </AppWrapper>
    )
 }

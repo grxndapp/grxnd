@@ -4,7 +4,6 @@ import { retrieveSubjectTopic, subjectLevels, subjects } from "@/utils/subjects"
 import { RefObject, useEffect, useState } from "react";
 import { generateUsingAi } from "../actions/ai";
 import { subjectNoteMakerPrompt } from "@/prompts/subjectNoteMaker";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { NoteIntensity } from "@/prompts/promptExtras";
@@ -41,9 +40,9 @@ export default function SubjectNoteMaker ({ contentRef, defaultSubjectLevel }: {
 
 	function handleLoadingCreateNote () {
 		openSplash({
-			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
+			title: <>Creating Note</>,
 			description: <>Creating your <b>{subjectLevel} {subject} {topic}</b> note...</>,
-			style: "loading",
+			style: "note",
 			actions: []
 		})
 	}

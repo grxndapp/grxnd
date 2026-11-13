@@ -74,7 +74,7 @@ export default function BackPackPage ({ quizzes, notes }: BackPackPageProps) {
    
    return (
       <AppWrapper>
-         <div className="box full h-full pd-1">
+         <div className="box full h-full">
             <div className="box full pd-05 dfb column">
                <div className="text-xl bold-700 full">Your Backpack</div>
                <div className="text-xxs grey-5 full">

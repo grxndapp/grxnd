@@ -1,5 +1,5 @@
 import { titleCase } from "@/lib/str"
-import { Dna, FlaskConical, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
+import { Dna, FlaskConical, GraduationCap, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
 import { JSX } from "react"
 import { fullSubjectTopicsJson } from "./fullSubjectJson"
 
@@ -38,6 +38,7 @@ export const subjectPastelBgColors: Record<string, string> = {
 export function isAmongstDefaultSubjects (text: string) {
 	const defaultSubjects = [ "Math", "Physics", "Biology", "Chemistry", "English", "Computer Science", "Administration" ]
 	const fullSubjectInfo = fullSubjectBreakDown(text);
+	console.log(fullSubjectInfo)
 	return (defaultSubjects.includes(fullSubjectInfo.subject));
 }
 
@@ -83,6 +84,7 @@ export const subjectIcon: Record<string, JSX.Element> = {
 	"Administration": <Lock size={20} />,
 }
 
+export const anySubjectDefIcon = <GraduationCap size={20} />
 
 function hslToHex(h: number, s: number, l: number): string {
 	s /= 100;

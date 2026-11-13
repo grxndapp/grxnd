@@ -7,7 +7,6 @@ import { generateUsingAi } from "../actions/ai";
 import { buildFileNotePrompt } from "@/prompts/subjectNoteMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { titleCase } from "@/lib/str";
 import { NoteIntensity } from "@/prompts/promptExtras";
 import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
@@ -248,9 +247,9 @@ export default function DocumentNoteMaker ({ saveNoteFolderName }: { saveNoteFol
 
 	function handleLoadingCreateNote () {
 		openSplash({
-			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
+			title: <>Creating Note</>,
 			description: <>Creating your note from <b>{fileInfo?.filename}</b>...</>,
-			style: "loading",
+			style: "note",
 			actions: []
 		})
 	}

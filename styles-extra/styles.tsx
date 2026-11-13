@@ -118,3 +118,10 @@ export const NoteSectionCardStyles: React.CSSProperties = {
    padding: "20px 25px", borderRadius: "30px", cursor: "initial",
    width: "100%", boxShadow: "none",
 }
+
+export const LabReportCriteriaCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid #f3f3f3",
+   padding: "20px 25px", borderRadius: "30px", cursor: "initial",
+   width: "100%", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)",
+   maxWidth: "550px"
+}

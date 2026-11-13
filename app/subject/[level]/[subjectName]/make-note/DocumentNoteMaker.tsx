@@ -8,7 +8,6 @@ import { buildFileNotePrompt } from "@/prompts/subjectNoteMaker";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { fullSubjectBreakDown, isAmongstDefaultSubjects } from "@/utils/subjects";
-import { CustomSpinner } from "@/components/Spinner/Spinner";
 import { NoteIntensity } from "@/prompts/promptExtras";
 import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 import { useUser } from "@/hooks/useUser";
@@ -27,6 +26,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 	const { user } = useUser();
    const { openSplash, closeSplash } = useSplashScreen();
    const [inputFileValue, setInputFileValue] = useState<any | null>('');
+   const [isDragging, setIsDragging] = useState(false);
    const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
    const [documentFile, setDocumentFile] = useState<File | null>(null);
 	const [intensity, setIntensity] = useState<NoteIntensity>("high-school");
@@ -59,11 +59,17 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
       setFileInfo(null);
    }
 
+   const handleDrop = (e: any) => {
+      e.preventDefault();
+      setIsDragging(false);
+      onFileUpload({ target: { files: e.dataTransfer.files } });
+   };
+
 	function handleLoadingCreateNote () {
 		openSplash({
-			title: <>Creating Note <CustomSpinner color="#000" size={20} /></>,
+			title: <>Creating Note</>,
 			description: <>Creating your note from <b>{fileInfo?.filename}</b>...</>,
-			style: "loading",
+			style: "note",
 			actions: []
 		})
 	}
@@ -156,12 +162,25 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
          <Spacing size={4} />
       </>) : (fileInfo == null) ? (<>
          <div className="box full pd-05">
+				<Spacing />
             <div className="text-m bold-600 full">Upload Document</div>
             <div className="text-xxs full grey-5">Upload the document you want to learn more about</div>
-            <div className="box full pd-2 dfb column gap-10">
+            <div 
+					className="box full pd-2 dfb column gap-10"
+					onDragOver={(e) => {
+						e.preventDefault();
+						setIsDragging(true);
+					}}
+					onDragLeave={() => setIsDragging(false)}
+					onDrop={handleDrop}
+					
+				>
                <label htmlFor="drag-and-drop-file-input">
-                  <div className="drag-and-drop-media-upload-area">
-                     <div className="text-xs full text-center">Drag and Drop or Click to upload media asset</div>
+                  <div className={`drag-and-drop-media-upload-area ${isDragging && 'dragging'}`}>
+							<div className="box full dfb column align-center">
+                     	<div className="text-m full text-center bold-500 accent-color-gradient-text">Drag and Drop / Click to Upload</div>
+                     	<div className="text-xs full text-center">Attach a PDF file</div>
+							</div>
                   </div>
                   <input 
                      type="file" name="file" id="drag-and-drop-file-input" value={inputFileValue}

@@ -15,9 +15,10 @@ export const dynamic = "force-dynamic";
 export default async function SubjectNotesStartQuiz ({ params }: SubjectStatProps) {
    await dalRequireSubscriber();
 
-   const { subjectName, level } = await params;
+   const { subjectName: sn, level } = await params;
    const actualLevel = level == "none" ? "" : level.replaceAll("-"," ");
 
+   const subjectName = sn.replaceAll("-"," ");
    const subjectInfo = titleCase(`${actualLevel} ${subjectName}`);
    const isDefaultSubject = isAmongstDefaultSubjects(subjectInfo);
 

@@ -1,15 +1,15 @@
 'use client'
 import { titleCase } from "@/lib/str";
-import { customSubjectToBoldColor, subjectColors } from "@/utils/subjects";
-import { ArrowLeft, File, LibraryBig } from "lucide-react"
-import { useRouter } from "next/navigation";
+import { anySubjectDefIcon, subjectIcon } from "@/utils/subjects";
+import { File, LibraryBig } from "lucide-react";
 import { useRef, useState } from "react";
-import { getSubjectPageUrl } from "../helper";
+import { subjectCombinator } from "../clientHelper";
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import SwitchSlide from "@/components/SwitchSlide/SwitchSlide";
 import DocumentNoteMaker from "./DocumentNoteMaker";
 import SubjectNoteMaker from "./SubjectNoteMaker";
 import Spacing from "@/components/Spacing/Spacing";
+import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcrumb";
 
 type CreateNewNoteProps = {
    isDefaultSubject: boolean;
@@ -18,25 +18,29 @@ type CreateNewNoteProps = {
 }
 
 export default function CreateNewNote ({ subject, subjectLevel, isDefaultSubject }: CreateNewNoteProps) {
-   const router = useRouter();
-
    // default subject states and references
    const contentRef = useRef<HTMLDivElement | null>(null);
    const [formType, setFormType] = useState<'document' | 'subject'>('subject');
 
    // cosmetics
-   const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
-   const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
-   const subjectFullName = titleCase(`${subjectLevel} ${subject}`);
+   const subjectInfo = subjectCombinator(subject, subjectLevel)
    
    return (
       <AppWrapper contentRef={contentRef}>
          <div className="box full">
-            <div className="text-xxs fit visible-link mb-1 accent-color dfb align-center" onClick={() => router.push(subjectPageUrl)}>
-               <ArrowLeft size={17} /> Back
+            <BackpackBreadcrumb
+               startingBackpack
+               links={[
+                  {
+                     label: <>{subjectInfo.isDefaultSubject ? subjectIcon[subjectInfo.subject] : anySubjectDefIcon} {titleCase(subjectLevel)} {titleCase(subject)}</>,
+                     link: subjectInfo.subjectPageUrl
+                  }
+               ]}
+            />
+            <div className="text-xl full bold-700 accent-color-gradient-dark-text">Create Note</div>
+            <div className="text-xs full bold-500" style={{ color: subjectInfo.subjectColor }}>
+               {subjectInfo.subjectLevel} {subjectInfo.subject}
             </div>
-            <div className="text-xl bold-700 full no-trans" style={{ color: subjectColor }}>Create Note</div>
-            <div className="text-xxs full mb-1 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</div>
             <Spacing />
 
             {isDefaultSubject ? (<>
@@ -49,10 +53,10 @@ export default function CreateNewNote ({ subject, subjectLevel, isDefaultSubject
                   defaultKeySelectedIndex={1}
                />
 
-               {(formType == "document") && (<DocumentNoteMaker subjectFullName={subjectFullName}  />)}
-               {(formType == "subject") && (<SubjectNoteMaker contentRef={contentRef} subjectFullName={subjectFullName} />)}
+               {(formType == "document") && (<DocumentNoteMaker subjectFullName={subjectInfo.subjectFullName}  />)}
+               {(formType == "subject") && (<SubjectNoteMaker contentRef={contentRef} subjectFullName={subjectInfo.subjectFullName} />)}
             </>) : (<>
-               <DocumentNoteMaker subjectFullName={subjectFullName}  />
+               <DocumentNoteMaker subjectFullName={subjectInfo.subjectFullName}  />
             </>)}
          </div>
       </AppWrapper>

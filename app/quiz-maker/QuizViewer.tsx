@@ -84,6 +84,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
    const [questionAnswered, setQuestionAnswered] = useState(false);
    const [score, setScore] = useState(0)
    const [retake, setRetake] = useState(false);
+   const [savedQuiz, setSavedQuiz] = useState(false);
    const [showAnswerExplanation, setShowAnswerExplanation] = useState(false);
 
    const answerQuestion = () => {
@@ -109,6 +110,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
       const saved = await userSavedQuiz(subjectLevel, subject, subjectTopic, score, JSON.stringify(quiz));
       if (saved) {
          toast.success("Saved Quiz");
+         setSavedQuiz(true);
       } else {
          toast.error("Failed to save quiz")
       }
@@ -141,7 +143,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
                   url={`/subjects/${canGetSubjectIcon ? subject.toLowerCase().replaceAll(" ", "-") : 'any'}.png`}
                   size={140}
                />
-               <div className='text-l bold-700 text-center'>{subjectTopic}</div>
+               <div className='text-l bold-700 text-center accent-color-gradient-dark-text'>{subjectTopic}</div>
                <div className='text-s bold-500 text-center'>{titleCase(subjectLevel)} {titleCase(subject)}</div>
                <div className="text-xs grey pd-1 text-center">
                   Once you begin this quiz, you can't go back and you must complete it.
@@ -154,7 +156,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
          
          </> : (quizFormDisplay == "quiz") ? <>
             <div className="quiz-begin">
-               <div className="text-ml bold-700 pd-1 mt-05 no-trans">{titleCase(subjectTopic)}</div>
+               <div className="text-ml bold-700 pd-1 mt-05 no-trans accent-color-gradient-dark-text">{titleCase(subjectTopic)}</div>
                <div className="text-xxxs no-trans grey-5">Question {questionIndex+1} of {quizQuestions.length}</div>
                <div className="question text-xs pd-1 no-trans"><RenderMarkdown content={quizQuestions[questionIndex].question} /></div>
                <div className="text-xxs no-trans">{questionTypeFormatting(quizQuestions[questionIndex].questionType)}</div>
@@ -217,7 +219,7 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
 
          </> : <>
             {/* once the quiz ends */}
-            <div className="text-ml text-left bold-700 pd-1">{subjectTopic}</div>
+            <div className="text-ml text-left bold-700 pd-1 accent-color-gradient-dark-text">{subjectTopic}</div>
             <br />
             <div className="box dfb full">
                <ProgressRing
@@ -233,13 +235,13 @@ export default function QuizViewer ({ quiz, subject, subjectLevel, subjectTopic,
             <br />
 
             <div className="actions">
-               <div className="box full pd-1">
+               {(!savedQuiz) && (<div className="box full pd-1">
                   <div className="text-m bold-600 full">Save Quiz</div>
                   <div className="text-xs grey-5 full mb-1">Try the quiz again later, practice and get better!</div>
                   <AwaitButton className='xs full mw-300 pd-12 pdx-2 tiny-shadow' onClick={handleSaveQuiz}>
                      <Bookmark size={17} /> Save Quiz
                   </AwaitButton>
-               </div>
+               </div>)}
                
                <div className="box full pd-1">
                   <div className="text-m bold-600 full">Reflection</div>

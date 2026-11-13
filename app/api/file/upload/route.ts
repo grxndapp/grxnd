@@ -3,6 +3,13 @@ import { handleUploadPresigned, type HandleUploadPresignedBody } from "@vercel/b
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions"; // Adjust path
 
+const allowedContentTypes = [
+   "application/pdf",
+   "text/plain",
+   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+   "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+]
+
 export async function POST(request: Request) {
   try {
       const body = await request.json() as HandleUploadPresignedBody;
@@ -19,7 +26,7 @@ export async function POST(request: Request) {
             const token = await issueSignedToken({
                pathname,
                operations: ["put"],
-               allowedContentTypes: ["application/pdf"],
+               allowedContentTypes: allowedContentTypes,
                maximumSizeInBytes: 20 * 1024 * 1024,
                validUntil: Date.now() + 10 * 60 * 1000
             });
@@ -27,7 +34,7 @@ export async function POST(request: Request) {
             return {
                token,
                urlOptions: {
-                  allowedContentTypes: ["application/pdf"],
+                  allowedContentTypes: allowedContentTypes,
                   maximumSizeInBytes: 20 * 1024 * 1024,
                   addRandomSuffix: true
                }

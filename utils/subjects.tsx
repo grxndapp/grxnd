@@ -2,6 +2,7 @@ import { titleCase } from "@/lib/str"
 import { Dna, FlaskConical, GraduationCap, Lock, Monitor, NotebookPen, Orbit, Sigma } from "lucide-react"
 import { JSX } from "react"
 import { fullSubjectTopicsJson } from "./fullSubjectJson"
+import { AdministrationLoader, AnySubjectLoader, BiologyLoader, ChemistryLoader, ComputerScienceLoader, EnglishLoader, MathLoader, PhysicsLoader } from "@/components/SubjectLoaders/SubjectLoaders"
 
 export const subjectLevels = [
 	"National 5", "Higher", "Advanced Higher"
@@ -38,7 +39,6 @@ export const subjectPastelBgColors: Record<string, string> = {
 export function isAmongstDefaultSubjects (text: string) {
 	const defaultSubjects = [ "Math", "Physics", "Biology", "Chemistry", "English", "Computer Science", "Administration" ]
 	const fullSubjectInfo = fullSubjectBreakDown(text);
-	console.log(fullSubjectInfo)
 	return (defaultSubjects.includes(fullSubjectInfo.subject));
 }
 
@@ -82,6 +82,17 @@ export const subjectIcon: Record<string, JSX.Element> = {
 	"English": <NotebookPen size={20} />,
 	"Computer Science": <Monitor size={20} />,
 	"Administration": <Lock size={20} />,
+}
+
+export const subjectAnimatedIcons: Record<string, JSX.Element> = {
+	"Math": <MathLoader size={20} />,
+	"Physics": <PhysicsLoader size={20} />,
+	"Biology": <BiologyLoader size={20} />,
+	"Chemistry": <ChemistryLoader size={20} />,
+	"English": <EnglishLoader size={20} />,
+	"Computer Science": <ComputerScienceLoader size={20} />,
+	"Administration": <AdministrationLoader size={20} />,
+	"Any": <AnySubjectLoader size={20} />
 }
 
 export const anySubjectDefIcon = <GraduationCap size={20} />

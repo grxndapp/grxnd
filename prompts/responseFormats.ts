@@ -444,5 +444,44 @@ export const ResponseFormats = {
             additionalProperties: false
          }
       }
+   },
+   LyricGimmick: {
+      type: "json_schema",
+      json_schema: {
+         name: "lyric_analogy_response",
+         strict: true,
+         schema: {
+            type: "object",
+            properties: {
+               lyric: {
+                  type: "array",
+                  minItems: 10,
+                  maxItems: 10,
+                  items: {
+                     type: "object",
+                     properties: {
+                        line_one: {
+                           type: "string",
+                           minLength: 3,
+                           maxLength: 31,
+                           pattern: "^[^0-9$\\\\*_#\"\\n]+$"
+                        },
+                        line_two: {
+                           type: "string",
+                           minLength: 3,
+                           maxLength: 31,
+                           pattern: "^[^0-9$\\\\*_#\"\\n]+$"
+                        },
+                        meaning: { type: "string", minLength: 1 }
+                     },
+                     required: ["line_one", "line_two", "meaning"],
+                     additionalProperties: false
+                  }
+               }
+            },
+            required: ["lyric"],
+            additionalProperties: false
+         }
+      }
    }
 }

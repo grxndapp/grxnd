@@ -935,3 +935,486 @@ export function SixtySevenLoader(props: SubjectLoaderProps) {
       </Frame>
    );
 }
+
+const extraLoaderStyles = `
+  .grxnd-subject-loader .el-graduate {
+    transform-origin: 80px 126px;
+  }
+
+  .grxnd-subject-loader .el-cap {
+    transform-origin: 80px 48px;
+  }
+
+  .grxnd-subject-loader .el-tassel {
+    transform-origin: 107px 36px;
+  }
+
+  .grxnd-subject-loader .el-wave-arm {
+    transform-origin: 105px 96px;
+  }
+
+  .grxnd-subject-loader .el-lyric-sheet {
+    transform-origin: 80px 119px;
+  }
+
+  .grxnd-subject-loader .el-singing-mouth {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .grxnd-subject-loader .el-lyric-highlight {
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+
+  .grxnd-subject-loader .el-equalizer-bar {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .grxnd-subject-loader .el-graduate {
+      animation: el-graduate-bob 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-cap {
+      animation: el-cap-tip 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-tassel {
+      animation: el-tassel-swing 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-wave-arm {
+      animation: el-arm-reach 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-lyric-sheet {
+      animation: el-lyric-sway 3.2s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-singing-mouth {
+      animation: el-sing .8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-lyric-highlight {
+      animation: el-lyric-progress 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-lyric-line-two {
+      animation-delay: 1.6s;
+    }
+
+    .grxnd-subject-loader .el-lyric-line-three {
+      animation-delay: 3.2s;
+    }
+
+    .grxnd-subject-loader .el-music-note {
+      animation: el-note-rise 3.2s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .el-music-note-two {
+      animation-delay: -1.6s;
+    }
+
+    .grxnd-subject-loader .el-equalizer-bar {
+      animation: el-equalizer .9s ease-in-out infinite alternate;
+    }
+
+    .grxnd-subject-loader .el-bar-two {
+      animation-delay: -.3s;
+    }
+
+    .grxnd-subject-loader .el-bar-three {
+      animation-delay: -.6s;
+    }
+
+    .grxnd-subject-loader .el-bar-four {
+      animation-delay: -.15s;
+    }
+
+    .grxnd-subject-loader .el-bar-five {
+      animation-delay: -.45s;
+    }
+  }
+
+  @keyframes el-graduate-bob {
+    0%, 100% { transform: translateY(0); }
+    45%, 60% { transform: translateY(-3px); }
+  }
+
+  @keyframes el-cap-tip {
+    0%, 18%, 88%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    40%, 58% {
+      transform: translate(7px, -16px) rotate(12deg);
+    }
+    72% {
+      transform: translate(3px, -7px) rotate(5deg);
+    }
+  }
+
+  @keyframes el-tassel-swing {
+    0%, 18%, 88%, 100% { transform: rotate(0deg); }
+    40% { transform: rotate(-20deg); }
+    58% { transform: rotate(12deg); }
+    72% { transform: rotate(-8deg); }
+  }
+
+  @keyframes el-arm-reach {
+    0%, 10%, 95%, 100% { transform: rotate(0deg); }
+    25%, 78% { transform: rotate(-100deg); }
+  }
+
+  @keyframes el-lyric-sway {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-5px) rotate(3deg); }
+  }
+
+  @keyframes el-sing {
+    0%, 100% { transform: scale(1, .7); }
+    50% { transform: scale(1.1, 1.15); }
+  }
+
+  @keyframes el-lyric-progress {
+    0%, 5% { transform: scaleX(0); opacity: 0; }
+    8% { opacity: 1; }
+    30%, 36% { transform: scaleX(1); opacity: 1; }
+    45%, 100% { transform: scaleX(1); opacity: 0; }
+  }
+
+  @keyframes el-note-rise {
+    0% { transform: translate(0, 7px); opacity: 0; }
+    20% { opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: translate(3px, -15px); opacity: 0; }
+  }
+
+  @keyframes el-equalizer {
+    from { transform: scaleY(.4); }
+    to { transform: scaleY(1); }
+  }
+`;
+
+/* ── ANY SUBJECT ─────────────────────────────────────── */
+
+export function AnySubjectLoader(props: SubjectLoaderProps) {
+  return (
+    <Frame {...props}>
+      <style>{extraLoaderStyles}</style>
+
+      <Shadow width={30} />
+      <Sparkle x={26} y={57} color="#F0C366" small />
+      <Sparkle x={135} y={78} color="#A99AD8" small />
+
+      <g className="el-graduate">
+        {/* Shoes */}
+        <rect
+          x="54" y="123" width="23" height="10"
+          rx="5" fill="#73608F"
+        />
+        <rect
+          x="83" y="123" width="23" height="10"
+          rx="5" fill="#73608F"
+        />
+
+        {/* Graduation gown */}
+        <path
+          d="M63 85Q80 79 97 85L107 125Q80 134 53 125Z"
+          fill="#A18ACD"
+        />
+        <path
+          d="M92 85L97 85L107 125Q101 128 94 129Z"
+          fill="#8C73BB"
+        />
+
+        {/* Collar and stole */}
+        <path
+          d="M65 85L80 96L95 85L89 108L80 102L71 108Z"
+          fill="#F4D17E"
+        />
+        <path
+          d="M80 103V125"
+          stroke="#C3ADE4"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Resting arm */}
+        <path
+          d="M58 94Q48 101 48 113"
+          stroke="#A18ACD"
+          strokeWidth="13"
+          strokeLinecap="round"
+        />
+        <circle cx="48" cy="116" r="6" fill="#F2C7A5" />
+
+        {/* Neck */}
+        <rect
+          x="73" y="78" width="14" height="12"
+          rx="5" fill="#E7B58F"
+        />
+
+        {/* Ears */}
+        <circle cx="54" cy="63" r="6" fill="#EABD99" />
+        <circle cx="106" cy="63" r="6" fill="#EABD99" />
+
+        {/* Head */}
+        <rect
+          x="55" y="39" width="50" height="46"
+          rx="22" fill="#F5D1AE"
+        />
+
+        {/* Hair, visible when the cap lifts */}
+        <path
+          d="
+            M55 57
+            Q52 37 68 35
+            Q80 27 94 37
+            Q107 39 105 57
+            L99 50
+            Q89 51 83 44
+            Q72 54 61 49
+            Z
+          "
+          fill="#695066"
+        />
+
+        <Face x={80} y={64} />
+
+        {/* Arm reaches toward the cap */}
+        <g className="el-wave-arm">
+          <path
+            d="M105 96Q119 101 131 91"
+            stroke="#A18ACD"
+            strokeWidth="13"
+            strokeLinecap="round"
+          />
+          <path
+            d="M128 94L132 90"
+            stroke="#CFBCE9"
+            strokeWidth="8"
+            strokeLinecap="round"
+          />
+          <ellipse
+            cx="136" cy="87" rx="6" ry="7"
+            transform="rotate(30 136 87)"
+            fill="#F5D1AE"
+          />
+          <path
+            d="M134 84L137 88"
+            stroke="#DFAC86"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </g>
+
+        {/* Cap lifts, tilts, then returns */}
+        <g className="el-cap">
+          <path
+            d="M58 35H102V46Q80 56 58 46Z"
+            fill="#655185"
+          />
+          <path
+            d="M43 32L80 19L117 32L80 46Z"
+            fill="#8D75B7"
+          />
+          <path
+            d="M43 32L80 46L117 32V36L80 50L43 36Z"
+            fill="#746096"
+          />
+          <path
+            d="M54 31L80 22L101 29"
+            stroke="#B8A1DB"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          <circle cx="80" cy="32" r="3" fill="#EAC573" />
+
+          <path
+            d="M82 32L107 36"
+            stroke="#F3D184"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+
+          <g className="el-tassel">
+            <path
+              d="M107 36V53"
+              stroke="#F3D184"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <circle cx="107" cy="53" r="2.5" fill="#DFB65F" />
+            <path
+              d="M104 55H110L112 64Q107 67 102 64Z"
+              fill="#F3CF7A"
+            />
+            <path
+              d="M107 57V63"
+              stroke="#D9AB52"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </g>
+        </g>
+      </g>
+    </Frame>
+  );
+}
+
+/* ── LYRIC GIMMICK ───────────────────────────────────── */
+
+export function LyricGimmickLoader(props: SubjectLoaderProps) {
+  return (
+    <Frame {...props}>
+      <style>{extraLoaderStyles}</style>
+
+      <Shadow width={30} />
+      <Sparkle x={132} y={111} color="#EBC168" small />
+
+      {/* Floating musical note */}
+      <g transform="translate(24 65) rotate(-12)">
+        <g className="el-music-note">
+          <ellipse
+            cx="0" cy="8" rx="6" ry="4.5"
+            transform="rotate(-20 0 8)"
+            fill="#AD8BD3"
+          />
+          <path
+            d="M5 7V-13Q8-8 14-7"
+            stroke="#AD8BD3"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
+
+      {/* Floating paired notes */}
+      <g transform="translate(128 49) rotate(10)">
+        <g className="el-music-note el-music-note-two">
+          <ellipse
+            cx="-4" cy="12" rx="4.5" ry="3.5"
+            transform="rotate(-20 -4 12)"
+            fill="#68BCA7"
+          />
+          <ellipse
+            cx="10" cy="8" rx="4.5" ry="3.5"
+            transform="rotate(-20 10 8)"
+            fill="#68BCA7"
+          />
+          <path
+            d="M0 11V-7L14-11V7M0-2L14-6"
+            stroke="#68BCA7"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
+
+      <g className="el-lyric-sheet">
+        {/* Sheet depth */}
+        <path
+          d="M53 31H98L116 49V119Q116 131 104 131H53Q41 131 41 119V43Q41 31 53 31Z"
+          fill="#CA839C"
+        />
+
+        {/* Main sheet */}
+        <path
+          d="M49 27H94L112 45V115Q112 127 100 127H49Q37 127 37 115V39Q37 27 49 27Z"
+          fill="#F7EAF0"
+        />
+
+        {/* Folded corner */}
+        <path
+          d="M94 27V39Q94 45 100 45H112"
+          fill="#E8B6CD"
+        />
+        <path
+          d="M94 28V39Q94 45 100 45H111"
+          stroke="#DDA4BE"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+
+        {/* Small title mark */}
+        <rect
+          x="49" y="39" width="25" height="5"
+          rx="2.5" fill="#D9A3BC"
+        />
+
+        {/* Lyric lines */}
+        {[
+          { y: 54, width: 49, className: "" },
+          { y: 65, width: 39, className: "el-lyric-line-two" },
+          { y: 76, width: 45, className: "el-lyric-line-three" },
+        ].map(({ y, width, className }) => (
+          <g key={y}>
+            <rect
+              x="49" y={y} width={width} height="4"
+              rx="2" fill="#E3CEDD"
+            />
+            <rect
+              className={`el-lyric-highlight ${className}`}
+              x="49" y={y} width={width} height="4"
+              rx="2" fill="#AA80BF"
+            />
+          </g>
+        ))}
+
+        {/* Singing face */}
+        <path
+          d="M59 94Q63 89 67 94M85 94Q89 89 93 94"
+          stroke="#68516D"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        />
+        <ellipse
+          cx="56" cy="98" rx="4" ry="2.5"
+          fill="#EDA3B7"
+        />
+        <ellipse
+          cx="96" cy="98" rx="4" ry="2.5"
+          fill="#EDA3B7"
+        />
+
+        <g className="el-singing-mouth">
+          <ellipse
+            cx="76" cy="100" rx="4.5" ry="5"
+            fill="#68516D"
+          />
+          <ellipse
+            cx="76" cy="102.5" rx="2.5" ry="1.5"
+            fill="#EAA0B4"
+          />
+        </g>
+
+        {/* Tiny equalizer */}
+        <g fill="#B692CB">
+          {[
+            { x: 60, height: 6, className: "" },
+            { x: 67, height: 10, className: "el-bar-two" },
+            { x: 74, height: 12, className: "el-bar-three" },
+            { x: 81, height: 9, className: "el-bar-four" },
+            { x: 88, height: 6, className: "el-bar-five" },
+          ].map(({ x, height, className }) => (
+            <rect
+              key={x}
+              className={`el-equalizer-bar ${className}`}
+              x={x}
+              y={120 - height}
+              width="4"
+              height={height}
+              rx="2"
+            />
+          ))}
+        </g>
+      </g>
+    </Frame>
+  );
+}

@@ -7,6 +7,7 @@ import { useSplashScreen } from "./SplashScreenContext"
 import {
    AdministrationLoader, BiologyLoader, ChemistryLoader,
    ComputerScienceLoader, EnglishLoader, FlashcardMakingLoader, 
+   LyricGimmickLoader, 
    MathLoader, NoteMakingLoader, PhysicsLoader, QuizLoader, SixtySevenLoader
 } from '@/components/SubjectLoaders/SubjectLoaders'
 import { CustomRawIcon } from "../Icons/Icon"
@@ -42,7 +43,8 @@ export default function SplashScreen ({ title, description, style, actions, back
       "note": <NoteMakingLoader size={iconsSize} />,
       "flashcard": <FlashcardMakingLoader size={iconsSize} />,
       "67": <SixtySevenLoader size={iconsSize} />,
-      "error": <CustomRawIcon url={ErrorIcon.src} size={200} />
+      "lyrics": <LyricGimmickLoader size={iconsSize} />,
+      "error": <CustomRawIcon url={ErrorIcon.src} size={200} />,
    }
 
    return (<div className="splash-screen-container">

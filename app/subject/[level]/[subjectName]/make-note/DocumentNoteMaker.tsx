@@ -213,7 +213,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 				/>
 			</div>
 			<div className="box full dfb justify-start pd-1">
-				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400 accent-hover" onClick={createNoteAI}>
+				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400 accent-hover radius-20" onClick={createNoteAI}>
 					<NotebookPen size={17} /> Generate Note
 				</AwaitButton>
 			</div>

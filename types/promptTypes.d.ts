@@ -102,3 +102,10 @@ type Flashcard = {
    question: string;
    answer: string;
 }
+
+type Lyric = {
+   line_one: string;
+   line_two: string;
+   meaning: string;
+}
+type LyricGimmick = Lyric[]

@@ -8,7 +8,7 @@ import { getSubjectPageUrl } from "./helper"
 import { formatMilliseconds } from "@/utils/date"
 import { useModal } from "@/components/Modal/ModalContext"
 import { DeleteNotes } from "@/modal-forms/DeleteNote"
-import { FillInTheBlankIllustration, FlashcardsIllustration, NotesIllustration, QuizIllustration, SixtySevenIllustration, StudyPlanIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons"
+import { FillInTheBlankIllustration, FlashcardsIllustration, LyricGimmickIllustration, NotesIllustration, QuizIllustration, SixtySevenIllustration, StudyPlanIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons"
 import AppWrapper from "@/components/AppWrapper/AppWrapper"
 import Spacing from "@/components/Spacing/Spacing"
 import RenameNote from "@/modal-forms/RenameNote"
@@ -111,11 +111,17 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                         description="Learn a topic very fast with fast (flash) cards"
                      />
                      <StudyMethodCard
+                        icon={<LyricGimmickIllustration size={studyMethodIconSize} />}
+                        onClick={() => router.push(`${subjectPageUrl}/lyric-gimmick`)}
+                        title="Lyric Gimmick"
+                        description="Helps you learn any concept with stories, analogies or lyrics"
+                     />
+                     {/* <StudyMethodCard
                         icon={<StudyPlanIllustration size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}
                         title="Make Study Plan"
                         description="Coming Soon. Helps you plan your time for studying toward a certain date"
-                     />
+                     /> */}
                      <StudyMethodCard
                         icon={<SixtySevenIllustration width={studyMethodIconSize} height={studyMethodIconSize} size={studyMethodIconSize} />}
                         // onClick={() => router.push(`${subjectPageUrl}/make-note`)}

@@ -46,8 +46,6 @@ export default async function page({ params , searchParams}: LyricGimmickProps) 
       })
    );
 
-   console.log(customSubjectNotes)
-
    if (customSubjectNotes.success) {
       return (
          <LyricGimmickPage 

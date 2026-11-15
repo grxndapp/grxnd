@@ -313,3 +313,77 @@ export function SixtySevenIllustration(props: IconProps) {
       </svg>
    );
 }
+
+// Lyric Gimmick: a lyric sheet with headphones and a musical note.
+export function LyricGimmickIllustration(props: IconProps) {
+  return (
+    <EmojiFrame {...props}>
+      {/* Lyric sheet */}
+      <rect x="16" y="13" width="34" height="43" rx="5" fill="#DDD6FE" />
+      <rect x="13" y="10" width="34" height="43" rx="5" fill="#FFFFFF" />
+
+      {/* Highlighted lyric */}
+      <rect x="19" y="24" width="22" height="8" rx="3" fill="#FEF3C7" />
+      <path
+        d="M22 28h15"
+        stroke="#F59E0B"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M21 37h18M21 44h11"
+        stroke="#C4B5FD"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      {/* Headphones */}
+      <path
+        d="M8 32V24a22 22 0 0 1 44 0v8"
+        stroke="#7C3AED"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <rect x="4" y="27" width="10" height="17" rx="5" fill="#8B5CF6" />
+      <rect x="47" y="27" width="10" height="17" rx="5" fill="#8B5CF6" />
+      <path
+        d="M8 32v7M51 32v7"
+        stroke="#C4B5FD"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+
+      {/* Musical note */}
+      <path
+        d="M47 52V40l11-3v12"
+        stroke="#EC4899"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="m47 40 11-3v5l-11 3Z" fill="#EC4899" />
+      <ellipse
+        cx="43.5"
+        cy="53"
+        rx="5"
+        ry="3.5"
+        transform="rotate(-20 43.5 53)"
+        fill="#EC4899"
+      />
+      <ellipse
+        cx="54.5"
+        cy="50"
+        rx="5"
+        ry="3.5"
+        transform="rotate(-20 54.5 50)"
+        fill="#EC4899"
+      />
+
+      {/* Sparkle */}
+      <path
+        d="m55 6 1.8 4.2L61 12l-4.2 1.8L55 18l-1.8-4.2L49 12l4.2-1.8Z"
+        fill="#FBBF24"
+      />
+    </EmojiFrame>
+  );
+}

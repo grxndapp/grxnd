@@ -2,7 +2,7 @@
 import "./AppWrapper.css"
 import "@/styles/app.css"
 import { ReactNode, RefObject, useEffect, useState } from 'react'
-import { Backpack, ChevronRight, House, UserRoundCog } from 'lucide-react'
+import { Backpack, ChevronRight, House, Menu, UserRoundCog } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { CustomIcon } from '../Icons/Icon'
@@ -10,7 +10,7 @@ import { useModal } from "../Modal/ModalContext"
 import { getCurrentUserScore } from "@/app/actions/user"
 import { formatNumber } from "@/utils/num"
 import userDefaultImage from "@/public/user-def.png"
-import Sidebar from "../Sidebar/Sidebar"
+import Sidebar, { routes } from "../Sidebar/Sidebar"
 
 export default function AppWrapper ({ children, noNavbar, contentRef }: { children: ReactNode, noNavbar?: boolean, contentRef?: RefObject<any | null> }) {
    const router = useRouter();
@@ -67,10 +67,27 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
          )
       })
    }
+   
+   function handleMenuModal () {
+      showModal({
+         content: (
+            <div className="box full pd-15 pdx-15 dfb column gap-10">
+               <div className="text-xxl bold-600">Menu</div>
+               <div className="box full dfb column gap-10">
+                  {routes.map((route, index) => (
+                     <div key={index} className="sidebar-item-mobile" onClick={() => { router.push(route.href); close(); }}>
+                        {route.icon} {route.label}
+                     </div>
+                  ))}
+               </div>
+            </div>
+         )
+      })
+   }
 
    const mobilePagesBackPackAllow = [
-      '/settings', '/home', '/notebooks', '/notebook',
-      '/note-maker', '/tools', '/quiz-stat', '/leaderboard'
+      '/backpack', '/home', '/comms',
+      '/essay-grader', '/lab-grader', '/note-maker', '/leaderboard'
    ]
 
    return (
@@ -105,8 +122,8 @@ export default function AppWrapper ({ children, noNavbar, contentRef }: { childr
                   </div>
                </div>
                {mobilePagesBackPackAllow.some(p => pathname.startsWith(p)) && (
-                  <div className="mobile-backpack-accessible-btn" onClick={() => router.push("/backpack")}>
-                     <Backpack size={23} />
+                  <div className="mobile-backpack-accessible-btn" onClick={handleMenuModal}>
+                     <Menu size={23} />
                   </div>
                )}
             </div>

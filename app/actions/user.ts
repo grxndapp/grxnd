@@ -181,6 +181,7 @@ export async function createUserAccountFromGoogleAuth (user: { email: string, na
             oauth_provider: "google",
             password: hashPwd(`${user.name}${user.email}${Date.now()}`),
             user_role: "user",
+            stripeCustomerId: customer.id,
             is_subscribed: false
          });
          await db.insert(scoresTable).values({ userid, score: 0 })

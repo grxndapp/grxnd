@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       }
 
       const customer = await getStripeCustomer(customerReference);
-      const user = await getUserFromStripeCustomerId(customer.id);
+      const user = await getUserFromStripeCustomerId(customerReference as string);
       if (!user?.userid) throw new Error(`No valid user for customer ${customer.id}`);
 
       // Use current customer-wide state, not the status of an old event.

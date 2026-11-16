@@ -1,5 +1,5 @@
 'use client'
-import { getCurrentUser, getUserClient } from "@/app/actions/user";
+import { getUserClient } from "@/app/actions/user";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 type UserContextType = {

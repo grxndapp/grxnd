@@ -50,6 +50,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid webhook signature' }, { status: 400 });
    }
 
+   console.log("Stripe Data", event.data.object)
+
    try {
       let customerReference: | string | Stripe.Customer | Stripe.DeletedCustomer | null;
 
@@ -68,7 +70,9 @@ export async function POST(req: Request) {
       }
 
       const customer = await getStripeCustomer(customerReference);
+      console.log("Stripe Customer", customer)
       const user = await getUserFromStripeCustomerId(customerReference as string);
+      console.log("User Found", user)
       if (!user?.userid) throw new Error(`No valid user for customer ${customer.id}`);
 
       // Use current customer-wide state, not the status of an old event.

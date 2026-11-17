@@ -4,6 +4,8 @@ import { hashPwd } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
 import { NextAuthOptions } from "next-auth";
 import { createUserAccountFromGoogleAuth } from "@/app/actions/user";
+import { cookies } from "next/headers";
+import { parseSignupData } from "./authHelper";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -48,7 +50,20 @@ export const authOptions: NextAuthOptions = {
    ],
    callbacks: {
       async signIn({ user, account, profile }) {
-         const googleSignInUserAuth = await createUserAccountFromGoogleAuth({ name: user.name!, email: user.email! })
+         if (account?.provider !== "google") return true;
+         if (!user.email) return false;
+
+         const cookieStore = await cookies();
+         const signupData = parseSignupData(cookieStore.get("grxnd_signup")?.value);
+
+         console.log(signupData)
+
+         const googleSignInUserAuth = await createUserAccountFromGoogleAuth({
+            name: user.name!, email: user.email!,
+            referralChannel: signupData?.referralChannel!, studentType: signupData?.studentType!
+         })
+
+         cookieStore.delete("grxnd_signup");
          return googleSignInUserAuth; // Allow sign in
       },
       jwt: async ({ user, token, trigger, session }) => {

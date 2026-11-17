@@ -6,7 +6,7 @@ import { Home } from "lucide-react"
 import { useSplashScreen } from "./SplashScreenContext"
 import {
    AdministrationLoader, BiologyLoader, ChemistryLoader,
-   ComputerScienceLoader, EnglishLoader, FlashcardMakingLoader, 
+   ComputerScienceLoader, EnglishLoader, FillInTheBlankLoader, FlashcardMakingLoader, 
    LyricGimmickLoader, 
    MathLoader, NoteMakingLoader, PhysicsLoader, QuizLoader, SixtySevenLoader
 } from '@/components/SubjectLoaders/SubjectLoaders'
@@ -42,6 +42,7 @@ export default function SplashScreen ({ title, description, style, actions, back
       "quiz": <QuizLoader size={iconsSize} />,
       "note": <NoteMakingLoader size={iconsSize} />,
       "flashcard": <FlashcardMakingLoader size={iconsSize} />,
+      "fitb": <FillInTheBlankLoader size={iconsSize} />,
       "67": <SixtySevenLoader size={iconsSize} />,
       "lyrics": <LyricGimmickLoader size={iconsSize} />,
       "error": <CustomRawIcon url={ErrorIcon.src} size={200} />,

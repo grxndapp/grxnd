@@ -1,12 +1,8 @@
 import { redirect } from "next/navigation";
-import { dalCheckUserSubscription, dalDbOperation, dalRequireSubscribedAuth } from "@/dal/helpers";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { notesTable, quizzesTable, subjectFoldersTable } from "@/db/schemas";
+import { dalCheckUserSubscription} from "@/dal/helpers";
 import HomePage from "./HomePage";
 import LoadingPage from "./loading";
 import NonSubHomePage from "./NonSubHomePage";
-import { sanitise } from "@/utils/extractJson";
 
 export default async function Home () {
    const subscriptionStatus = await dalCheckUserSubscription();
@@ -15,16 +11,16 @@ export default async function Home () {
    if (subscriptionStatus == "no-user") redirect("/sign-in");
    if (subscriptionStatus == "not-subscribed") return <NonSubHomePage />;
 
-   const dataReq = await dalRequireSubscribedAuth(user => 
-      dalDbOperation(async () => {
-         const quizzes = await db.select().from(quizzesTable).where(eq(quizzesTable.userid, user.userid!));
-         const notes = await db.select().from(notesTable).where(eq(notesTable.userid, user.userid!))
-         return { quizzes, notes }
-      })
-   );
+   // const dataReq = await dalRequireSubscribedAuth(user => 
+   //    dalDbOperation(async () => {
+   //       const quizzes = await db.select().from(quizzesTable).where(eq(quizzesTable.userid, user.userid!));
+   //       const notes = await db.select().from(notesTable).where(eq(notesTable.userid, user.userid!))
+   //       return { quizzes, notes }
+   //    })
+   // );
 
-   if (dataReq.success) {
-      const { quizzes, notes } = dataReq.data;
+   if (true) {
+      // const { quizzes, notes } = dataReq.data;
       const welcomeQuestions = [
          "Ready to study today?",
          "One hour of study keeps the F away.",
@@ -44,10 +40,10 @@ export default async function Home () {
 
 
       return <HomePage 
-         quizzes={sanitise(quizzes)}
-         notes={sanitise(notes)}
          welcomeString={randomItem}
       />;
+      // quizzes={sanitise(quizzes)}
+      // notes={sanitise(notes)}
    } else {
       return <LoadingPage />;
    }

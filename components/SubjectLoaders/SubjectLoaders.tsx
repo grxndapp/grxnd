@@ -1418,3 +1418,272 @@ export function LyricGimmickLoader(props: SubjectLoaderProps) {
     </Frame>
   );
 }
+
+const fillBlankStyles = `
+  .grxnd-subject-loader .fb-sheet {
+    transform-origin: 80px 120px;
+  }
+
+  .grxnd-subject-loader .fb-word {
+    transform-origin: 80px 81px;
+  }
+
+  .grxnd-subject-loader .fb-cursor {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .grxnd-subject-loader .fb-sheet {
+      animation: fb-sheet-float 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .fb-word {
+      animation: fb-word-drop 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .fb-blank {
+      animation: fb-blank-fill 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .fb-cursor {
+      animation: fb-cursor-blink 4.8s steps(1, end) infinite;
+    }
+
+    .grxnd-subject-loader .fb-check {
+      stroke-dasharray: 1;
+      animation: fb-check-draw 4.8s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .fb-success {
+      animation: fb-success-pop 4.8s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+  }
+
+  @keyframes fb-sheet-float {
+    0%, 100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-4px) rotate(2deg);
+    }
+  }
+
+  @keyframes fb-word-drop {
+    0%, 26% {
+      transform: translateY(-29px) rotate(-7deg) scale(.95);
+      opacity: 0;
+    }
+    34% {
+      transform: translateY(-29px) rotate(-7deg) scale(1);
+      opacity: 1;
+    }
+    48% {
+      transform: translateY(2px) rotate(2deg) scale(1.04, .94);
+      opacity: 1;
+    }
+    56%, 80% {
+      transform: translateY(0) rotate(0deg) scale(1);
+      opacity: 1;
+    }
+    92%, 100% {
+      transform: translateY(0) rotate(0deg) scale(.95);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fb-blank-fill {
+    0%, 42%, 100% {
+      fill: #F0EAF8;
+      stroke: #C2ACDE;
+    }
+    54%, 82% {
+      fill: #E1F3E9;
+      stroke: #92CDB0;
+    }
+  }
+
+  @keyframes fb-cursor-blink {
+    0%, 12%, 24% { opacity: 1; }
+    6%, 18%, 30%, 100% { opacity: 0; }
+  }
+
+  @keyframes fb-check-draw {
+    0%, 54% {
+      stroke-dashoffset: 1;
+      opacity: 0;
+    }
+    58% {
+      opacity: 1;
+    }
+    68%, 82% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    92%, 100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+
+  @keyframes fb-success-pop {
+    0%, 52% {
+      transform: scale(.7);
+      opacity: 0;
+    }
+    62% {
+      transform: scale(1.12);
+      opacity: 1;
+    }
+    70%, 82% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    92%, 100% {
+      transform: scale(.9);
+      opacity: 0;
+    }
+  }
+`;
+
+export function FillInTheBlankLoader(props: SubjectLoaderProps) {
+  return (
+    <Frame {...props}>
+      <style>{fillBlankStyles}</style>
+
+      <Shadow width={31} />
+      <Sparkle x={26} y={54} color="#EFC369" small />
+      <Sparkle x={132} y={39} color="#AA91D6" small />
+
+      <g className="fb-sheet">
+        {/* Worksheet depth */}
+        <rect
+          x="40"
+          y="33"
+          width="84"
+          height="100"
+          rx="17"
+          fill="#8D77B5"
+        />
+
+        {/* Rounded cover */}
+        <rect
+          x="36"
+          y="28"
+          width="84"
+          height="100"
+          rx="17"
+          fill="#B6A0DC"
+        />
+
+        {/* Paper */}
+        <rect
+          x="44"
+          y="36"
+          width="68"
+          height="84"
+          rx="11"
+          fill="#FFFBF2"
+        />
+
+        {/* Heading */}
+        <path
+          d="M54 48H72"
+          stroke="#CFBCDF"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+
+        {/* Sentence above the blank */}
+        <path
+          d="M54 61H65M71 61H84M90 61H101"
+          stroke="#D8CCD9"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Blank answer slot */}
+        <rect
+          className="fb-blank"
+          x="53"
+          y="70"
+          width="50"
+          height="22"
+          rx="7"
+          fill="#E1F3E9"
+          stroke="#92CDB0"
+          strokeWidth="1.5"
+          strokeDasharray="3 3"
+        />
+
+        {/* Blinking insertion cursor */}
+        <path
+          className="fb-cursor"
+          d="M62 76V86"
+          stroke="#A286C2"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+
+        {/* Word tile drops into the blank */}
+        <g className="fb-word">
+          <rect
+            x="57"
+            y="75"
+            width="42"
+            height="16"
+            rx="5"
+            fill="#6FAF95"
+          />
+
+          <rect
+            x="57"
+            y="72"
+            width="42"
+            height="16"
+            rx="5"
+            fill="#A7DEC3"
+          />
+
+          <path
+            d="M62 76H68"
+            stroke="#DDF5E7"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+
+          {/* Small “abc” lettering drawn as paths */}
+          <g
+            stroke="#3C7864"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M70 79V84M70 80C66 77 64 82 67 84Q69 85 70 82" />
+            <path d="M76 76V84M76 80C80 77 82 83 78 84H76" />
+            <path d="M90 79Q85 77 85 82Q85 86 90 83" />
+          </g>
+        </g>
+
+        <Face x={78} y={103} />
+
+        {/* Success badge */}
+        <g className="fb-success">
+          <circle cx="115" cy="112" r="13" fill="#6FAF95" />
+          <circle cx="113" cy="109" r="13" fill="#B5E4C9" />
+
+          <path
+            className="fb-check"
+            d="M107 109L111 113L119 104"
+            pathLength="1"
+            stroke="#3C8669"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      </g>
+    </Frame>
+  );
+}

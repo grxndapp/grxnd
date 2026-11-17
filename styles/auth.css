@@ -7,15 +7,23 @@
    background: linear-gradient(to bottom, #c0c9ff, #837aff);
 }
 
+.auth * {
+   box-sizing: border-box;
+}
+
 .auth .auth-box {
    width: 100%;
-   max-width: 450px !important;
-   background: #fff;
+   max-width: 700px !important;
    color: #0a0a0a;
-   padding: 2.5rem 2rem 3rem;
-   border-radius: 12px !important;
-   box-shadow: 0 10px 30px rgba(143, 143, 143, 0.3);
+   padding: 4rem 3rem;
    text-align: center;
+   width: 100%;
+   height: fit-content;
+   min-height: 60vh;
+   background-color: white;
+   border: 1px solid var(--accent-color-10);
+   border-radius: 20px;
+   box-shadow: rgba(33, 35, 38, 0.1) 0px 8px 10px -10px;
 }
 
 @media screen and (max-width: 900px) {
@@ -60,4 +68,62 @@
       border: none;
       box-shadow: none;
    }
+}
+
+.auth .auth-box .onboarding-list.grid-22 {
+   width: 100%;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   /* grid-template-columns: auto auto; */
+   gap: 15px;
+   padding: 10px;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 10px;
+   border-radius: 20px;
+   border: 1px solid var(--accent-color-30);
+   background-color: white;
+   padding: 20px 25px;
+   cursor: pointer;
+   box-shadow: rgba(33, 35, 38, 0.2) 0px 8px 10px -10px;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card:active {
+   transform: translateY(7px);
+   scale: 0.95;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card.tiktok {
+   background-color: #0a0a0a;
+   border-color: #0a0a0a;
+   color: white;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card.instagram {
+   background-color: #c1003d;
+   border-color: #c1003d;
+   color: white;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card.friends {
+   background-color: #004888;
+   border-color: #004888;
+   color: white;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card.other {
+   background-color: #076f2a;
+   border-color: #076f2a;
+   color: white;
+}
+
+.auth .auth-box .onboarding-list .onboarding-card.selected {
+   background-color: var(--accent-color-30);
+   border-color: var(--accent-color-30);
+   color: black;
 }

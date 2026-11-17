@@ -17,6 +17,8 @@ type User = {
    oauth_provider: string;
    user_role: "user" | "admin";
    is_subscribed: boolean;
+   studentType: string;
+   referralChannel: string;
    stripeCustomerId: string;
    createdAt: Date;
 }
@@ -99,3 +101,6 @@ type Feedback = {
    votes: number;
    createdAt: Date;
 }
+
+type StudentType = "high-school" | "uni";
+type ReferralChannel = "tiktok" | "instagram" | "google" | "chatgpt" | "friends" | "other"

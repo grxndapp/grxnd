@@ -10,13 +10,9 @@ export const usersTable = pgTable("users", {
    user_role: text("user_role"),
    stripeCustomerId: text("stripe_customer_id"),
    is_subscribed: boolean("is_subscribed"),
+   studentType: text("student_type").default(""),
+   referralChannel: text("referral_channel").default(""),
    createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const userSurveyTable = pgTable("user_surveys", {
-   id: serial("id").primaryKey(),
-   userid: text("userid").notNull(),
-   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const feedbackTable = pgTable("feedback", {

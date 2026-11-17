@@ -161,7 +161,14 @@ export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt'
    }
 }
 
-export async function createUserAccountFromGoogleAuth (user: { email: string, name: string }) {
+
+type CreateUserAccountFromGoogleAuthParams = {
+   email: string;
+   name: string;
+   referralChannel: ReferralChannel;
+   studentType: StudentType;
+}
+export async function createUserAccountFromGoogleAuth (user: CreateUserAccountFromGoogleAuthParams) {
    try {
       const existingUser = await db.select().from(usersTable).where(eq(usersTable.email, user.email!)).limit(1);
       if (existingUser.length < 1) {
@@ -181,6 +188,8 @@ export async function createUserAccountFromGoogleAuth (user: { email: string, na
             oauth_provider: "google",
             password: hashPwd(`${user.name}${user.email}${Date.now()}`),
             user_role: "user",
+            referralChannel: user.referralChannel ?? '',
+            studentType: user.studentType ?? '',
             stripeCustomerId: customer.id,
             is_subscribed: false
          });

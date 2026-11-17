@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "email": "email dev"
+    "email": "email dev",
+    "upgrade": "next upgrade"
   },
   "dependencies": {
     "@azure-rest/ai-inference": "^1.0.0-beta.6",

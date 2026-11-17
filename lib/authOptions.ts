@@ -4,10 +4,32 @@ import { hashPwd } from "@/utils/uuid";
 import { and, eq } from "drizzle-orm";
 import { NextAuthOptions } from "next-auth";
 import { createUserAccountFromGoogleAuth } from "@/app/actions/user";
+import { referralChannels, studentTypes } from "@/app/sign-in/onboardingUtil";
 import { cookies } from "next/headers";
-import { parseSignupData } from "./authHelper";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+
+function parseSignupData (raw: string | undefined): {referralChannel: ReferralChannel; studentType: StudentType;} | null {
+   if (!raw) return null;
+
+   try {
+      const data = JSON.parse(decodeURIComponent(raw));
+      if (!data || typeof data !== "object") return null;
+
+      const allowedSources = referralChannels.map(c => c.channel);
+      const allowedStudentTypes = studentTypes.map(s => s.studentType);
+
+      if (!allowedSources.includes(data.referralChannel)) return null;
+      if (!allowedStudentTypes.includes(data.studentType)) return null;
+
+      return {
+         referralChannel: data.referralChannel,
+         studentType: data.studentType,
+      };
+   } catch {
+      return null;
+   }
+}
 
 export const authOptions: NextAuthOptions = {
    session: {
@@ -55,8 +77,6 @@ export const authOptions: NextAuthOptions = {
 
          const cookieStore = await cookies();
          const signupData = parseSignupData(cookieStore.get("grxnd_signup")?.value);
-
-         console.log(signupData)
 
          const googleSignInUserAuth = await createUserAccountFromGoogleAuth({
             name: user.name!, email: user.email!,

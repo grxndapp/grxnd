@@ -16,6 +16,8 @@ export default async function Admin () {
                userid: usersTable.userid,
                oauth_provider: usersTable.oauth_provider,
                is_subscribed: usersTable.is_subscribed,
+               referralChannel: usersTable.referralChannel,
+               studentType: usersTable.studentType,
                createdAt: usersTable.createdAt,
             })
             .from(usersTable)

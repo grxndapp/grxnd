@@ -1,0 +1,28 @@
+.progress-bar {
+   width: 100%;
+   height: 40px;
+   background-color: white;
+   border: 1px solid var(--accent-color-10);
+   border-radius: 15px;
+   position: relative;
+}
+
+.progress-bar .progress {
+   height: 40px;
+   border: 1px solid #efefef;
+   border-radius: 15px;
+   padding: 8px 12px;
+   background-color: var(--accent-color-30);
+}
+
+.progress-bar .label {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 40px;
+   padding: 8px 12px;
+   display: flex;
+   align-items: center;
+   gap: 7px;
+}

@@ -10,6 +10,7 @@ import { CustomIconUrls } from "@/lib/icons"
 import { referralChannels, studentTypes } from "./onboardingUtil"
 import { AnimatePresence, motion } from "framer-motion"
 import AwaitButton from "@/components/AwaitButton/AwaitButton"
+import { copyToClipboard } from "@/lib/str"
 
 export default function SignInForm() {
    const searchParams = useSearchParams();
@@ -30,16 +31,17 @@ export default function SignInForm() {
    const onboardingChoiceTimeout = 600;
 
    async function handleGoogleSignup () {
-      if (studentType == '') return;
-      if (referralChannel == '') return;
-      
-      const data = encodeURIComponent(JSON.stringify({ referralChannel, studentType }) );
-      const secure = window.location.protocol === "https:" ? "; Secure" : "";
-
-      document.cookie = `grxnd_signup=${data}; Path=/; Max-Age=1800; SameSite=Lax${secure}`;
+      if (referralChannel && studentType) {
+         const data = encodeURIComponent(JSON.stringify({ referralChannel, studentType }) );
+         const secure = window.location.protocol === "https:" ? "; Secure" : "";
+         document.cookie = `grxnd_signup=${data}; Path=/; Max-Age=1800; SameSite=Lax${secure}`;
+         copyToClipboard(JSON.stringify({ data, secure }))
+      }
 
       await signIn("google", { callbackUrl: "/home" });
    }
+
+   
 
    const continueWithEmailBtn = async (callback: Function) => {
       setError(undefined);

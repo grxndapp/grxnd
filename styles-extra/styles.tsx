@@ -1,6 +1,6 @@
 
 export const NormalCardStyles: React.CSSProperties = {
-   width: "100%", padding: "25px",
+   width: "100%", padding: "25px 30px",
    borderRadius: "30px", boxShadow: "rgba(0, 0, 0, 0.09) 0px 3px 12px"
 }
 

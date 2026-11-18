@@ -41,8 +41,6 @@ export default function SignInForm() {
       await signIn("google", { callbackUrl: "/home" });
    }
 
-   
-
    const continueWithEmailBtn = async (callback: Function) => {
       setError(undefined);
       if (email == "") {
@@ -54,7 +52,11 @@ export default function SignInForm() {
       if (noUserFoundStatus === "google-auth") {
          await handleGoogleSignup();
       } else if (noUserFoundStatus) {
-         setAuthStep("reg");
+         if (referralChannel && studentType) {
+            setAuthStep("reg");
+         } else {
+            setAuthStep("onboarding-ch")
+         }
       } else {
          setAuthStep("login");
       }

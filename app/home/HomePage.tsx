@@ -1,149 +1,196 @@
 'use client'
-import {  BookOpen, Lightbulb } from "lucide-react";
+import { Lightbulb, Zap } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CustomRawIcon } from "@/components/Icons/Icon";
 import { CustomIconUrls } from "@/lib/icons";
-import { QuizIllustration, NotesIllustration, FillInTheBlankIllustration, FlashcardsIllustration, LyricGimmickIllustration, SixtySevenIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons";
-import { useModal } from "@/components/Modal/ModalContext";
+import { HomePageCardStyles } from "@/styles-extra/styles";
+import { subjectCombinator } from "../subject/[level]/[subjectName]/clientHelper";
+import { NotesIllustration, QuizIllustration } from "@/components/StudyMethodIcons/StudyMethodIcons";
+import { fullSubjectBreakDown } from "@/utils/subjects";
+import { timeAgo } from "@/utils/date";
+import { WavingCharacterLoader } from "@/components/SubjectLoaders/SubjectLoaders";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
-import StudyMethodCard from "@/components/StudyMethodCard/StudyMethodCard";
+import Card from "@/components/Card/Card";
 import Spacing from "@/components/Spacing/Spacing";
-import { FillInTheBlankLoader, FlashcardMakingLoader, LyricGimmickLoader, NoteMakingLoader, QuizLoader, SixtySevenLoader } from "@/components/SubjectLoaders/SubjectLoaders";
 
 type HomePageProps = {
-   // quizzes: QuizT[];
-   // notes: Note[];
+   lastQuizDone: QuizT | null;
+   lastNoteTaken: Note | null;
    welcomeString: string;
 }
 
-const featureDescriptions: Record<string, any> = {
-   "67-way": {
-      icon: SixtySevenLoader,
-      title: "67 Way",
-      subtitle: "The secret sauce is coming.",
-      description: "A new way to switch up your study routine. Stay tuned."
-   },
-   "quiz": {
-      icon: QuizLoader,
-      title: "Take a Quiz",
-      subtitle: "Find out what actually stuck.",
-      description: "Put your knowledge to the test, spot what needs work and earn points as you practise."
-   },
-   "notes": {
-      icon: NoteMakingLoader,
-      title: "New Note",
-      subtitle: "Big topics. Clear notes.",
-      description: "Turn your files and topics into structured study notes that make the key ideas easier to understand."
-   },
-   "fitb": {
-      icon: FillInTheBlankLoader,
-      title: "Fill in the Blank",
-      subtitle: "Know it? Fill it in.",
-      description: "Complete the missing words to practise recalling key facts and check your understanding."
-   },
-   "flashcards": {
-      icon: FlashcardMakingLoader,
-      title: "Quick Learn",
-      subtitle: "Small cards. Steady progress.",
-      description: "Work through bite-sized flashcards to learn key ideas and refresh your memory."
-   },
-   "lyric": {
-      icon: LyricGimmickLoader,
-      title: "Lyric Gimmick",
-      subtitle: "Give tricky topics a familiar twist.",
-      description: "Explore concepts through stories, analogies or lyrics that connect new ideas to things you already know."
-   }
-};
 
-export default function HomePage ({ welcomeString }: HomePageProps) {
+export default function HomePage ({ welcomeString, lastNoteTaken, lastQuizDone }: HomePageProps) {
    const router = useRouter();
    const { data: session } = useSession();
-   const { showModal, close } = useModal();
-   const studyMethodIconSize = 30;
-
-   function getFeatureInfo (key: string) {
-      return featureDescriptions[key];
-   }
-
-   function openFeatureDescription (key: string) {
-      const featureInfo = getFeatureInfo(key);
-      showModal({
-         content: (<div className="box full pd-3 pdx-3 dfb column gap-10">
-            <div className="box full">
-               <featureInfo.icon size={studyMethodIconSize*4} />
-            </div>
-            <div className="text-l full bold-700">{featureInfo.title}</div>
-            <div className="text-xxs full">{featureInfo.subtitle}</div>
-            <div className="text-xs full">{featureInfo.description}</div>
-            <div className="box full mt-1">
-               <button className="xxs pd-12 pdx-2 radius-2 outline-black tiny-shadow" onClick={() => close()}>Close</button>
-            </div>
-         </div>)
-      })
-   }
 
    return (
       <AppWrapper>
-         <div className="box full h-full pd-1">
-            <div className="box full mt-15">
+         <div className="box full h-full mw-1200">
+            <div className="box full">
                <div className="box full mb-1 dfb align-center justify-center">
-                  <CustomRawIcon url={CustomIconUrls.WelcomeIcon} size={150} />
+                  {(lastNoteTaken == null && lastQuizDone == null) ? (
+                     <QuizIllustration size={100} />
+                  ) : (lastNoteTaken == null || lastQuizDone == null) ? (
+                     <QuizIllustration size={100} />
+                  ) : (
+                     <CustomRawIcon url={CustomIconUrls.WelcomeIcon} size={100} />
+                  )}
                </div>
-               <div className="text-l full dfb wrap gap-5 align-center justify-center">Hello, <span className="text-l bold-600 fit">{session?.user?.name}</span></div>
+               <div className="text-l full dfb wrap gap-5 align-center justify-center">
+                  Hello, 
+                  <span className="text-l bold-700 fit accent-color-gradient-dark-text">{session?.user?.name}</span>
+               </div>
                <div className="text-xxs full pd-05 text-center">{welcomeString}</div>
             </div>
 
-            <div className="box full dfb column gap-10 align-center pd-2">
-               <button className="xs pd-15 full mw-500 radius-20 accent-hover" onClick={() => router.push("/quiz-maker")}>
-                  <Lightbulb size={19} /> Start A Quiz
-               </button>
-               <button className="xs pd-15 full mw-500 radius-20 outline-black" onClick={() => router.push("/note-maker")}>
-                  <BookOpen size={19} /> Learn Something
-               </button>
-            </div>
+            <Spacing />
 
-            <div className="box full pd-3 dfb justify-center wrap gap-10">
-               <StudyMethodCard
-                  icon={<SixtySevenIllustration width={studyMethodIconSize} height={studyMethodIconSize} size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("67-way")}
-                  title="67 Way"
-                  description="Coming Soon. Secret Sauce Geniuses use"
-               />
-               <StudyMethodCard
-                  icon={<QuizIllustration size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("quiz")}
-                  title="Take A Quiz"
-                  description="Good for practising and gaining points"
-               />
-               <StudyMethodCard
-                  icon={<NotesIllustration size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("notes")}
-                  title="New Note"
-                  description="Helps you make structured notes on big files and topics"
-               />
-               <StudyMethodCard
-                  icon={<FillInTheBlankIllustration size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("fitb")}
-                  title="Fill in the Blank"
-                  description="Perfect for theory and understanding"
-               />
-               <StudyMethodCard
-                  icon={<FlashcardsIllustration size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("flashcards")}
-                  title="Quick Learn"
-                  description="Learn a topic very fast with fast (flash) cards"
-               />
-               <StudyMethodCard
-                  icon={<LyricGimmickIllustration size={studyMethodIconSize} />}
-                  onClick={() => openFeatureDescription("lyric")}
-                  title="Lyric Gimmick"
-                  description="Helps you learn any concept with stories, analogies or lyrics"
-               />
+            <div className="box full dfb column gap-10 align-center">
+               {(lastNoteTaken == null && lastQuizDone == null) ? (<>
+                  <Card styles={HomePageCardStyles}>
+                     <div className="box full pd-1">
+                        <WavingCharacterLoader size={100} />
+                     </div>
+                     <div className="text-m bold-600 full">
+                        First Time Studying with <span className="accent-color">Grxnd</span>
+                     </div>
+                     <div className="text-xs mb-1">
+                        Take a quiz on a subject and let's see how well you get on
+                     </div>
+                     <div className="box full dfb column gap-10 align-center pd-2">
+                        <button className="xs pd-15 full mw-500 radius-20 accent-hover" onClick={() => router.push("/quiz-maker")}>
+                           <div className="box full dfb column align-center">
+                              <span className="text-xs full bold-600 dfb justify-center align-center gap-5"><Lightbulb size={19} strokeWidth={3} /> Take A Quiz</span>
+                              <div className="text-t full bold-500" style={{ opacity: 0.8 }}>It's time to challenge yourself</div>
+                           </div>
+                        </button>
+                     </div>
+                  </Card>
+               </>) : (lastNoteTaken == null || lastQuizDone == null) ? (<>
+                  {lastNoteTaken && ( <NoteSuggestionCard lastNoteTaken={lastNoteTaken} /> )}
+                  {lastQuizDone && ( <QuizSuggestionCard lastQuizDone={lastQuizDone} /> )}
+               </>) : (<>
+                  {lastQuizDone.createdAt > lastNoteTaken.createdAt ? (<>
+                     <QuizSuggestionCard lastQuizDone={lastQuizDone} />
+                  </>) : (
+                     <NoteSuggestionCard lastNoteTaken={lastNoteTaken} />
+                  )}
+               </>)}
             </div>
-
-            <Spacing size={3} />
          </div>
       </AppWrapper>
+   )
+}
+
+function QuizSuggestionCard ({ lastQuizDone }: { lastQuizDone: QuizT }) {
+   const router = useRouter();
+
+   function getSubjectInformation (subjectLevel: string, subject: string) {
+      return subjectCombinator(subject, subjectLevel);
+   }
+
+   return (
+      <Card styles={HomePageCardStyles}>
+         <div className="box full pd-1">
+            <QuizIllustration size={70} />
+         </div>
+
+         {(lastQuizDone.score >= 70) ? (<>
+
+            <div className="text-m bold-600 full">
+               Study More
+               <span style={{ color: getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectColor }}>
+                  {getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectFullName}
+               </span>
+            </div>
+            <div className="text-xs full pd-1">
+               <b style={{ color: getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectColor }}>{lastQuizDone.score}%</b> on
+               {" "}<b>{lastQuizDone.topic}</b> {" "}
+               last time.</div>
+            <div className="text-xs mb-2">Since you did well, practice another topic in your notes, let's head there now! Click below!</div>
+            <button 
+               className="xxs pd-15 full accent-hover radius-20"
+               onClick={() => {
+                  router.push(`${getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectPageUrl}/notes`)
+               }}
+            >
+               <Zap size={16} /> Let's Go!
+            </button>
+
+         </>) : (<>
+
+            <div className="text-m bold-600 full">
+               Practice{" "}
+               <span style={{ color: getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectColor }}>
+                  {getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectFullName}
+               </span>
+               {" "}Again
+            </div>
+            <div className="text-xs full pd-1">
+               <b style={{ color: getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectColor }}>{lastQuizDone.score}%</b> on
+               {" "}<b>{lastQuizDone.topic}</b> {" "}
+               last time.</div>
+            <div className="text-xs mb-2">Redo the quiz and get a better grade!</div>
+            <button 
+               className="xxs pd-15 full accent-hover radius-20"
+               onClick={() => {
+                  router.push(`${getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectPageUrl}/start-quiz`)
+               }}
+            >
+               <Zap size={16} /> Practice Now!
+            </button>
+
+         </>)}
+      </Card>
+   )
+}
+
+function NoteSuggestionCard ({ lastNoteTaken }: { lastNoteTaken: Note }) {
+   const router = useRouter();
+
+   function getSubjectInformation (subjectLevel: string, subject: string) {
+      return subjectCombinator(subject, subjectLevel);
+   }
+
+   return (
+      <Card styles={HomePageCardStyles}>
+         <div className="box full pd-1">
+            <NotesIllustration size={70} />
+         </div>
+         <div className="text-sm bold-600 full">
+            Continue Studying
+            <span 
+               style={{
+                  color: getSubjectInformation(
+                     fullSubjectBreakDown(lastNoteTaken.folderCodeName).subjectLevel,
+                     fullSubjectBreakDown(lastNoteTaken.folderCodeName).subject,
+                  ).subjectColor
+               }}
+            >
+               {getSubjectInformation(
+                  fullSubjectBreakDown(lastNoteTaken.folderCodeName).subjectLevel,
+                  fullSubjectBreakDown(lastNoteTaken.folderCodeName).subject,
+               ).subjectFullName}
+            </span>
+         </div>
+
+         <div className="text-xs pd-05">
+            {timeAgo(new Date(lastNoteTaken.createdAt).getTime())} you were studying <b>{JSON.parse(lastNoteTaken.noteJson).title}</b>
+         </div>
+         <div className="text-xs mb-2">Test what you've learned!</div>
+         <button 
+            className="xxs pd-15 full accent-hover radius-20"
+            onClick={() => {
+               router.push(`${getSubjectInformation(
+                  fullSubjectBreakDown(lastNoteTaken.folderCodeName).subjectLevel,
+                  fullSubjectBreakDown(lastNoteTaken.folderCodeName).subject,
+               ).subjectPageUrl}/start-quiz?noteId=${lastNoteTaken.noteid}`)
+            }}
+         >
+            <Zap size={16} /> Practice Now!
+         </button>
+      </Card>
    )
 }

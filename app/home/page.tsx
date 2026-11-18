@@ -1,5 +1,9 @@
 import { redirect } from "next/navigation";
-import { dalCheckUserSubscription} from "@/dal/helpers";
+import { dalCheckUserSubscription, dalDbOperation, dalRequireSubscribedAuth} from "@/dal/helpers";
+import { notesTable, quizzesTable } from "@/db/schemas";
+import { db } from "@/db";
+import { desc, eq } from "drizzle-orm";
+import { sanitise } from "@/utils/extractJson";
 import HomePage from "./HomePage";
 import LoadingPage from "./loading";
 import NonSubHomePage from "./NonSubHomePage";
@@ -11,15 +15,15 @@ export default async function Home () {
    if (subscriptionStatus == "no-user") redirect("/sign-in");
    if (subscriptionStatus == "not-subscribed") return <NonSubHomePage />;
 
-   // const dataReq = await dalRequireSubscribedAuth(user => 
-   //    dalDbOperation(async () => {
-   //       const quizzes = await db.select().from(quizzesTable).where(eq(quizzesTable.userid, user.userid!));
-   //       const notes = await db.select().from(notesTable).where(eq(notesTable.userid, user.userid!))
-   //       return { quizzes, notes }
-   //    })
-   // );
+   const dataReq = await dalRequireSubscribedAuth(user => 
+      dalDbOperation(async () => {
+         const [quiz] = await db.select().from(quizzesTable).where(eq(quizzesTable.userid, user.userid!)).orderBy(desc(quizzesTable.createdAt)).limit(1);
+         const [note] = await db.select().from(notesTable).where(eq(notesTable.userid, user.userid!)).orderBy(desc(notesTable.createdAt)).limit(1);
+         return { quiz, note }
+      })
+   );
 
-   if (true) {
+   if (dataReq.success) {
       // const { quizzes, notes } = dataReq.data;
       const welcomeQuestions = [
          "Ready to study today?",
@@ -41,9 +45,9 @@ export default async function Home () {
 
       return <HomePage 
          welcomeString={randomItem}
+         lastNoteTaken={dataReq.data.note ? sanitise(dataReq.data.note) : null}
+         lastQuizDone={dataReq.data.quiz ? sanitise(dataReq.data.quiz) : null}
       />;
-      // quizzes={sanitise(quizzes)}
-      // notes={sanitise(notes)}
    } else {
       return <LoadingPage />;
    }

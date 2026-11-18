@@ -22,7 +22,7 @@
    height: fit-content;
    display: flex;
    flex-direction: column;
-   gap: 18px;
+   gap: 10px;
    align-items: center;
    justify-content: start;
 }

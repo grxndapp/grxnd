@@ -1687,3 +1687,268 @@ export function FillInTheBlankLoader(props: SubjectLoaderProps) {
     </Frame>
   );
 }
+
+const wavingCharacterStyles = `
+  .grxnd-subject-loader .wc-character {
+    transform-origin: 80px 125px;
+  }
+
+  .grxnd-subject-loader .wc-arm {
+    transform-origin: 105px 85px;
+  }
+
+  .grxnd-subject-loader .wc-eyes {
+    transform-origin: 78px 76px;
+  }
+
+  .grxnd-subject-loader .wc-wave-lines {
+    opacity: .65;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .grxnd-subject-loader .wc-character {
+      animation: wc-bob 3.6s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .wc-arm {
+      animation: wc-wave 3.6s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .wc-eyes {
+      animation: wc-blink 5.4s ease-in-out infinite;
+    }
+
+    .grxnd-subject-loader .wc-wave-lines {
+      animation: wc-wave-lines 3.6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes wc-bob {
+    0%, 100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-5px) rotate(2deg);
+    }
+  }
+
+  @keyframes wc-wave {
+    0%, 12%, 85%, 100% { transform: rotate(0deg); }
+    24%, 48%, 72% { transform: rotate(-14deg); }
+    36%, 60% { transform: rotate(12deg); }
+  }
+
+  @keyframes wc-blink {
+    0%, 42%, 47%, 100% { transform: scaleY(1); }
+    44%, 45% { transform: scaleY(.12); }
+  }
+
+  @keyframes wc-wave-lines {
+    0%, 12%, 85%, 100% { opacity: 0; }
+    24%, 48%, 72% { opacity: .75; }
+    36%, 60% { opacity: .25; }
+  }
+`;
+
+type WavingCharacterLoaderProps = SubjectLoaderProps & {
+  color?: string;
+};
+
+export function WavingCharacterLoader({
+  color = "#B9DDF5",
+  ...props
+}: WavingCharacterLoaderProps) {
+  return (
+    <Frame {...props}>
+      <style>{wavingCharacterStyles}</style>
+
+      <Shadow width={28} />
+
+      <g className="wc-character">
+        {/* Little feet */}
+        <ellipse
+          cx="63"
+          cy="126"
+          rx="13"
+          ry="7"
+          fill={color}
+        />
+        <ellipse
+          cx="94"
+          cy="126"
+          rx="13"
+          ry="7"
+          fill={color}
+        />
+
+        <path
+          d="M53 129Q63 134 73 129M84 129Q94 134 104 129"
+          stroke="#4C789B"
+          strokeOpacity=".15"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+
+        {/* Resting arm */}
+        <path
+          d="M51 85Q37 92 36 106"
+          stroke={color}
+          strokeWidth="15"
+          strokeLinecap="round"
+        />
+        <path
+          d="M36 106L39 111"
+          stroke={color}
+          strokeWidth="12"
+          strokeLinecap="round"
+        />
+
+        {/* Waving arm: the whole limb rotates at the shoulder */}
+        <g className="wc-arm">
+          <path
+            d="M104 85Q121 84 126 64"
+            stroke={color}
+            strokeWidth="15"
+            strokeLinecap="round"
+          />
+
+          {/* Open palm and rounded fingers */}
+          <path
+            d="
+              M120 68
+              Q114 64 113 58
+              L111 54
+              Q110 51 113 50
+              Q116 49 118 53
+              L119 55
+              L118 43
+              Q118 39 121 39
+              Q124 39 124 43
+              L125 51
+              L126 38
+              Q126 34 129 35
+              Q132 35 131 39
+              L131 51
+              L134 41
+              Q135 37 138 39
+              Q140 40 139 44
+              L136 55
+              L139 49
+              Q141 46 143 48
+              Q145 50 143 53
+              L137 65
+              Q131 74 120 68
+              Z
+            "
+            fill={color}
+          />
+
+          {/* Subtle palm crease */}
+          <path
+            d="M121 59Q126 56 131 59"
+            stroke="#4C789B"
+            strokeOpacity=".25"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+
+          <path
+            d="M125 66Q130 67 133 63"
+            stroke="white"
+            strokeOpacity=".4"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+        </g>
+
+        {/* Soft rounded body */}
+        <path
+          d="
+            M78 41
+            C56 41 44 56 44 79
+            L44 100
+            C44 120 58 129 78 129
+            C99 129 112 120 112 100
+            L112 79
+            C112 56 100 41 78 41
+            Z
+          "
+          fill={color}
+        />
+
+        {/* Gentle shaded edge */}
+        <path
+          d="
+            M99 49
+            C108 57 112 67 112 79
+            V100
+            C112 120 99 129 78 129
+            Q64 129 55 123
+            C83 129 104 116 104 96
+            V76
+            Q104 58 99 49
+            Z
+          "
+          fill="#4C789B"
+          opacity=".11"
+        />
+
+        {/* Forehead highlight */}
+        <path
+          d="M56 65Q59 52 73 50"
+          stroke="white"
+          strokeOpacity=".55"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+
+        {/* Belly highlight */}
+        <ellipse
+          cx="77"
+          cy="108"
+          rx="18"
+          ry="11"
+          fill="white"
+          opacity=".18"
+        />
+
+        {/* Friendly eyes */}
+        <g className="wc-eyes" fill="#3D607B">
+          <rect x="64" y="71" width="5" height="9" rx="2.5" />
+          <rect x="87" y="71" width="5" height="9" rx="2.5" />
+        </g>
+
+        {/* Rosy cheeks */}
+        <ellipse
+          cx="59" cy="85" rx="6" ry="3.5"
+          fill="#F0AFC1" opacity=".8"
+        />
+        <ellipse
+          cx="97" cy="85" rx="6" ry="3.5"
+          fill="#F0AFC1" opacity=".8"
+        />
+
+        {/* Open smile */}
+        <path
+          d="M69 85Q78 89 87 85Q85 97 78 97Q71 97 69 85Z"
+          fill="#3D607B"
+        />
+        <path
+          d="M73 94Q78 90 83 94Q78 99 73 94Z"
+          fill="#EDABBD"
+        />
+      </g>
+
+      {/* Small motion marks beside the raised hand */}
+      <g
+        className="wc-wave-lines"
+        stroke={color}
+        strokeWidth="3"
+        strokeLinecap="round"
+      >
+        <path d="M143 27L147 22" />
+        <path d="M148 35L153 33" />
+      </g>
+    </Frame>
+  );
+}

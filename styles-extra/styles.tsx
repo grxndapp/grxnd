@@ -125,3 +125,10 @@ export const LabReportCriteriaCardStyles: React.CSSProperties = {
    width: "100%", boxShadow: "0 1px 4px 2px rgba(0, 0, 0, 0.01)",
    maxWidth: "550px"
 }
+
+export const HomePageCardStyles: React.CSSProperties = {
+   backgroundColor: "white", border: "1px solid var(--accent-color-10)",
+   padding: "20px 25px", borderRadius: "30px", cursor: "initial",
+   width: "100%", boxShadow: "rgba(33, 35, 38, 0.1) 0px 8px 10px -10px",
+   maxWidth: "550px"
+}

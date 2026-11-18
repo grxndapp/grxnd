@@ -1,6 +1,6 @@
 'use client'
-import { NotebookPen, RotateCcw } from "lucide-react";
-import { fullSubjectBreakDown, isAmongstDefaultSubjects, retrieveSubjectTopic } from "@/utils/subjects";
+import { NotebookPen, RotateCcw, Settings } from "lucide-react";
+import { fullSubjectBreakDown, retrieveSubjectTopic } from "@/utils/subjects";
 import { RefObject, useState } from "react";
 import { generateUsingAi } from "@/app/actions/ai";
 import { subjectNoteMakerPrompt } from "@/prompts/subjectNoteMaker";
@@ -8,11 +8,13 @@ import { useSplashScreen } from "@/components/SplashScreen/SplashScreenContext";
 import { ResponseFormats } from "@/prompts/responseFormats";
 import { NoteIntensity } from "@/prompts/promptExtras";
 import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
+import { subjectCombinator } from "../clientHelper";
+import { addNoteToBackpack, addNoteToFolder } from "@/app/actions/note";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Spacing from "@/components/Spacing/Spacing"
-import NoteViewer from "@/components/NoteViewer/NoteViewer";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
-import ModalSelect from "@/components/ModalSelect/ModalSelect";
+import ModalSelect, { ModalCustomSelect } from "@/components/ModalSelect/ModalSelect";
 
 
 const upgradedTestNote = {
@@ -156,6 +158,7 @@ const upgradedTestNote = {
 type StepSection = "topic" | "detailed-create";
 
 export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { contentRef: RefObject<HTMLDivElement | null>, subjectFullName: string }) {
+	const router = useRouter();
    const { openSplash, closeSplash } = useSplashScreen();
 	
 	const [stepSections, setStepSections] = useState<StepSection>("topic");
@@ -163,9 +166,10 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
    const [detailedTopic, setDetailedTopic] = useState('');
 	const [intensity, setIntensity] = useState<NoteIntensity>("high-school");
    const [noteFromAI, setNoteFromAI] = useState<any | null>(null);
+	const [showMoreSettings, setShowMoreSettings] = useState(false);
 
 	const fullSubjectInfo = fullSubjectBreakDown(subjectFullName);
-	const isDefaultSubject = isAmongstDefaultSubjects(`${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`)
+	const subjectInfo = subjectCombinator(fullSubjectInfo.subject, fullSubjectInfo.subjectLevel);
 	const topicChoices = retrieveSubjectTopic(fullSubjectInfo.subjectLevel, fullSubjectInfo.subject);
 
 	function handleLoadingCreateNote () {
@@ -176,56 +180,121 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 			actions: []
 		})
 	}
+	
+	async function saveNoteAutomatically (noteJson: any) {
+		if (subjectInfo.isDefaultSubject) {
+			const subject = `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim();
+			const noteid = await addNoteToBackpack(noteJson, subject);
+
+			if (!noteid || typeof noteid !== "string") {
+				openSplash({
+					title: "Error",
+					description: "Couldn't create note. Please try again later.",
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				return false;
+			}
+			return noteid;
+		} else {
+			const subject = { folderName: `${fullSubjectInfo.subject.trim().toLowerCase().replaceAll("-"," ")}`.trim() }
+			const noteid = await addNoteToFolder(noteJson, subject.folderName);
+			if (!noteid || typeof noteid !== "string") {
+				openSplash({
+					title: "Error",
+					description: "Couldn't create note. Please try again later.",
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				return false;
+			}
+			return noteid;
+		}
+	}
 
    const createNoteAI = async (callback: Function) => {
-      handleLoadingCreateNote();
-      const data = await generateUsingAi({
-         prompt: subjectNoteMakerPrompt({
-				subjectLevel: fullSubjectInfo.subjectLevel, 
-				subject: fullSubjectInfo.subject, 
-				subjectTopic: topicSelected, 
-				detailedTopic, intensity
-			}),
-         responseFormat: ResponseFormats.NoteMaker
-      })
-
-      if (data.success == false) {
-         openSplash({
-            title: "Error",
-            description: data.error,
-            style: "error",
-            actions: [
-               {
-                  appearance: "normal",
-                  action: () => closeSplash(),
-                  label: <><RotateCcw size={18} /> Try Again</>
-               }
-            ],
-         })
+		if (!topicSelected) {
+         toast.error("Please choose a topic")
          callback()
          return;
-      }
-      setNoteFromAI(data.data.note);
-      contentRef.current?.scrollTo({ top: 0, behavior: "instant" });
-      closeSplash();
+		}
+		handleLoadingCreateNote();
+
+		try {
+			const data = await generateUsingAi({
+				prompt: subjectNoteMakerPrompt({
+					subjectLevel: fullSubjectInfo.subjectLevel, 
+					subject: fullSubjectInfo.subject, 
+					subjectTopic: topicSelected, 
+					detailedTopic, intensity
+				}),
+				responseFormat: ResponseFormats.NoteMaker
+			})
+
+			if (data.success == false) {
+				openSplash({
+					title: "Error",
+					description: data.error,
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				callback()
+				return;
+			}
+			const noteJson = data.data.note;
+			const savedAutoNoteId = await saveNoteAutomatically(noteJson);
+			if (savedAutoNoteId) {
+				setNoteFromAI(data.data.note);
+				callback();
+				closeSplash();
+				router.push(`${subjectInfo.subjectPageUrl}/note/${savedAutoNoteId}`);
+			}
+			closeSplash();
+		} catch (err) {
+			openSplash({
+				title: "Error",
+				description: "Something happened, an error occurred!",
+				style: "error",
+				actions: [
+					{
+						appearance: "normal",
+						action: () => closeSplash(),
+						label: <><RotateCcw size={18} /> Try Again</>
+					}
+				],
+			})
+			callback()
+			return;
+		}
    }
 
    return (<>
       <Spacing />
       {(noteFromAI !== null) && (<>
-         <NoteViewer 
-            subject={isDefaultSubject ? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim() : ''} 
-            note={noteFromAI}
-            customSubject={!isDefaultSubject}
-				saveToDefaultFolder
-				saveToSubjectFolder={isDefaultSubject ? undefined : { folderName: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`.trim() }}
-			/>
-         <Spacing size={4} />
+			<div className="text-s full pd-1">Redirecting you to your note...</div>
       </>)}
 
       {(noteFromAI == null) && (
 			<div className="box full h-full dfb column align-center">
-				{(stepSections == "topic") && (<>
+				{(stepSections == "topic") && (<div className="box full">
 					<div className="text-m bold-600 full">Choose Topic</div>
 					<div className="text-xxs full grey-5 mb-2">Choose the topic from the {fullSubjectInfo.subjectLevel} {fullSubjectInfo.subject} topics</div>
 					<ModalSelect
@@ -236,28 +305,50 @@ export default function SubjectNoteMaker ({ contentRef, subjectFullName }: { con
 							setStepSections("detailed-create")
 						}}
 					/>
-				</>)}
+				</div>)}
 				
 				{(stepSections == "detailed-create") && (<>
-					<div className="text-sm bold-600 full">Detailed Topic (optional)</div>
-					<div className="text-xs full grey-5 pd-1">Enter the exact thing you want to learn from this</div>
-					<textarea 
-						className="xxs pd-15 pdx-2 full radius-20"
-						value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
-					/>
-					<Spacing />
-					<div className="box full pd-2">
-						<IntensityChooser
-							title="Explanation Type"
-							options={noteExplanationTypeIntensityOptions}
-							onChange={name => setIntensity(name)}
-							defaultOption={2}
+					{(showMoreSettings) ? (<>
+						<Spacing />
+						<div className="text-sm bold-600 full">Detailed Topic (optional)</div>
+						<div className="text-xs full grey-5 pd-1">Enter the exact thing you want to learn from this</div>
+						<textarea 
+							className="xxs pd-15 pdx-2 full radius-20"
+							value={detailedTopic} onChange={e => setDetailedTopic(e.target.value)}
 						/>
-					</div>
+
+						<Spacing />
+						<div className="box full dfb column gap-10 pd-1">
+							<div className="text-sm full bold-700 accent-color-gradient-text">Choose Explanation Style</div>
+							<ModalCustomSelect
+								title="Choose Explanation Style"
+								options={noteExplanationTypeIntensityOptions.map(qs => ({ option: qs.nameLabel, optionName: qs.name }) )}
+								onSelect={option => setIntensity(option.optionName as any)}
+								defaultOption={2}
+							/>
+						</div>
+						<div className="box full pd-15">
+							<div className="text-xs fit visible-link accent-color dfb align-center gap-5" onClick={() => setShowMoreSettings(false)}>
+								<Settings size={17} /> Hide Note Settings
+							</div>
+						</div>
+					</>) : (<>
+						<div className="box full pd-15">
+							<div className="text-xs fit visible-link accent-color dfb align-center gap-5" onClick={() => setShowMoreSettings(true)}>
+								<Settings size={17} /> Show Note Settings
+							</div>
+						</div>
+					</>)}
+					
 					<Spacing />
-					<AwaitButton className="xxs full pd-15 tiny-shadow accent-hover" onClick={createNoteAI}>
-						<NotebookPen size={17} /> Generate Note
-					</AwaitButton>
+					<div className="box full pd-1">
+						<AwaitButton className="xxs full mw-500 pd-15 tiny-shadow accent-hover radius-20" onClick={createNoteAI}>
+							<div className="box full dfb column align-center">
+								<span className="text-xs full bold-600 dfb justify-center align-center gap-5"><NotebookPen size={17} /> Generate Note</span>
+								<div className="text-t full bold-500" style={{ opacity: 0.8 }}>Deep dive learning</div>
+							</div>
+						</AwaitButton>
+					</div>
 					<Spacing size={2} />
 				</>)}
 

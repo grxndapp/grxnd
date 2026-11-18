@@ -20,8 +20,8 @@ export function subjectCombinator (subject: string, subjectLevel: string) {
    const subjectIcon = isDefaultSubject ? subjectIcons[subject] : anySubjectDefIcon;
    
    return {
-      subject: titleCase(subject),
-      subjectLevel: titleCase(subjectLevel),
+      subject: titleCase(subject).trim(),
+      subjectLevel: titleCase(subjectLevel).trim(),
       subjectTopics: subjectTopics ?? [],
       subjectColor,
       subjectPastelColor,

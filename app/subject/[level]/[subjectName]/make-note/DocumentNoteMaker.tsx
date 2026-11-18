@@ -12,10 +12,12 @@ import { NoteIntensity } from "@/prompts/promptExtras";
 import { noteExplanationTypeIntensityOptions } from "@/utils/intensityOptions";
 import { useUser } from "@/hooks/useUser";
 import { uploadPresigned } from "@vercel/blob/client";
+import { ModalCustomSelect } from "@/components/ModalSelect/ModalSelect";
+import { addNoteToBackpack, addNoteToFolder } from "@/app/actions/note";
+import { subjectCombinator } from "../clientHelper";
+import { useRouter } from "next/navigation";
 import Spacing from "@/components/Spacing/Spacing";
 import AwaitButton from "@/components/AwaitButton/AwaitButton";
-import NoteViewer from "@/components/NoteViewer/NoteViewer";
-import IntensityChooser from "@/components/IntensityChooser/IntensityChooser";
 
 type FileInfo = {
    filename: string;
@@ -25,6 +27,7 @@ type FileInfo = {
 export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullName: string }) {
 	const { user } = useUser();
    const { openSplash, closeSplash } = useSplashScreen();
+	const router = useRouter();
    const [inputFileValue, setInputFileValue] = useState<any | null>('');
    const [isDragging, setIsDragging] = useState(false);
    const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
@@ -33,7 +36,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
    const [noteFromAI, setNoteFromAI] = useState<NoteMaker | null>(null);
 
 	const fullSubjectInfo = fullSubjectBreakDown(subjectFullName);
-	const isDefaultSubject = isAmongstDefaultSubjects(`${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`);
+	const subjectInfo = subjectCombinator(fullSubjectInfo.subject, fullSubjectInfo.subjectLevel);
 
    const onFileUpload = async (e: any) => {
       const file = e.target.files[0];
@@ -72,6 +75,49 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 			style: "note",
 			actions: []
 		})
+	}
+
+	async function saveNoteAutomatically (noteJson: any) {
+		if (subjectInfo.isDefaultSubject) {
+			const subject = `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim();
+			const noteid = await addNoteToBackpack(noteJson, subject);
+
+			if (!noteid || typeof noteid !== "string") {
+				openSplash({
+					title: "Error",
+					description: "Couldn't create note. Please try again later.",
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				return false;
+			}
+			return noteid;
+		} else {
+			const subject = { folderName: `${fullSubjectInfo.subject.trim().toLowerCase().replaceAll("-"," ")}`.trim() }
+			const noteid = await addNoteToFolder(noteJson, subject.folderName);
+			if (!noteid || typeof noteid !== "string") {
+				openSplash({
+					title: "Error",
+					description: "Couldn't create note. Please try again later.",
+					style: "error",
+					actions: [
+						{
+							appearance: "normal",
+							action: () => closeSplash(),
+							label: <><RotateCcw size={18} /> Try Again</>
+						}
+					],
+				})
+				return false;
+			}
+			return noteid;
+		}
 	}
 
    const createNoteAI = async (callback: Function) => {
@@ -128,10 +174,14 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 				callback()
 				return;
 			}
-			console.log(data)
-			setNoteFromAI(data.data.note);
-			callback()
-			closeSplash();
+			const noteJson = data.data.note;
+			const savedAutoNoteId = await saveNoteAutomatically(noteJson);
+			if (savedAutoNoteId) {
+				setNoteFromAI(data.data.note);
+				callback();
+				closeSplash();
+				router.push(`${subjectInfo.subjectPageUrl}/note/${savedAutoNoteId}`);
+			}
 		} catch (err) {
 			openSplash({
 				title: "Error",
@@ -152,14 +202,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
 
    return (<>
       {noteFromAI !== null ? (<>
-         <NoteViewer 
-            subject={isDefaultSubject ? `${fullSubjectInfo.subjectLevel} ${fullSubjectInfo.subject}`.toLowerCase().replaceAll("-"," ").trim() : ''} 
-            note={noteFromAI}
-            customSubject={!isDefaultSubject}
-				saveToDefaultFolder
-				saveToSubjectFolder={isDefaultSubject ? undefined : { folderName: `${fullSubjectInfo.subject.toLowerCase().replaceAll("-"," ")}`.trim() }}
-         />
-         <Spacing size={4} />
+			<div className="text-s full pd-1">Redirecting you to your note...</div>
       </>) : (fileInfo == null) ? (<>
          <div className="box full pd-05">
 				<Spacing />
@@ -192,6 +235,7 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
             </div>
          </div>
       </>) : (<>
+			<Spacing />
          <div className="text-xs full text-left pd-05 mb-1">
             Your document has been uploaded.
          </div>
@@ -205,16 +249,20 @@ export default function DocumentNoteMaker ({ subjectFullName }: { subjectFullNam
             </div>
          </div>
 			<div className="box full pd-2">
-				<IntensityChooser
-					title="Explanation Type"
-					options={noteExplanationTypeIntensityOptions}
-					onChange={name => setIntensity(name)}
+				<div className="text-sm full bold-700 accent-color-gradient-text pd-1">Choose Explanation Style</div>
+				<ModalCustomSelect
+					title="Choose Explanation Style"
+					options={noteExplanationTypeIntensityOptions.map(qs => ({ option: qs.nameLabel, optionName: qs.name }) )}
+					onSelect={option => setIntensity(option.optionName as any)}
 					defaultOption={2}
 				/>
 			</div>
 			<div className="box full dfb justify-start pd-1">
 				<AwaitButton className="xxs full pd-14 tiny-shadow mw-400 accent-hover radius-20" onClick={createNoteAI}>
-					<NotebookPen size={17} /> Generate Note
+					<div className="box full dfb column align-center">
+						<span className="text-xs full bold-600 dfb justify-center align-center gap-5"><NotebookPen size={17} /> Generate Note</span>
+						<div className="text-t full bold-500" style={{ opacity: 0.8 }}>Deep dive learning</div>
+					</div>
 				</AwaitButton>
 			</div>
       </>)}

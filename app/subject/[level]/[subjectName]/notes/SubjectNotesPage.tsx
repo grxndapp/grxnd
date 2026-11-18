@@ -7,7 +7,7 @@ import { subjectCombinator } from "../clientHelper";
 import { pluralSuffixer, titleCase } from "@/lib/str";
 import { formatMilliseconds } from "@/utils/date";
 import { anySubjectDefIcon, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectIcon } from "@/utils/subjects";
-import { Check, GraduationCap, NotebookPen, Trash2 } from "lucide-react"
+import { Check, GraduationCap, NotebookPen, Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { cloneElement, useState } from "react";
 import { useModal } from "@/components/Modal/ModalContext";
@@ -108,9 +108,15 @@ function DisplaySubjectNotes ({ notes: rawNotes, subjectColor, subjectPastelColo
       <div className="box full no-select">
          <div className="box full dfb align-center gap-10 pd-1">
             <input 
-               type="text" className="xxs pd-13 pdx-2 radius-20 full mw-600" placeholder="Search Notes..."
+               type="text" className="xxs pd-14 pdx-2 radius-20 full mw-600" placeholder="Search Notes..."
                value={searchNotesQuery} onChange={e => setSearchNotesQuery(e.target.value)}
             />
+            <button 
+               className="xxs pd-14 pdx-2 fit whitespace-nowrap radius-20"
+               onClick={() => router.push(`${subjectPageUrl}/make-note`)}
+            >
+               <Plus size={19} /> <span className="hide-on-mobile">Add Note</span>
+            </button>
          </div>
          {selectedNotes.length > 0 && (
             <div className="box full pd-2">

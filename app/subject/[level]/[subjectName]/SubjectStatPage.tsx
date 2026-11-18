@@ -1,7 +1,7 @@
 'use client'
 import { pluralSuffixer, titleCase } from "@/lib/str"
 import { customSubjectToBoldColor, customSubjectToPastelColor, fullSubjectBreakDown, isAmongstDefaultSubjects, subjectColors, subjectIcon, subjectPastelBgColors } from "@/utils/subjects"
-import { Check, GraduationCap, NotebookPen, Trash2 } from "lucide-react"
+import { Check, Edit, GraduationCap, Notebook, NotebookPen, Trash2 } from "lucide-react"
 import { cloneElement, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getSubjectPageUrl } from "./helper"
@@ -49,7 +49,6 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
    }, 0) / (quizzes.filter(quiz => quiz.subject.toLowerCase() === subject).length);
 
    const subjectColor = subjectLevel ? subjectColors[titleCase(subject)] : customSubjectToBoldColor(titleCase(subject));
-   const subjectPastelColor = subjectLevel ? subjectPastelBgColors[titleCase(subject)] : customSubjectToPastelColor(titleCase(subject));
    const subjectPageUrl = getSubjectPageUrl(subject, subjectLevel);
    const studyMethodIconSize = 26;
 
@@ -63,23 +62,34 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
             <div className="text-xl bold-700 full mb-1 pd-05 no-trans" style={{ color: subjectColor }}>{titleCase(subjectLevel)} {titleCase(subject)}</div>
 
             <div className="box full dfb column gap-10">
-               {quizzes.length > 0 ? (
-                  <div className="box full">
+               <div className="box full">
+                  {quizzes.length > 0 ? (<>
                      <div className="text-xs full text-left">
                         <b style={{ color: subjectColor }}>{Math.round(averagePercentage)}%</b> Average Score
                      </div>
                      <div className="text-xs fit text-left">
                         You have taken {newQuizArray.length} {subjectLevel.toLowerCase()} {subject.toLowerCase()} {pluralSuffixer('quiz',newQuizArray.length,'zes')}
                      </div>
-                     <div className="text-xs fit visible-link accent-color mt-1" onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
-                        View your saved quizzes
+                  </>) : (<>
+                     <div className="box full">
+                        <div className="text-xs full text-left">You haven't done a quiz yet. Test yourself!</div>
                      </div>
+                  </>)}
+                  <div className="box full dfb wrap gap-15 pd-2">
+                     <button className='xs full mw-400 pd-15 radius-20 accent-hover tiny-shadow' onClick={() => router.push(`${subjectPageUrl}/saved-quizzes`)}>
+                        <div className="box full dfb column align-center">
+                           <span className="text-xs full bold-600 dfb justify-center align-center gap-5"><Edit size={17} /> Quizzes</span>
+                           <div className="text-t full bold-500" style={{ opacity: 0.8 }}>View your past quizzes</div>
+                        </div>
+                     </button>
+                     <button className='xs full mw-400 pd-15 radius-20 outline-black tiny-shadow' onClick={() => router.push(`${subjectPageUrl}/notes`)}>
+                        <div className="box full dfb column align-center">
+                           <span className="text-xs full bold-600 dfb justify-center align-center gap-5"><Notebook size={17} /> Notes</span>
+                           <div className="text-t full bold-500" style={{ opacity: 0.8 }}>View your study notes</div>
+                        </div>
+                     </button>
                   </div>
-               ) : (
-                  <div className="box full">
-                     <div className="text-xs full text-left">You haven't done a quiz yet. Test yourself!</div>
-                  </div>
-               )}
+               </div>
 
                <Spacing />
                <div className="box full dfb column gap-5">
@@ -132,14 +142,6 @@ export default function SubjectStatPage ({ quizzes, subject, subjectLevel, notes
                </div>
             </div>
             <Spacing size={2} />
-
-            <DisplaySubjectNotes
-               notes={notes}
-               subjectColor={subjectColor}
-               subjectPageUrl={subjectPageUrl}
-               subjectPastelColor={subjectPastelColor}
-            />
-            <Spacing size={5} />
          </div>
       </AppWrapper>
    )

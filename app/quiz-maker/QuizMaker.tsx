@@ -1,5 +1,4 @@
 'use client'
-import { useModal } from "@/components/Modal/ModalContext";
 import { retrieveSubjectTopic, subjectLevels, subjects } from "@/utils/subjects";
 import { ArrowLeft, ArrowRight, BookCheck, RotateCcw } from "lucide-react";
 import { useState } from "react";
@@ -20,6 +19,74 @@ import BackpackBreadcrumb from "@/components/BackpackBreadcrumb/BackpackBreadcru
 
 type StepSection = "subject" | "topic";
 
+const aq = [
+    {
+        "question": "What does a horizontal asymptote describe about a function's graph?",
+        "options": [
+            "The point where the graph crosses the $y$-axis.",
+            "The behaviour of the graph as $x$ approaches a specific finite value.",
+            "The behaviour of the graph as $x$ tends towards positive or negative infinity.",
+            "The vertical lines that the function's graph approaches.",
+            "The maximum or minimum turning points of the function."
+        ],
+        "answerIndex": 2,
+        "answerExplanation": "A horizontal asymptote is a horizontal line $y=L$ that the graph of a function $f(x)$ approaches as $x$ tends towards positive infinity ($x \\to \\infty$) or negative infinity ($x \\to -\\infty$). It describes the function's 'end behaviour'.",
+        "questionType": "3"
+    },
+    {
+        "question": "For the rational function $f(x) = \\frac{2x + 5}{x^2 - 3x + 1}$, what is its horizontal asymptote?",
+        "options": [
+            "$y = 0$",
+            "$y = 2$",
+            "$y = 5$",
+            "There is no horizontal asymptote.",
+            "$y = 1$"
+        ],
+        "answerIndex": 0,
+        "answerExplanation": "To find the horizontal asymptote of a rational function, compare the degrees of the numerator and the denominator.\n\n1. The degree of the numerator ($2x+5$) is $1$.\n2. The degree of the denominator ($x^2-3x+1$) is $2$.\n\nSince the degree of the numerator (1) is less than the degree of the denominator (2), the horizontal asymptote is $y=0$.",
+        "questionType": "2"
+    },
+    {
+        "question": "Determine the horizontal asymptote of the function $g(x) = \\frac{6x^2 - 4x + 2}{3x^2 + 7}$.",
+        "options": [
+            "$y = 0$",
+            "$y = 6$",
+            "$y = \\frac{1}{2}$",
+            "There is no horizontal asymptote.",
+            "$y = 2$"
+        ],
+        "answerIndex": 4,
+        "answerExplanation": "To find the horizontal asymptote of a rational function, compare the degrees of the numerator and the denominator.\n\n1. The degree of the numerator ($6x^2-4x+2$) is $2$.\n2. The degree of the denominator ($3x^2+7$) is $2$.\n\nSince the degrees are equal, the horizontal asymptote is the ratio of the leading coefficients.\n\nLeading coefficient of numerator is $6$.\nLeading coefficient of denominator is $3$.\n\nTherefore, the horizontal asymptote is $y = \\frac{6}{3} = 2$.",
+        "questionType": "2"
+    },
+    {
+        "question": "Which of the following rational functions has no horizontal asymptote?",
+        "options": [
+            "$f(x) = \\frac{x^2 - 1}{x^3 + 2}$",
+            "$g(x) = \\frac{x^3 + 2x - 1}{x^2 + 5}$",
+            "$h(x) = \\frac{4x^2 + 3}{2x^2 - 1}$",
+            "$k(x) = \\frac{5x}{x^2 + 1}$",
+            "$m(x) = \\frac{7x^4 - 2x}{x^4 + 3x^2}$"
+        ],
+        "answerIndex": 1,
+        "answerExplanation": "A rational function has no horizontal asymptote if the degree of the numerator is greater than the degree of the denominator.\n\n- For $f(x)$, degree of numerator (2) < degree of denominator (3), so $y=0$.\n- For $g(x)$, degree of numerator (3) > degree of denominator (2), so there is no horizontal asymptote.\n- For $h(x)$, degree of numerator (2) = degree of denominator (2), so $y = \\frac{4}{2} = 2$.\n- For $k(x)$, degree of numerator (1) < degree of denominator (2), so $y=0$.\n- For $m(x)$, degree of numerator (4) = degree of denominator (4), so $y = \\frac{7}{1} = 7$.",
+        "questionType": "1"
+    },
+    {
+        "question": "Consider the function $f(x) = 3 + e^{x}$. Which of the following statements about its horizontal asymptotes is correct?",
+        "options": [
+            "It has a horizontal asymptote at $y=3$ as $x \\to \\infty$.",
+            "It has no horizontal asymptotes.",
+            "It has two horizontal asymptotes: $y=3$ as $x \\to -\\infty$ and $y=\\infty$ as $x \\to \\infty$.",
+            "It has a horizontal asymptote at $y=3$ as $x \\to -\\infty$.",
+            "It has a horizontal asymptote at $y=0$ as $x \\to -\\infty$."
+        ],
+        "answerIndex": 3,
+        "answerExplanation": "To find horizontal asymptotes, we evaluate the limits as $x \\to \\infty$ and $x \\to -\\infty$.\n\n1. As $x \\to \\infty$:\n$$\\lim_{x \\to \\infty} (3 + e^x) = 3 + \\lim_{x \\to \\infty} e^x$$\n\nSince $\\lim_{x \\to \\infty} e^x = \\infty$, the limit is $3 + \\infty = \\infty$. Therefore, there is no horizontal asymptote as $x \\to \\infty$.\n\n2. As $x \\to -\\infty$:\n$$\\lim_{x \\to -\\infty} (3 + e^x) = 3 + \\lim_{x \\to -\\infty} e^x$$\n\nSince $\\lim_{x \\to -\\infty} e^x = 0$, the limit is $3 + 0 = 3$. Therefore, there is a horizontal asymptote at $y=3$ as $x \\to -\\infty$.",
+        "questionType": "1"
+    }
+]
+
 export default function QuizMakerPage () {
    const [stepSections, setStepSections] = useState<StepSection>("subject");
    const [subjectLevel, setSubjectLevel] = useState<string>('');
@@ -30,7 +97,6 @@ export default function QuizMakerPage () {
    const [aiQuiz, setAiQuiz] = useState<Quiz | null>(null);
    const [quizStyle, setQuizStyle] = useState<QuizStyle>("mixture");
 
-   const { showModal, close } = useModal();
    const { openSplash, closeSplash } = useSplashScreen();
 
    function handleLoadingCreateQuiz () {

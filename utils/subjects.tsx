@@ -69,7 +69,7 @@ export function fullSubjectBreakDown (rawSubjectInfo: string) {
 	} else {
 		return {
 			subjectLevel: "",
-			subject: subjectInfo
+			subject: subjectInfo.trim()
 		};
 	}
 }

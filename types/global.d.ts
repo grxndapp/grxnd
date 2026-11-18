@@ -55,6 +55,7 @@ type QuizT = {
    subject: string;
    topic: string;
    score: number;
+   scorePoints: number;
    createdAt: Date;
 }
 type QuizT = quizzesTable.$in

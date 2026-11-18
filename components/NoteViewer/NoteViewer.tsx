@@ -1,7 +1,7 @@
 'use client'
 import { titleCase } from "@/lib/str";
 import { CustomIcon } from "../Icons/Icon";
-import { Bookmark, ChevronDown, ChevronRight, Eye, EyeOff, NotebookTabs, RotateCcw, SquareArrowUpRight, SquareMousePointer } from "lucide-react";
+import { Bookmark, Brain, ChevronDown, ChevronRight, Eye, EyeOff, NotebookTabs, RotateCcw, SquareArrowUpRight, SquareMousePointer } from "lucide-react";
 import { addNoteToBackpack, addNoteToFolder, addNoteToNewFolder } from "@/app/actions/note";
 import { toast } from "sonner";
 import { useModal } from "../Modal/ModalContext";
@@ -133,6 +133,13 @@ export default function NoteViewer ({
       return `${subjectPageUrl}/note/${savedNote}`;
    }
 
+   function getNoteQuizUrl (subjectInfo: string, noteId: string) {
+      if (!savedNote) return '/backpack';
+      const fullBreakdown = fullSubjectBreakDown(subjectInfo);
+      const subjectPageUrl = getSubjectPageUrl(fullBreakdown.subject, fullBreakdown.subjectLevel);
+      return `${subjectPageUrl}/start-quiz?noteId=${noteId}`;
+   }
+
    function handleSaveNoteCustomSubject () {
       const fullBreakdown = fullSubjectBreakDown(subject!);
       const subjectPageUrl = getSubjectPageUrl(fullBreakdown.subject, fullBreakdown.subjectLevel);
@@ -247,7 +254,7 @@ export default function NoteViewer ({
 
          {noteName && <div className="text-m full">{noteName}</div>}
          <div className="text-xl bold-700 mb-05 full accent-color-gradient-dark-text">{note.title}</div>
-         <div className="text-xxs pd-05 line-height-17" style={lineStyles}>{note.overview}</div>
+         <div className="text-xxs pd-05 line-height-17" style={lineStyles}><RenderMarkdown content={note.overview} /></div>
          <Spacing size={1} />
 
          <Card styles={NoteSectionCardStyles}>
@@ -428,7 +435,7 @@ export default function NoteViewer ({
                   ))}
                </>) : (<>
                   <div className="box full pd-1">
-                     <button className="xxs pd-12 pdx-2 accent-color-50" onClick={() => setShowPracticeSolutions(true)}>
+                     <button className="xxs pd-14 pdx-2 accent-color-50" onClick={() => setShowPracticeSolutions(true)}>
                         <Eye size={17} /> Show Solutions
                      </button>
                   </div>

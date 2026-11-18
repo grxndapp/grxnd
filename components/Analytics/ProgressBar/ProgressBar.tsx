@@ -10,11 +10,11 @@ type ProgressBarProps = {
 
 export default function ProgressBar({ percentage, label, children }: ProgressBarProps) {
    return (
-      <div className="progress-bar">
-         <div className="label">
+      <div className="analytics-progress-bar">
+         <div className="analytics-progress-label">
             {(children ?? label) || 'Unlabelled'} <b>({percentage.toFixed(1)}%)</b>
          </div>
-         { percentage > 0 ? <div className="progress" style={{ width: `${percentage}%` }}></div> : <></> }
+         { percentage > 0 ? <div className="analytics-progress" style={{ width: `${percentage}%` }}></div> : <></> }
       </div>
    )
 }

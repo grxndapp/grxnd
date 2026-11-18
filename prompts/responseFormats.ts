@@ -173,78 +173,76 @@ export const ResponseFormats = {
       }
    },
    EssayGrader: {
-      "response_format": {
-         "type": "json_schema",
-         "json_schema": {
-            "name": "essay_grader_report",
-            "strict": true,
-            "schema": {
-            "type": "object",
-            "properties": {
-               "grader_report": {
-                  "type": "object",
-                  "properties": {
-                  "grade": {
-                     "type": "integer",
-                     "minimum": 1,
-                     "maximum": 10
+      "type": "json_schema",
+      "json_schema": {
+         "name": "essay_grader_report",
+         "strict": true,
+         "schema": {
+         "type": "object",
+         "properties": {
+            "grader_report": {
+               "type": "object",
+               "properties": {
+               "grade": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10
+               },
+               "comments": {
+                  "type": "string",
+                  "minLength": 200,
+                  "maxLength": 300
+               },
+               "strengths": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
                   },
-                  "comments": {
-                     "type": "string",
-                     "minLength": 200,
-                     "maxLength": 300
+                  "minItems": 4,
+                  "maxItems": 4
+               },
+               "weaknesses": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
                   },
-                  "strengths": {
-                     "type": "array",
-                     "items": {
-                        "type": "string"
+                  "minItems": 4,
+                  "maxItems": 4
+               },
+               "improvements": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                     "type": "object",
+                     "properties": {
+                     "quote": {
+                        "type": "string",
+                        "description": "Exact text copied verbatim from the student's essay."
                      },
-                     "minItems": 4,
-                     "maxItems": 4
-                  },
-                  "weaknesses": {
-                     "type": "array",
-                     "items": {
-                        "type": "string"
+                     "improvement": {
+                        "type": "string",
+                        "description": "Explain how the quoted text can be improved."
                      },
-                     "minItems": 4,
-                     "maxItems": 4
-                  },
-                  "improvements": {
-                     "type": "array",
-                     "minItems": 1,
-                     "items": {
-                        "type": "object",
-                        "properties": {
-                        "quote": {
-                           "type": "string",
-                           "description": "Exact text copied verbatim from the student's essay."
-                        },
-                        "improvement": {
-                           "type": "string",
-                           "description": "Explain how the quoted text can be improved."
-                        },
-                        "possible_replacement": {
-                           "type": "string",
-                           "description": "Replacement text the student can paste into their essay."
-                        }
-                        },
-                        "required": [
-                        "quote",
-                        "improvement",
-                        "possible_replacement"
-                        ],
-                        "additionalProperties": false
+                     "possible_replacement": {
+                        "type": "string",
+                        "description": "Replacement text the student can paste into their essay."
                      }
+                     },
+                     "required": [
+                     "quote",
+                     "improvement",
+                     "possible_replacement"
+                     ],
+                     "additionalProperties": false
                   }
-                  },
-                  "required": [ "grade", "comments", "strengths", "weaknesses", "improvements"],
-                  "additionalProperties": false
                }
-            },
-            "required": ["grader_report"],
-            "additionalProperties": false
+               },
+               "required": [ "grade", "comments", "strengths", "weaknesses", "improvements"],
+               "additionalProperties": false
             }
+         },
+         "required": ["grader_report"],
+         "additionalProperties": false
          }
       }
    },

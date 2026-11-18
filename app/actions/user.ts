@@ -144,6 +144,8 @@ export async function createUserAccount (user: Omit<User, 'userid' | 'createdAt'
          password: hashPwd(user.password),
          oauth_provider: "nv-credentials",
          user_role: "user",
+         studentType: user.studentType ?? '',
+         referralChannel: user.referralChannel ?? '',
          stripeCustomerId: customer.id,
          is_subscribed: false
       });

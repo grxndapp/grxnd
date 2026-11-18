@@ -66,7 +66,7 @@ export default function EssayGraderPage () {
             return;
          }
          console.log(data.data)
-         setEssayGradeReport(data.data);
+         setEssayGradeReport(data.data.grader_report);
       } catch (err) {
 			openSplash({
 				title: "Error",

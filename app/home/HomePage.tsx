@@ -100,7 +100,7 @@ function QuizSuggestionCard ({ lastQuizDone }: { lastQuizDone: QuizT }) {
          {(lastQuizDone.score >= 70) ? (<>
 
             <div className="text-m bold-600 full">
-               Study More
+               Study More{" "}
                <span style={{ color: getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectColor }}>
                   {getSubjectInformation(lastQuizDone.subjectLevel, lastQuizDone.subject).subjectFullName}
                </span>
@@ -160,7 +160,7 @@ function NoteSuggestionCard ({ lastNoteTaken }: { lastNoteTaken: Note }) {
             <NotesIllustration size={70} />
          </div>
          <div className="text-sm bold-600 full">
-            Continue Studying
+            Continue Studying{" "}
             <span 
                style={{
                   color: getSubjectInformation(

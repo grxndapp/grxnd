@@ -1,7 +1,7 @@
 'use client'
 import { titleCase } from "@/lib/str";
 import { CustomIcon } from "../Icons/Icon";
-import { Bookmark, Brain, ChevronDown, ChevronRight, Eye, EyeOff, NotebookTabs, RotateCcw, SquareArrowUpRight, SquareMousePointer } from "lucide-react";
+import { Bookmark, Brain, ChevronDown, ChevronRight, Eye, EyeOff, NotebookPen, NotebookTabs, RotateCcw, SquareArrowUpRight, SquareMousePointer } from "lucide-react";
 import { addNoteToBackpack, addNoteToFolder, addNoteToNewFolder } from "@/app/actions/note";
 import { toast } from "sonner";
 import { useModal } from "../Modal/ModalContext";
@@ -27,7 +27,8 @@ type NoteViewerProps = {
    customSubject?: boolean;
    saveToDefaultFolder?: boolean;
    saveToSubjectFolder?: { folderName: string; };
-   saveToSubjectFolderNew?: { folderName: string; }
+   saveToSubjectFolderNew?: { folderName: string; };
+   practiceQuiz?: () => void;
 }
 
 function NoteSaver ({ note, subject, onSaved }: { note: NoteMaker, subject?: string, onSaved: (noteid: string) => void; }) {
@@ -102,7 +103,8 @@ function NoteSaver ({ note, subject, onSaved }: { note: NoteMaker, subject?: str
 }
 
 export default function NoteViewer ({ 
-   subject, note, noteName, makeNewNote, noButtons, noSubject, customSubject, saveToDefaultFolder, saveToSubjectFolder, saveToSubjectFolderNew
+   subject, note, noteName, makeNewNote, noButtons, noSubject, customSubject, saveToDefaultFolder, saveToSubjectFolder, saveToSubjectFolderNew,
+   practiceQuiz
 }: NoteViewerProps) {
    const { showModal } = useModal();
    const router = useRouter();
@@ -400,7 +402,7 @@ export default function NoteViewer ({
                   <br />
                   <div className="text-m fit bold-700 accent-color-gradient-dark-text">Solutions</div>
                   <div className="box full pd-1">
-                     <button className="xxs pd-12 pdx-2 accent-color-50" onClick={() => setShowPracticeSolutions(false)}>
+                     <button className="xxs pd-12 pdx-2 accent-color-50 radius-20" onClick={() => setShowPracticeSolutions(false)}>
                         <EyeOff size={17} /> Hide Solutions
                      </button>
                   </div>
@@ -434,10 +436,15 @@ export default function NoteViewer ({
                         )
                   ))}
                </>) : (<>
-                  <div className="box full pd-1">
-                     <button className="xxs pd-14 pdx-2 accent-color-50" onClick={() => setShowPracticeSolutions(true)}>
+                  <div className="box full dfb wrap gap-10 pd-1">
+                     <button className="xxs pd-14 pdx-2 accent-color-50 radius-20" onClick={() => setShowPracticeSolutions(true)}>
                         <Eye size={17} /> Show Solutions
                      </button>
+                     {practiceQuiz && (
+                        <button className="xxs pd-14 pdx-2 outline-black tiny-shadow radius-20" onClick={practiceQuiz}>
+                           <NotebookPen size={17} /> Practice Now!
+                        </button>
+                     )}
                   </div>
                </>)}
             </> : <br />}

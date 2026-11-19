@@ -81,7 +81,10 @@ export default function SubjectNotePage ({ note, subject, subjectLevel }: { note
             </div>
          </div>
 
-         <NoteViewer note={JSON.parse(note.noteJson)} noteName={noteName} noButtons noSubject />
+         <NoteViewer 
+            note={JSON.parse(note.noteJson)} noteName={noteName} noButtons noSubject
+            practiceQuiz={handleCreateQuiz}
+         />
          <Spacing size={4} />
       </AppWrapper>
    )

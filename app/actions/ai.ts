@@ -17,7 +17,7 @@ type GenerateUsingAiParams = {
 }
 
 const OpenRouterApiUrl = "https://openrouter.ai/api/v1/chat/completions";
-const AiModel = "google/gemini-2.5-flash"
+const AiModel = "anthropic/claude-haiku-5.5" // "google/gemini-2.5-flash"
 const SystemPrompt = `You are a study assistant helping Scottish secondary school students prepare for SQA exams (National 5, Higher, and Advanced Higher).
 
 ## SQA STYLE

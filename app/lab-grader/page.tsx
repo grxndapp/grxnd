@@ -1,7 +1,7 @@
-import { dalRequireSubscriber } from "@/dal/helpers";
+import { dalRequireAuthRedirect } from "@/dal/helpers";
 import LabGraderPage from "./LabGraderPage";
 
 export default async function LabGrader () {
-   await dalRequireSubscriber();
+   await dalRequireAuthRedirect();
    return <LabGraderPage />;
 }

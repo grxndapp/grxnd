@@ -1,7 +1,7 @@
 import EssayGraderPage from "./EssayGraderPage";
-import { dalRequireSubscriber } from "@/dal/helpers";
+import { dalRequireAuthRedirect } from "@/dal/helpers";
 
 export default async function EssayGrader () {
-   await dalRequireSubscriber();
+   await dalRequireAuthRedirect();
    return <EssayGraderPage />;
 }
